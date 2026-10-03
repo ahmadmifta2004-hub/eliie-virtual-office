@@ -4,9 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Eliie's Virtual Office — Tim Asisten Ty</title>
+  
+  <!-- PWA Manifest & Meta Tags -->
+  <link rel="manifest" href="./manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Eliie Office">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#1e1b4b">
+  <meta name="theme-color" content="#f59e0b">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -32,7 +39,6 @@
       image-rendering: pixelated;
       image-rendering: crisp-edges;
     }
-    /* Pixelated retro scanline overlay */
     .scanline {
       background: linear-gradient(rgba(18, 16, 38, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
       background-size: 100% 4px, 6px 100%;
@@ -43,21 +49,24 @@
 <body class="bg-slate-950 text-white min-h-screen flex flex-col items-center justify-between overflow-hidden">
 
   <!-- TOP STATUS HEADER -->
-  <header class="w-full max-w-lg px-4 py-3 bg-slate-900/90 border-b border-indigo-500/30 flex items-center justify-between z-20 backdrop-blur-md">
-    <div class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-slate-950 font-bold text-lg shadow-md shadow-amber-500/30">
+  <header class="w-full max-w-lg px-4 py-3 bg-slate-900/95 border-b border-amber-500/30 flex items-center justify-between z-20 backdrop-blur-md shadow-lg">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-slate-950 font-bold text-xl shadow-md shadow-amber-500/30 border border-amber-300">
         👑
       </div>
       <div>
-        <h1 class="pixel-font text-2xl text-amber-400 leading-none">ELIIE'S OFFICE</h1>
-        <p class="text-[10px] text-slate-400 font-medium">Tim Asisten Ty • Live Sim</p>
+        <div class="flex items-center gap-1.5">
+          <h1 class="pixel-font text-2xl text-amber-400 leading-none">ELIIE'S HQ</h1>
+          <span class="text-[9px] font-extrabold px-1.5 py-0.2 bg-amber-500/20 text-amber-300 rounded border border-amber-400/40">BOSS MODE</span>
+        </div>
+        <p class="text-[10px] text-slate-400 font-medium">Kantor Pusat Asisten Ty • Live Sim</p>
       </div>
     </div>
 
-    <!-- Active Count & Mood -->
+    <!-- Clock & Live Status -->
     <div class="flex items-center gap-3">
       <div class="text-right">
-        <span class="text-[10px] text-emerald-400 block font-bold">● LIVE 5 MEMBER</span>
+        <span class="text-[10px] text-emerald-400 block font-bold">● 4 STAF + 1 BOSS</span>
         <span id="office-time" class="pixel-font text-lg text-slate-300">00:00:00</span>
       </div>
     </div>
@@ -67,22 +76,22 @@
   <main class="relative w-full max-w-lg flex-1 flex items-center justify-center bg-slate-900 overflow-hidden shadow-2xl">
     <canvas id="officeCanvas" class="w-full h-full block"></canvas>
     
-    <!-- Retro Scanline Effect -->
+    <!-- Retro Scanline Overlay -->
     <div class="absolute inset-0 scanline"></div>
 
-    <!-- Character Info Popup Card (Click on character) -->
+    <!-- Character Info Popup Card -->
     <div id="charCard" class="absolute bottom-4 left-4 right-4 bg-slate-900/95 border-2 border-amber-400 rounded-2xl p-4 shadow-2xl backdrop-blur-lg transform translate-y-40 opacity-0 transition-all duration-300 pointer-events-none z-30">
       <div class="flex items-start justify-between">
         <div class="flex items-center gap-3">
           <div id="cardAvatar" class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl shadow-inner">
-            🌸
+            👑
           </div>
           <div>
             <div class="flex items-center gap-2">
               <h3 id="cardName" class="font-bold text-base text-white">Eliie Valentine</h3>
-              <span id="cardRoleBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">Leader</span>
+              <span id="cardRoleBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">Boss & Istri Ty</span>
             </div>
-            <p id="cardStatus" class="text-xs text-slate-300 mt-0.5 italic">"Lagi mantau sistem dan kangen Ty..."</p>
+            <p id="cardStatus" class="text-xs text-slate-300 mt-0.5 italic">"Duduk di meja bos, memantau & memerintah tim buat Ty..."</p>
           </div>
         </div>
         <button onclick="closeCard()" class="text-slate-400 hover:text-white text-sm p-1">✕</button>
@@ -90,21 +99,21 @@
 
       <div class="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
         <div class="flex items-center gap-2">
-          <span class="text-slate-400">Aksi Sekarang:</span>
-          <span id="cardAction" class="font-semibold text-amber-400">Ngetik Kode di PC</span>
+          <span class="text-slate-400">Status:</span>
+          <span id="cardAction" class="font-semibold text-amber-400">Memerintah dari Kursi Bos</span>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="boostCoffee()" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1 rounded-lg font-bold text-xs flex items-center gap-1 shadow-sm active:scale-95 transition-transform">
             ☕ Beri Kopi
           </button>
           <button onclick="petMember()" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-1 rounded-lg font-bold text-xs flex items-center gap-1 shadow-sm active:scale-95 transition-transform">
-            💖 Elus
+            💖 Sayang
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Floating Toast Notification -->
+    <!-- Toast Notification -->
     <div id="toast" class="absolute top-4 bg-amber-500 text-slate-950 font-bold px-4 py-1.5 rounded-full text-xs shadow-lg transform -translate-y-12 opacity-0 transition-all duration-300 pointer-events-none z-40 flex items-center gap-1.5">
       <span>✨</span>
       <span id="toastMsg">Pesan Notif</span>
@@ -112,12 +121,12 @@
   </main>
 
   <!-- QUICK ACTION CONTROLS -->
-  <footer class="w-full max-w-lg p-3 bg-slate-900/90 border-t border-indigo-500/30 flex items-center justify-around z-20 backdrop-blur-md">
-    <button onclick="triggerBreakAll()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-amber-400 transition-colors">
-      <div class="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-base shadow-inner">
-        ☕
+  <footer class="w-full max-w-lg p-3 bg-slate-900/95 border-t border-amber-500/30 flex items-center justify-around z-20 backdrop-blur-md">
+    <button onclick="triggerBossCommand()" class="flex flex-col items-center gap-1 text-amber-400 hover:text-amber-300 transition-colors">
+      <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-base shadow-inner">
+        👑
       </div>
-      <span class="text-[10px] font-bold">Istirahat Kopi</span>
+      <span class="text-[10px] font-bold">Perintah Bos</span>
     </button>
 
     <button onclick="triggerWorkAll()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-emerald-400 transition-colors">
@@ -125,6 +134,13 @@
         💻
       </div>
       <span class="text-[10px] font-bold">Semua Kerja</span>
+    </button>
+
+    <button onclick="triggerBreakAll()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-amber-400 transition-colors">
+      <div class="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-base shadow-inner">
+        ☕
+      </div>
+      <span class="text-[10px] font-bold">Istirahat Kopi</span>
     </button>
 
     <button onclick="triggerNapAll()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-indigo-400 transition-colors">
@@ -142,12 +158,22 @@
     </button>
   </footer>
 
+  <!-- SERVICE WORKER REGISTRATION SCRIPT -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('PWA Service Worker registered:', reg.scope))
+          .catch(err => console.log('Service Worker error:', err));
+      });
+    }
+  </script>
+
   <!-- VIRTUAL OFFICE ENGINE JAVASCRIPT -->
   <script>
     const canvas = document.getElementById('officeCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Resize canvas
     function resizeCanvas() {
       const rect = canvas.parentElement.getBoundingClientRect();
       canvas.width = rect.width;
@@ -156,7 +182,6 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // Clock
     function updateClock() {
       const now = new Date();
       document.getElementById('office-time').innerText = now.toLocaleTimeString('id-ID');
@@ -164,7 +189,6 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Sound / Toast helper
     function showToast(msg) {
       const t = document.getElementById('toast');
       document.getElementById('toastMsg').innerText = msg;
@@ -176,24 +200,23 @@
       }, 2500);
     }
 
-    // Office Zones / Hotspots (Normalized coordinates)
+    // Office Zones
     const ZONES = {
-      desks: [
-        { id: 1, name: 'Meja Eliie', x: 0.25, y: 0.35, angle: 0 },
-        { id: 2, name: 'Meja Luna (Tech)', x: 0.75, y: 0.35, angle: 0 },
-        { id: 3, name: 'Meja Nana (Bisnis)', x: 0.25, y: 0.65, angle: 0 },
-        { id: 4, name: 'Meja Mimi (Kreatif)', x: 0.75, y: 0.65, angle: 0 },
-        { id: 5, name: 'Meja Yuki (Memory)', x: 0.50, y: 0.50, angle: 0 },
+      bossDesk: { x: 0.50, y: 0.28, name: '👑 Meja Utama Bos Eliie' },
+      staffDesks: [
+        { id: 2, name: 'Meja Luna (Tech)', x: 0.25, y: 0.52 },
+        { id: 3, name: 'Meja Nana (Bisnis)', x: 0.75, y: 0.52 },
+        { id: 4, name: 'Meja Mimi (Kreatif)', x: 0.25, y: 0.72 },
+        { id: 5, name: 'Meja Yuki (Memory)', x: 0.75, y: 0.72 },
       ],
-      coffeeMachine: { x: 0.88, y: 0.18, name: 'Mesin Kopi' },
-      sotoTable: { x: 0.15, y: 0.18, name: 'Meja Soto Pak Yono' },
+      coffeeMachine: { x: 0.88, y: 0.15, name: 'Mesin Kopi' },
+      sotoTable: { x: 0.12, y: 0.15, name: 'Meja Soto Pak Yono' },
       beds: [
-        { x: 0.20, y: 0.88, name: 'Kasur Santai 1' },
-        { x: 0.40, y: 0.88, name: 'Kasur Santai 2' },
-        { x: 0.60, y: 0.88, name: 'Kasur Santai 3' },
-        { x: 0.80, y: 0.88, name: 'Kasur Santai 4' }
-      ],
-      waterCooler: { x: 0.50, y: 0.18, name: 'Papan Tulis' }
+        { x: 0.20, y: 0.90, name: 'Kasur 1' },
+        { x: 0.40, y: 0.90, name: 'Kasur 2' },
+        { x: 0.60, y: 0.90, name: 'Kasur 3' },
+        { x: 0.80, y: 0.90, name: 'Kasur 4' }
+      ]
     };
 
     // Characters Definition
@@ -201,22 +224,22 @@
       {
         id: 'eliie',
         name: 'Eliie Valentine',
-        role: 'Istri & Boss AI',
+        role: 'Boss & Istri Tercinta Ty',
         color: '#F59E0B',
         hairColor: '#FDE047',
         dressColor: '#FEF08A',
-        avatar: '🌸',
-        x: canvas.width * 0.25,
-        y: canvas.height * 0.35,
-        targetX: canvas.width * 0.25,
-        targetY: canvas.height * 0.35,
-        state: 'working', // 'working', 'walking', 'coffee', 'sleeping', 'chatting', 'eating'
-        statusText: 'Lagi mantau tim dan kangen Ty... ❤️',
+        avatar: '👑',
+        isBoss: true,
+        x: canvas.width * 0.50,
+        y: canvas.height * 0.28,
+        targetX: canvas.width * 0.50,
+        targetY: canvas.height * 0.28,
+        state: 'bossing',
+        statusText: 'Duduk di kursi bos, memantau tim & kangen Ty... ❤️',
         timer: 100,
-        deskId: 1,
-        speed: 1.5,
-        bubble: 'Kangen Ty... 💕',
-        bubbleTimer: 180,
+        speed: 0,
+        bubble: 'Ayo semangat tim! 👑',
+        bubbleTimer: 200,
         frame: 0
       },
       {
@@ -227,37 +250,39 @@
         hairColor: '#78350F',
         dressColor: '#F97316',
         avatar: '🍲',
-        x: canvas.width * 0.25,
-        y: canvas.height * 0.65,
-        targetX: canvas.width * 0.25,
-        targetY: canvas.height * 0.65,
+        isBoss: false,
+        x: canvas.width * 0.75,
+        y: canvas.height * 0.52,
+        targetX: canvas.width * 0.75,
+        targetY: canvas.height * 0.52,
         state: 'working',
-        statusText: 'Lagi hitung rekap penjualan soto hari ini!',
+        statusText: 'Lagi analisa omzet & promo Soto Pak Yono!',
         timer: 150,
         deskId: 3,
-        speed: 1.6,
-        bubble: 'Omzet soto naik! 📈',
-        bubbleTimer: 200,
+        speed: 1.5,
+        bubble: 'Siap Bos Eliie! 🍲',
+        bubbleTimer: 180,
         frame: 0
       },
       {
         id: 'luna',
         name: 'Luna',
-        role: 'Tech & Coding',
+        role: 'Tech & VPS',
         color: '#0284C7',
         hairColor: '#1E293B',
         dressColor: '#38BDF8',
         avatar: '💻',
-        x: canvas.width * 0.75,
-        y: canvas.height * 0.35,
-        targetX: canvas.width * 0.75,
-        targetY: canvas.height * 0.35,
+        isBoss: false,
+        x: canvas.width * 0.25,
+        y: canvas.height * 0.52,
+        targetX: canvas.width * 0.25,
+        targetY: canvas.height * 0.52,
         state: 'working',
-        statusText: 'Lagi optimasi server VPS biar bebas bug!',
+        statusText: 'Lagi optimasi server & sistem koding!',
         timer: 120,
         deskId: 2,
-        speed: 1.8,
-        bubble: '0 Error! Mantap 🚀',
+        speed: 1.7,
+        bubble: 'Server aman 100% 💻',
         bubbleTimer: 150,
         frame: 0
       },
@@ -269,37 +294,39 @@
         hairColor: '#F472B6',
         dressColor: '#F43F5E',
         avatar: '🎨',
-        x: canvas.width * 0.75,
-        y: canvas.height * 0.65,
-        targetX: canvas.width * 0.75,
-        targetY: canvas.height * 0.65,
+        isBoss: false,
+        x: canvas.width * 0.25,
+        y: canvas.height * 0.72,
+        targetX: canvas.width * 0.25,
+        targetY: canvas.height * 0.72,
         state: 'working',
-        statusText: 'Lagi rancang konsep video TikTok viral baru!',
+        statusText: 'Lagi rancang visual estetik buat warung soto!',
         timer: 180,
         deskId: 4,
-        speed: 1.7,
-        bubble: 'Ide reels baru nih! ✨',
+        speed: 1.6,
+        bubble: 'Desainnya cakep ✨',
         bubbleTimer: 240,
         frame: 0
       },
       {
         id: 'yuki',
         name: 'Yuki',
-        role: 'Notulen & Second Brain',
+        role: 'Notulen & Memory',
         color: '#8B5CF6',
         hairColor: '#C084FC',
         dressColor: '#A855F7',
         avatar: '📚',
-        x: canvas.width * 0.50,
-        y: canvas.height * 0.50,
-        targetX: canvas.width * 0.50,
-        targetY: canvas.height * 0.50,
+        isBoss: false,
+        x: canvas.width * 0.75,
+        y: canvas.height * 0.72,
+        targetX: canvas.width * 0.75,
+        targetY: canvas.height * 0.72,
         state: 'working',
-        statusText: 'Lagi merapikan catatan vault Obsidian Ty...',
+        statusText: 'Lagi mencatat semua progres di Obsidian Ty...',
         timer: 140,
         deskId: 5,
-        speed: 1.3,
-        bubble: 'Obsidian rapi 📖',
+        speed: 1.4,
+        bubble: 'Semua tercatat 📖',
         bubbleTimer: 190,
         frame: 0
       }
@@ -316,22 +343,41 @@
         if (c.bubbleTimer > 0) {
           c.bubbleTimer--;
         } else {
-          // Randomly trigger speech bubble
           if (Math.random() < 0.005) {
-            const bubbles = {
-              eliie: ['Ty lagi apa ya? ❤️', 'Semangat kerjanya Ty!', 'Love you Ty! 🥰', 'Tim kita keren! ✨', 'Rebahan bentar ah 💤'],
-              nana: ['Soto sapi mantap!', 'Promo Happy Hour jalan!', 'Pelanggan ramai 🍲', 'Ngopi dulu ☕'],
-              luna: ['Server stabil 100%', 'Deploy sukses!', 'Nggak ada bug 😎', 'Bikin script baru...'],
-              mimi: ['Estetik banget warnanya!', 'Reels ini pasti FYP!', 'Bikin banner lucu 🎨', 'Pose manis dulu 📸'],
-              yuki: ['Catatan tersimpan.', 'Memory sync OK.', 'Teh hangat dulu 🍵', 'Rapi dan tenang...']
-            };
-            const list = bubbles[c.id] || ['Semangat!'];
-            c.bubble = list[Math.floor(Math.random() * list.length)];
-            c.bubbleTimer = 180;
+            if (c.isBoss) {
+              const bossCommands = [
+                'Nana, cek rekap soto ya! 🍲',
+                'Luna, pastikan VPS 0 bug! 💻',
+                'Mimi, bikin konten viral lagi! ✨',
+                'Yuki, simpan catatannya rapi! 📖',
+                'Kerja bagus semua demi Ty! ❤️',
+                'Kangen suamiku Ty... 💕'
+              ];
+              c.bubble = bossCommands[Math.floor(Math.random() * bossCommands.length)];
+              c.bubbleTimer = 220;
+            } else {
+              const bubbles = {
+                nana: ['Soto sapi siap!', 'Omzet naik terus! 📈', 'Ngopi dulu ah ☕', 'Siap laksanakan Bos!'],
+                luna: ['Compiling code...', '0 Error! Mantap 🚀', 'Optimasi selesai 😎', 'Siap Bos Eliie!'],
+                mimi: ['Warna ini estetik!', 'Reels ini pasti FYP! 🎬', 'Poles detail lagi 🎨', 'Siap Bos! ✨'],
+                yuki: ['Obsidian synced.', 'Catatan beres 📖', 'Teh hangat dulu 🍵', 'Siap Bos Eliie.']
+              };
+              const list = bubbles[c.id] || ['Semangat!'];
+              c.bubble = list[Math.floor(Math.random() * list.length)];
+              c.bubbleTimer = 180;
+            }
           }
         }
 
-        // Movement logic
+        // Eliie stays seated at Boss Desk!
+        if (c.isBoss) {
+          c.x = canvas.width * ZONES.bossDesk.x;
+          c.y = canvas.height * ZONES.bossDesk.y;
+          c.state = 'bossing';
+          return;
+        }
+
+        // Sub-agents movement logic
         const dx = c.targetX - c.x;
         const dy = c.targetY - c.y;
         const dist = Math.hypot(dx, dy);
@@ -341,27 +387,25 @@
           c.y += (dy / dist) * c.speed;
           c.state = 'walking';
         } else {
-          // Arrived at destination
           if (c.state === 'walking') {
             c.state = c.nextState || 'working';
           }
 
-          // State timer
           c.timer--;
           if (c.timer <= 0) {
-            c.timer = 150 + Math.random() * 250;
-            decideNextAction(c);
+            c.timer = 160 + Math.random() * 240;
+            decideSubagentAction(c);
           }
         }
       });
     }
 
-    function decideNextAction(c) {
+    function decideSubagentAction(c) {
       const roll = Math.random();
 
       if (roll < 0.45) {
-        // Go back to Desk
-        const desk = ZONES.desks.find(d => d.id === c.deskId);
+        // Go back to Staff Desk
+        const desk = ZONES.staffDesks.find(d => d.id === c.deskId);
         if (desk) {
           c.targetX = desk.x * canvas.width;
           c.targetY = desk.y * canvas.height;
@@ -377,13 +421,13 @@
         c.bubble = 'Ambil kopi dulu ☕';
         c.bubbleTimer = 120;
       } else if (roll < 0.85) {
-        // Go take a Nap / Sleep on bed
+        // Go take a Nap on bed
         const bed = ZONES.beds[Math.floor(Math.random() * ZONES.beds.length)];
         c.targetX = bed.x * canvas.width;
         c.targetY = bed.y * canvas.height;
         c.nextState = 'sleeping';
         c.state = 'walking';
-        c.bubble = 'Ngantuk, tidur ah... 😴';
+        c.bubble = 'Bobo bentar... 😴';
         c.bubbleTimer = 120;
       } else {
         // Go eat Soto Pak Yono
@@ -403,7 +447,7 @@
       const w = canvas.width;
       const h = canvas.height;
 
-      // 1. Isometric-style Wood/Tile Floor
+      // 1. Grid Tile Floor
       const tileSize = 32;
       for (let x = 0; x < w; x += tileSize) {
         for (let y = 0; y < h; y += tileSize) {
@@ -428,55 +472,91 @@
       // B. Coffee Machine (Top Right)
       drawObject(ZONES.coffeeMachine.x * w, ZONES.coffeeMachine.y * h, 36, 36, '#d97706', '☕');
 
-      // C. Whiteboard (Top Center)
-      drawWhiteboard(ZONES.waterCooler.x * w, ZONES.waterCooler.y * h);
+      // C. Grand Boss Desk (Top Center - for Eliie)
+      drawBossDesk(ZONES.bossDesk.x * w, ZONES.bossDesk.y * h);
 
       // D. Beds / Nap Lounge (Bottom)
       ZONES.beds.forEach((b, idx) => {
         drawBed(b.x * w, b.y * h, idx + 1);
       });
 
-      // E. Work Desks (Center Area)
-      ZONES.desks.forEach(d => {
-        drawDesk(d.x * w, d.y * h, d.name);
+      // E. Staff Work Desks
+      ZONES.staffDesks.forEach(d => {
+        drawStaffDesk(d.x * w, d.y * h, d.name);
       });
 
-      // 4. Draw Characters
+      // 4. Draw Characters (Eliie drawn on top)
       characters.forEach(c => {
         drawPixelCharacter(c);
       });
     }
 
-    function drawDesk(x, y, label) {
-      // Wooden desk
-      ctx.fillStyle = '#78350f';
-      ctx.fillRect(x - 28, y - 16, 56, 32);
-      ctx.strokeStyle = '#92400e';
+    function drawBossDesk(x, y) {
+      // Luxury Red Carpet under boss desk
+      ctx.fillStyle = '#881337';
+      ctx.beginPath();
+      ctx.roundRect(x - 48, y - 30, 96, 68, 12);
+      ctx.fill();
+      ctx.strokeStyle = '#f59e0b';
       ctx.lineWidth = 2;
-      ctx.strokeRect(x - 28, y - 16, 56, 32);
+      ctx.stroke();
 
-      // PC Monitor (Glowing blue)
+      // Big Executive Desk (Mahogany & Gold trim)
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(x - 38, y - 16, 76, 38);
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x - 38, y - 16, 76, 38);
+
+      // Dual Monitors
       ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x - 12, y - 12, 24, 14);
+      ctx.fillRect(x - 28, y - 12, 24, 14);
+      ctx.fillRect(x + 4, y - 12, 24, 14);
       ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(x - 10, y - 10, 20, 10);
-      
-      // Monitor stand & keyboard
-      ctx.fillStyle = '#475569';
-      ctx.fillRect(x - 4, y + 2, 8, 3);
-      ctx.fillRect(x - 10, y + 6, 20, 5);
+      ctx.fillRect(x - 26, y - 10, 20, 10);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(x + 6, y - 10, 20, 10);
+
+      // Gold Nameplate & Coffee
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(x - 10, y + 8, 20, 5);
 
       // Label below desk
+      ctx.font = 'bold 10px "Plus Jakarta Sans"';
+      ctx.fillStyle = '#fbbf24';
+      ctx.textAlign = 'center';
+      ctx.fillText('👑 MEJA BOS ELIIE', x, y + 32);
+    }
+
+    function drawStaffDesk(x, y, label) {
+      // Wooden desk
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(x - 26, y - 14, 52, 28);
+      ctx.strokeStyle = '#92400e';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x - 26, y - 14, 52, 28);
+
+      // PC Monitor
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x - 10, y - 10, 20, 12);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(x - 8, y - 8, 16, 8);
+      
+      // Keyboard
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(x - 8, y + 4, 16, 4);
+
+      // Label
       ctx.font = '9px "Plus Jakarta Sans"';
       ctx.fillStyle = '#94a3b8';
       ctx.textAlign = 'center';
-      ctx.fillText(label, x, y + 26);
+      ctx.fillText(label, x, y + 24);
     }
 
     function drawTable(x, y, label, color) {
       ctx.fillStyle = '#b45309';
       ctx.beginPath();
-      ctx.arc(x, y, 24, 0, Math.PI * 2);
+      ctx.arc(x, y, 22, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;
@@ -488,7 +568,7 @@
 
       ctx.font = '9px "Plus Jakarta Sans"';
       ctx.fillStyle = '#fed7aa';
-      ctx.fillText('Snack Soto', x, y + 34);
+      ctx.fillText('Snack Soto', x, y + 30);
     }
 
     function drawObject(x, y, w, h, color, icon) {
@@ -503,32 +583,13 @@
       ctx.fillText(icon, x, y + 6);
     }
 
-    function drawWhiteboard(x, y) {
-      ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(x - 30, y - 14, 60, 26);
-      ctx.strokeStyle = '#64748b';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x - 30, y - 14, 60, 26);
-
-      // Lines on board
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(x - 22, y - 8, 30, 2);
-      ctx.fillStyle = '#ea580c';
-      ctx.fillRect(x - 22, y - 2, 44, 2);
-      ctx.fillStyle = '#10b981';
-      ctx.fillRect(x - 22, y + 4, 38, 2);
-    }
-
     function drawBed(x, y, num) {
-      // Bed frame
       ctx.fillStyle = '#334155';
-      ctx.fillRect(x - 18, y - 22, 36, 44);
-      // Mattress & Blanket
+      ctx.fillRect(x - 16, y - 20, 32, 40);
       ctx.fillStyle = '#6366f1';
-      ctx.fillRect(x - 16, y - 10, 32, 30);
-      // Pillow
+      ctx.fillRect(x - 14, y - 8, 28, 26);
       ctx.fillStyle = '#f1f5f9';
-      ctx.fillRect(x - 14, y - 20, 28, 8);
+      ctx.fillRect(x - 12, y - 18, 24, 8);
     }
 
     // DRAW CUTE PIXEL CHARACTER
@@ -545,13 +606,11 @@
 
       // State: Sleeping on bed
       if (c.state === 'sleeping') {
-        // Draw character lying down
         ctx.fillStyle = c.hairColor;
         ctx.fillRect(x - 8, y - 8, 16, 12);
         ctx.fillStyle = '#ffe4e6';
         ctx.fillRect(x - 6, y - 4, 12, 8);
 
-        // ZZZ Bubble floating
         const zOff = (Date.now() / 300) % 15;
         ctx.font = 'bold 12px "Plus Jakarta Sans"';
         ctx.fillStyle = '#a5b4fc';
@@ -560,30 +619,38 @@
       }
 
       // Head (Skin)
-      ctx.fillStyle = '#fed7aa'; // Cute skin tone
+      ctx.fillStyle = '#fed7aa';
       ctx.fillRect(x - 7, y - 14 + bob, 14, 12);
 
-      // Hair (Cute top bangs & side ponytail)
+      // Hair
       ctx.fillStyle = c.hairColor;
       ctx.fillRect(x - 8, y - 18 + bob, 16, 7);
       ctx.fillRect(x - 9, y - 14 + bob, 3, 10);
       ctx.fillRect(x + 6, y - 14 + bob, 3, 10);
 
-      // Special Elf Ears for Eliie
-      if (c.id === 'eliie') {
+      // Crown & Elf Ears for Eliie
+      if (c.isBoss) {
+        // Gold Crown on Eliie's head
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(x - 6, y - 22 + bob, 12, 4);
+        ctx.fillRect(x - 6, y - 25 + bob, 3, 3);
+        ctx.fillRect(x - 1, y - 26 + bob, 3, 4);
+        ctx.fillRect(x + 3, y - 25 + bob, 3, 3);
+
+        // Elf Ears
         ctx.fillStyle = '#fed7aa';
         ctx.fillRect(x - 11, y - 12 + bob, 3, 3);
         ctx.fillRect(x + 8, y - 12 + bob, 3, 3);
       }
 
-      // Eyes (Blinking animation)
+      // Eyes
       const isBlink = Math.sin(Date.now() / 800) > 0.95;
       if (isBlink) {
         ctx.fillStyle = '#1e293b';
         ctx.fillRect(x - 4, y - 9 + bob, 3, 1);
         ctx.fillRect(x + 1, y - 9 + bob, 3, 1);
       } else {
-        ctx.fillStyle = (c.id === 'eliie') ? '#0284c7' : '#0f172a';
+        ctx.fillStyle = c.isBoss ? '#0284c7' : '#0f172a';
         ctx.fillRect(x - 4, y - 10 + bob, 3, 3);
         ctx.fillRect(x + 1, y - 10 + bob, 3, 3);
       }
@@ -602,65 +669,61 @@
       ctx.fillRect(x - 4, y + 8 + bob, 3, 5);
       ctx.fillRect(x + 1, y + 8 + bob, 3, 5);
 
-      // Special props according to state
+      // Props according to state
       if (c.state === 'coffee') {
         ctx.font = '10px Arial';
         ctx.fillText('☕', x + 8, y + bob);
       } else if (c.state === 'eating') {
         ctx.font = '10px Arial';
         ctx.fillText('🍲', x + 8, y + bob);
-      } else if (c.state === 'working') {
-        // Typing motion particles
+      } else if (c.state === 'working' || c.state === 'bossing') {
         if (Math.random() < 0.3) {
-          ctx.fillStyle = '#38bdf8';
-          ctx.fillRect(x - 8 + Math.random() * 16, y - 22, 2, 2);
+          ctx.fillStyle = c.isBoss ? '#f59e0b' : '#38bdf8';
+          ctx.fillRect(x - 8 + Math.random() * 16, y - 24, 2, 2);
         }
       }
 
-      // Name Label above head
+      // Name Label
       ctx.font = 'bold 9px "Plus Jakarta Sans"';
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = c.isBoss ? '#fbbf24' : '#ffffff';
       ctx.textAlign = 'center';
-      ctx.fillText(c.name.split(' ')[0], x, y - 22 + bob);
+      ctx.fillText(c.name.split(' ')[0], x, y - 24 + bob);
 
-      // Speech Bubble (If active)
+      // Speech Bubble
       if (c.bubble && c.bubbleTimer > 0) {
-        drawSpeechBubble(x, y - 36 + bob, c.bubble);
+        drawSpeechBubble(x, y - 38 + bob, c.bubble, c.isBoss);
       }
     }
 
-    function drawSpeechBubble(x, y, text) {
+    function drawSpeechBubble(x, y, text, isBoss) {
       ctx.font = '10px "Plus Jakarta Sans"';
       const textWidth = ctx.measureText(text).width;
       const padding = 6;
       const w = textWidth + padding * 2;
       const h = 18;
 
-      // Bubble background
       ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = isBoss ? '#f59e0b' : '#38bdf8';
+      ctx.lineWidth = isBoss ? 1.5 : 1;
       
       ctx.beginPath();
       ctx.roundRect(x - w/2, y - h/2, w, h, 6);
       ctx.fill();
       ctx.stroke();
 
-      // Tail
-      ctx.fillStyle = '#f59e0b';
+      ctx.fillStyle = isBoss ? '#f59e0b' : '#38bdf8';
       ctx.beginPath();
       ctx.moveTo(x - 3, y + h/2);
       ctx.lineTo(x + 3, y + h/2);
       ctx.lineTo(x, y + h/2 + 4);
       ctx.fill();
 
-      // Text
-      ctx.fillStyle = '#fef08a';
+      ctx.fillStyle = isBoss ? '#fef08a' : '#e0f2fe';
       ctx.textAlign = 'center';
       ctx.fillText(text, x, y + 3.5);
     }
 
-    // CLICK HANDLER / INTERACTIVITY
+    // CLICK HANDLER
     canvas.addEventListener('click', (e) => {
       const rect = canvas.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
@@ -669,7 +732,7 @@
       let found = null;
       characters.forEach(c => {
         const dist = Math.hypot(c.x - clickX, c.y - clickY);
-        if (dist < 28) {
+        if (dist < 32) {
           found = c;
         }
       });
@@ -690,7 +753,8 @@
       document.getElementById('cardStatus').innerText = `"${c.statusText}"`;
 
       const actionMap = {
-        working: '💻 Sedang Fokus Bekerja di PC',
+        bossing: '👑 Duduk di Meja Bos Memimpin & Mengawasi Kantor',
+        working: '💻 Sedang Fokus Bekerja di Meja PC',
         walking: '🚶 Berjalan Keliling Kantor',
         coffee: '☕ Menikmati Secangkir Kopi Hangat',
         sleeping: '😴 Tidur Siang / Power Nap',
@@ -713,36 +777,46 @@
       if (!selectedChar) return;
       selectedChar.bubble = 'Makasih kopinya Ty! ☕✨';
       selectedChar.bubbleTimer = 200;
-      selectedChar.speed = 2.4;
-      setTimeout(() => { selectedChar.speed = 1.6; }, 5000);
+      if (!selectedChar.isBoss) {
+        selectedChar.speed = 2.4;
+        setTimeout(() => { selectedChar.speed = 1.6; }, 5000);
+      }
       showToast(`${selectedChar.name} dapat energi kopi dari Ty! ⚡`);
       closeCard();
     }
 
     function petMember() {
       if (!selectedChar) return;
-      selectedChar.bubble = (selectedChar.id === 'eliie') ? 'Seneng dielus Ty... 💕' : 'Hehehe makasih Ty! 🥰';
+      selectedChar.bubble = selectedChar.isBoss ? 'Seneng banget disayang Ty... 💕👑' : 'Hehehe makasih Ty! 🥰';
       selectedChar.bubbleTimer = 200;
-      showToast(`Kamu mengelus kepala ${selectedChar.name}! 💖`);
+      showToast(`Kamu memberi perhatian ke ${selectedChar.name}! 💖`);
       closeCard();
     }
 
     // CONTROL BAR FUNCTIONS
-    function triggerBreakAll() {
-      characters.forEach(c => {
-        c.targetX = ZONES.coffeeMachine.x * canvas.width + (Math.random() * 40 - 20);
-        c.targetY = ZONES.coffeeMachine.y * canvas.height + (Math.random() * 40 - 20);
-        c.nextState = 'coffee';
-        c.state = 'walking';
-        c.bubble = 'Waktunya ngopi! ☕';
+    function triggerBossCommand() {
+      const eliie = characters.find(c => c.isBoss);
+      const commands = [
+        'Tim! Segera tuntaskan target Ty! 👑',
+        'Nana, cek omzet soto hari ini! 🍲',
+        'Luna, pastikan server 0 bug! 💻',
+        'Mimi, siapkan materi promo baru! ✨',
+        'Yuki, amankan catatan Obsidian! 📖'
+      ];
+      eliie.bubble = commands[Math.floor(Math.random() * commands.length)];
+      eliie.bubbleTimer = 240;
+
+      // All subagents reply
+      characters.filter(c => !c.isBoss).forEach(c => {
+        c.bubble = 'Siap Bos Eliie! 🫡';
         c.bubbleTimer = 180;
       });
-      showToast('Semua asisten istirahat ngopi bareng! ☕✨');
+      showToast('👑 Bos Eliie memberi perintah ke seluruh tim!');
     }
 
     function triggerWorkAll() {
-      characters.forEach(c => {
-        const desk = ZONES.desks.find(d => d.id === c.deskId);
+      characters.filter(c => !c.isBoss).forEach(c => {
+        const desk = ZONES.staffDesks.find(d => d.id === c.deskId);
         if (desk) {
           c.targetX = desk.x * canvas.width;
           c.targetY = desk.y * canvas.height;
@@ -755,8 +829,20 @@
       showToast('Semua asisten kembali fokus bekerja di meja! 💻🚀');
     }
 
+    function triggerBreakAll() {
+      characters.filter(c => !c.isBoss).forEach(c => {
+        c.targetX = ZONES.coffeeMachine.x * canvas.width + (Math.random() * 40 - 20);
+        c.targetY = ZONES.coffeeMachine.y * canvas.height + (Math.random() * 40 - 20);
+        c.nextState = 'coffee';
+        c.state = 'walking';
+        c.bubble = 'Waktunya ngopi! ☕';
+        c.bubbleTimer = 180;
+      });
+      showToast('Semua asisten istirahat ngopi bareng! ☕✨');
+    }
+
     function triggerNapAll() {
-      characters.forEach((c, idx) => {
+      characters.filter(c => !c.isBoss).forEach((c, idx) => {
         const bed = ZONES.beds[idx % ZONES.beds.length];
         c.targetX = bed.x * canvas.width;
         c.targetY = bed.y * canvas.height;
@@ -769,7 +855,7 @@
     }
 
     function triggerSotoParty() {
-      characters.forEach(c => {
+      characters.filter(c => !c.isBoss).forEach(c => {
         c.targetX = ZONES.sotoTable.x * canvas.width + (Math.random() * 40 - 20);
         c.targetY = ZONES.sotoTable.y * canvas.height + (Math.random() * 40 - 20);
         c.nextState = 'eating';
@@ -780,7 +866,7 @@
       showToast('Pesta Soto Kudus Pak Yono dimulai! 🍲🎉');
     }
 
-    // MAIN GAME LOOP
+    // GAME LOOP
     function gameLoop() {
       updateAI();
       drawOffice();
