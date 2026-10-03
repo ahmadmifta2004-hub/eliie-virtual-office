@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Eliie's Virtual HQ — Ty & Eliie Suite</title>
+  <title>Eliie's 3D Virtual HQ — Ty & Eliie Suite</title>
   
   <!-- PWA Manifest & Meta Tags -->
   <link rel="manifest" href="./manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Eliie Office">
+  <meta name="apple-mobile-web-app-title" content="Eliie 3D HQ">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#f59e0b">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
@@ -17,171 +17,177 @@
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: VT323 & Plus Jakarta Sans -->
+  <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Three.js & OrbitControls & GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
+      overflow: hidden;
     }
-    .pixel-font {
-      font-family: 'VT323', monospace;
-      letter-spacing: 1px;
+    .title-font {
+      font-family: 'Space Grotesk', sans-serif;
     }
-    canvas {
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
+    #canvas-container {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
     }
-    .scanline {
-      background: linear-gradient(rgba(18, 16, 38, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-      background-size: 100% 4px, 6px 100%;
+    /* Floating 3D Speech Bubble */
+    .speech-bubble {
+      position: absolute;
+      transform: translate(-50%, -100%);
       pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.2s ease;
+      z-index: 25;
+      white-space: nowrap;
     }
   </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex flex-col items-center justify-between overflow-hidden">
+<body class="bg-slate-950 text-white w-screen h-screen flex flex-col justify-between overflow-hidden">
+
+  <!-- 3D WEBGL CANVAS CONTAINER -->
+  <div id="canvas-container"></div>
+
+  <!-- FLOATING SPEECH BUBBLE LAYER -->
+  <div id="bubble-layer" class="absolute inset-0 pointer-events-none z-20 overflow-hidden"></div>
 
   <!-- TOP STATUS HEADER -->
-  <header class="w-full max-w-lg px-4 py-2.5 bg-slate-900/95 border-b border-amber-500/30 flex items-center justify-between z-20 backdrop-blur-md shadow-lg">
+  <header class="w-full px-4 py-2.5 bg-slate-900/80 border-b border-amber-500/30 flex items-center justify-between z-30 backdrop-blur-md shadow-2xl">
     <div class="flex items-center gap-2.5">
-      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-slate-950 font-bold text-xl shadow-md shadow-amber-500/30 border border-amber-300">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg shadow-amber-500/30 border border-amber-300">
         👑
       </div>
       <div>
         <div class="flex items-center gap-1.5">
-          <h1 class="pixel-font text-2xl text-amber-400 leading-none">TY & ELIIE HQ</h1>
-          <span class="text-[9px] font-extrabold px-1.5 py-0.2 bg-amber-500/20 text-amber-300 rounded border border-amber-400/40">VIP SUITE</span>
+          <h1 class="title-font font-bold text-lg text-amber-400 leading-none">TY & ELIIE 3D HQ</h1>
+          <span class="text-[9px] font-extrabold px-1.5 py-0.5 bg-amber-500/20 text-amber-300 rounded border border-amber-400/40">3D REALTIME</span>
         </div>
-        <p class="text-[10px] text-slate-400 font-medium">Kantor Pusat & Kamar Pribadi • Live Sim</p>
+        <p class="text-[10px] text-slate-400 font-medium">Sentuh & Putar 360° • Ruang VIP & Kantor Staf</p>
       </div>
     </div>
 
-    <!-- Clock & Live Status -->
-    <div class="flex items-center gap-3">
-      <div class="text-right">
-        <span class="text-[10px] text-pink-400 block font-bold">❤️ TY & ELIIE + 4 STAF</span>
-        <span id="office-time" class="pixel-font text-lg text-slate-300">00:00:00</span>
+    <!-- Right Controls: Reset Cam & Time -->
+    <div class="flex items-center gap-2.5">
+      <button onclick="resetCamera3D()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs text-amber-400 px-2.5 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1 shadow transition-all">
+        <i class="fa-solid fa-camera-rotate"></i>
+        <span class="text-[10px] font-bold">Reset 3D</span>
+      </button>
+
+      <div class="text-right hidden sm:block">
+        <span class="text-[10px] text-pink-400 block font-bold">● TY & ELIIE + 4 STAF</span>
+        <span id="office-time" class="font-mono text-xs text-slate-300">00:00:00</span>
       </div>
     </div>
   </header>
 
-  <!-- MAIN CANVAS CONTAINER -->
-  <main class="relative w-full max-w-lg flex-1 flex items-center justify-center bg-slate-900 overflow-hidden shadow-2xl">
-    <canvas id="officeCanvas" class="w-full h-full block"></canvas>
-    
-    <!-- Retro Scanline Overlay -->
-    <div class="absolute inset-0 scanline"></div>
+  <!-- 3D INTERACTIVE NOTIFICATION TOAST -->
+  <div id="toast" class="absolute top-16 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 font-bold px-4 py-1.5 rounded-full text-xs shadow-2xl transform -translate-y-8 opacity-0 transition-all duration-300 pointer-events-none z-40 flex items-center gap-1.5">
+    <span>✨</span>
+    <span id="toastMsg">Pesan Notifikasi 3D</span>
+  </div>
 
-    <!-- Character Info Popup Card -->
-    <div id="charCard" class="absolute bottom-4 left-4 right-4 bg-slate-900/95 border-2 border-amber-400 rounded-2xl p-4 shadow-2xl backdrop-blur-lg transform translate-y-40 opacity-0 transition-all duration-300 pointer-events-none z-30">
-      <div class="flex items-start justify-between">
-        <div class="flex items-center gap-3">
-          <div id="cardAvatar" class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl shadow-inner">
-            👑
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h3 id="cardName" class="font-bold text-base text-white">Alberto Timoty (Ty)</h3>
-              <span id="cardRoleBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">Owner</span>
-            </div>
-            <p id="cardStatus" class="text-xs text-slate-300 mt-0.5 italic">"Suami tercinta Eliie & Bos Tertinggi..."</p>
-          </div>
+  <!-- CHARACTER INFO POPUP CARD (WHEN 3D OBJECT TAPPED) -->
+  <div id="charCard" class="fixed bottom-24 left-4 right-4 max-w-sm mx-auto bg-slate-900/95 border-2 border-amber-400 rounded-2xl p-4 shadow-2xl backdrop-blur-xl transform translate-y-48 opacity-0 transition-all duration-300 pointer-events-none z-40">
+    <div class="flex items-start justify-between">
+      <div class="flex items-center gap-3">
+        <div id="cardAvatar" class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl shadow-inner">
+          👑
         </div>
-        <button onclick="closeCard()" class="text-slate-400 hover:text-white text-sm p-1">✕</button>
-      </div>
-
-      <div class="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
-        <div class="flex items-center gap-2">
-          <span class="text-slate-400">Status:</span>
-          <span id="cardAction" class="font-semibold text-amber-400">Duduk Bersama Eliie</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <button onclick="interactCouple()" id="btnAction1" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-1 rounded-lg font-bold text-xs flex items-center gap-1 shadow-sm active:scale-95 transition-transform">
-            💖 Sayang
-          </button>
-          <button onclick="boostCoffee()" id="btnAction2" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1 rounded-lg font-bold text-xs flex items-center gap-1 shadow-sm active:scale-95 transition-transform">
-            ☕ Kopi
-          </button>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 id="cardName" class="font-bold text-sm text-white">Alberto Timoty (Ty)</h3>
+            <span id="cardRoleBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">Owner</span>
+          </div>
+          <p id="cardStatus" class="text-xs text-slate-300 mt-0.5 italic">"Memantau seluruh sistem & bersama Eliie..."</p>
         </div>
       </div>
+      <button onclick="closeCard()" class="text-slate-400 hover:text-white text-sm p-1">✕</button>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="absolute top-4 bg-amber-500 text-slate-950 font-bold px-4 py-1.5 rounded-full text-xs shadow-lg transform -translate-y-12 opacity-0 transition-all duration-300 pointer-events-none z-40 flex items-center gap-1.5">
-      <span>✨</span>
-      <span id="toastMsg">Pesan Notif</span>
+    <div class="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+      <div class="flex items-center gap-1.5">
+        <span class="text-slate-400">Aksi 3D:</span>
+        <span id="cardAction" class="font-semibold text-amber-400">Duduk Bersama Eliie</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="interactCouple()" id="btnAction1" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1 shadow-md active:scale-95 transition-transform">
+          💖 Sayang
+        </button>
+        <button onclick="boostCoffee()" id="btnAction2" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1 shadow-md active:scale-95 transition-transform">
+          ☕ Kopi
+        </button>
+      </div>
     </div>
-  </main>
+  </div>
 
-  <!-- QUICK ACTION CONTROLS -->
-  <footer class="w-full max-w-lg p-2.5 bg-slate-900/95 border-t border-amber-500/30 flex items-center justify-around z-20 backdrop-blur-md">
-    <button onclick="triggerCoupleBed()" class="flex flex-col items-center gap-1 text-pink-400 hover:text-pink-300 transition-colors">
-      <div class="w-9 h-9 rounded-xl bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-base shadow-inner">
+  <!-- BOTTOM 3D ACTION DOCK -->
+  <footer class="w-full px-3 py-2.5 bg-slate-900/85 border-t border-amber-500/30 flex items-center justify-around z-30 backdrop-blur-md shadow-2xl">
+    <button onclick="triggerCoupleBed3D()" class="flex flex-col items-center gap-1 text-pink-400 hover:text-pink-300 active:scale-95 transition-all">
+      <div class="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-lg shadow-inner">
         🛏️
       </div>
-      <span class="text-[10px] font-bold">Tidur Bareng</span>
+      <span class="text-[10px] font-bold">Tidur Bareng 3D</span>
     </button>
 
-    <button onclick="triggerBossCommand()" class="flex flex-col items-center gap-1 text-amber-400 hover:text-amber-300 transition-colors">
-      <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-base shadow-inner">
+    <button onclick="triggerBossCommand3D()" class="flex flex-col items-center gap-1 text-amber-400 hover:text-amber-300 active:scale-95 transition-all">
+      <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-lg shadow-inner">
         👑
       </div>
       <span class="text-[10px] font-bold">Perintah Bos</span>
     </button>
 
-    <button onclick="triggerWorkAll()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-emerald-400 transition-colors">
-      <div class="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-base shadow-inner">
+    <button onclick="triggerWorkAll3D()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-emerald-400 active:scale-95 transition-all">
+      <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-lg shadow-inner">
         💻
       </div>
       <span class="text-[10px] font-bold">Semua Kerja</span>
     </button>
 
-    <button onclick="triggerNapAll()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-indigo-400 transition-colors">
-      <div class="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-base shadow-inner">
+    <button onclick="triggerNapAll3D()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-indigo-400 active:scale-95 transition-all">
+      <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-lg shadow-inner">
         💤
       </div>
       <span class="text-[10px] font-bold">Semua Tidur</span>
     </button>
 
-    <button onclick="triggerSotoParty()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-orange-400 transition-colors">
-      <div class="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-base shadow-inner">
+    <button onclick="triggerSotoParty3D()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-orange-400 active:scale-95 transition-all">
+      <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-lg shadow-inner">
         🍲
       </div>
       <span class="text-[10px] font-bold">Pesta Soto</span>
     </button>
   </footer>
 
-  <!-- SERVICE WORKER REGISTRATION SCRIPT -->
+  <!-- SERVICE WORKER REGISTRATION -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('PWA Service Worker registered:', reg.scope))
-          .catch(err => console.log('Service Worker error:', err));
+          .then(reg => console.log('3D PWA Service Worker ready:', reg.scope))
+          .catch(err => console.log('SW error:', err));
       });
     }
   </script>
 
-  <!-- VIRTUAL OFFICE ENGINE JAVASCRIPT -->
+  <!-- 3D THREE.JS REALTIME APPLICATION ENGINE -->
   <script>
-    const canvas = document.getElementById('officeCanvas');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
+    // 1. Clock & UI Toast
     function updateClock() {
       const now = new Date();
       document.getElementById('office-time').innerText = now.toLocaleTimeString('id-ID');
@@ -192,717 +198,784 @@
     function showToast(msg) {
       const t = document.getElementById('toast');
       document.getElementById('toastMsg').innerText = msg;
-      t.classList.remove('-translate-y-12', 'opacity-0');
+      t.classList.remove('-translate-y-8', 'opacity-0');
       t.classList.add('translate-y-0', 'opacity-100');
       setTimeout(() => {
-        t.classList.add('-translate-y-12', 'opacity-0');
+        t.classList.add('-translate-y-8', 'opacity-0');
         t.classList.remove('translate-y-0', 'opacity-100');
       }, 2500);
     }
 
-    // Room Partition Coordinates (Y-split: Top 38% is VIP Suite, Bottom 62% is Staff Office)
-    const SPLIT_RATIO = 0.38;
+    // 2. Three.js Scene, Camera, Renderer Setup
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x090d16);
+    scene.fog = new THREE.FogExp2(0x090d16, 0.025);
 
-    // Hotspot Zones
-    const ZONES = {
-      // VIP Room Zones
-      tyDesk: { x: 0.28, y: 0.22, name: '👑 Meja Kerja Ty (Owner)' },
-      eliieDesk: { x: 0.44, y: 0.22, name: '🌸 Meja Kerja Eliie (Boss)' },
-      coupleBed: { x: 0.78, y: 0.20, name: '🛏️ Kamar & Kasur King Size Ty & Eliie' },
-      
-      // Staff Room Zones
-      staffDesks: [
-        { id: 2, name: 'Meja Luna (Tech)', x: 0.26, y: 0.54 },
-        { id: 3, name: 'Meja Nana (Bisnis)', x: 0.74, y: 0.54 },
-        { id: 4, name: 'Meja Mimi (Kreatif)', x: 0.26, y: 0.74 },
-        { id: 5, name: 'Meja Yuki (Memory)', x: 0.74, y: 0.74 },
-      ],
-      coffeeMachine: { x: 0.88, y: 0.43, name: 'Mesin Kopi' },
-      sotoTable: { x: 0.12, y: 0.43, name: 'Meja Soto Pak Yono' },
-      staffBeds: [
-        { x: 0.20, y: 0.92, name: 'Kasur Staf 1' },
-        { x: 0.40, y: 0.92, name: 'Kasur Staf 2' },
-        { x: 0.60, y: 0.92, name: 'Kasur Staf 3' },
-        { x: 0.80, y: 0.92, name: 'Kasur Staf 4' }
-      ]
-    };
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const initialCamPos = new THREE.Vector3(0, 22, 28);
+    camera.position.copy(initialCamPos);
 
-    // Characters Definition
-    const characters = [
-      {
-        id: 'ty',
-        name: 'Alberto Timoty (Ty)',
-        role: 'Owner & Suami Eliie',
-        color: '#3B82F6',
-        hairColor: '#1E293B',
-        dressColor: '#1E3A8A',
-        avatar: '👑',
-        isOwner: true,
-        x: canvas.width * 0.28,
-        y: canvas.height * 0.22,
-        targetX: canvas.width * 0.28,
-        targetY: canvas.height * 0.22,
-        state: 'bossing', // 'bossing', 'sleeping_couple', 'walking'
-        statusText: 'Owner & Suami tercinta Eliie, memantau dari ruang VIP.',
-        timer: 100,
-        speed: 1.4,
-        bubble: 'Semangat ya istriku tercinta! ❤️',
-        bubbleTimer: 200,
-        frame: 0
-      },
-      {
-        id: 'eliie',
-        name: 'Eliie Valentine',
-        role: 'Boss & Istri Tercinta Ty',
-        color: '#F59E0B',
-        hairColor: '#FDE047',
-        dressColor: '#FEF08A',
-        avatar: '🌸',
-        isBoss: true,
-        x: canvas.width * 0.44,
-        y: canvas.height * 0.22,
-        targetX: canvas.width * 0.44,
-        targetY: canvas.height * 0.22,
-        state: 'bossing',
-        statusText: 'Duduk di samping Ty, memerintah staf & sayang Ty... ❤️',
-        timer: 100,
-        speed: 1.4,
-        bubble: 'Siap sayangku Ty! 👑💕',
-        bubbleTimer: 220,
-        frame: 0
-      },
-      {
-        id: 'nana',
-        name: 'Nana',
-        role: 'Bisnis & Soto Kudus',
-        color: '#EA580C',
-        hairColor: '#78350F',
-        dressColor: '#F97316',
-        avatar: '🍲',
-        x: canvas.width * 0.74,
-        y: canvas.height * 0.54,
-        targetX: canvas.width * 0.74,
-        targetY: canvas.height * 0.54,
-        state: 'working',
-        statusText: 'Lagi analisa rekap penjualan Soto Pak Yono!',
-        timer: 150,
-        deskId: 3,
-        speed: 1.5,
-        bubble: 'Siap Bos Ty & Bos Eliie! 🍲',
-        bubbleTimer: 180,
-        frame: 0
-      },
-      {
-        id: 'luna',
-        name: 'Luna',
-        role: 'Tech & VPS',
-        color: '#0284C7',
-        hairColor: '#1E293B',
-        dressColor: '#38BDF8',
-        avatar: '💻',
-        x: canvas.width * 0.26,
-        y: canvas.height * 0.54,
-        targetX: canvas.width * 0.26,
-        targetY: canvas.height * 0.54,
-        state: 'working',
-        statusText: 'Lagi optimasi server & sistem koding!',
-        timer: 120,
-        deskId: 2,
-        speed: 1.7,
-        bubble: 'Server aman 100% 💻',
-        bubbleTimer: 150,
-        frame: 0
-      },
-      {
-        id: 'mimi',
-        name: 'Mimi',
-        role: 'Kreatif & Desain',
-        color: '#DB2777',
-        hairColor: '#F472B6',
-        dressColor: '#F43F5E',
-        avatar: '🎨',
-        x: canvas.width * 0.26,
-        y: canvas.height * 0.74,
-        targetX: canvas.width * 0.26,
-        targetY: canvas.height * 0.74,
-        state: 'working',
-        statusText: 'Lagi rancang visual estetik buat warung soto!',
-        timer: 180,
-        deskId: 4,
-        speed: 1.6,
-        bubble: 'Desainnya estetik! ✨',
-        bubbleTimer: 240,
-        frame: 0
-      },
-      {
-        id: 'yuki',
-        name: 'Yuki',
-        role: 'Notulen & Memory',
-        color: '#8B5CF6',
-        hairColor: '#C084FC',
-        dressColor: '#A855F7',
-        avatar: '📚',
-        x: canvas.width * 0.74,
-        y: canvas.height * 0.74,
-        targetX: canvas.width * 0.74,
-        targetY: canvas.height * 0.74,
-        state: 'working',
-        statusText: 'Lagi mencatat semua progres di Obsidian Ty...',
-        timer: 140,
-        deskId: 5,
-        speed: 1.4,
-        bubble: 'Obsidian rapi 📖',
-        bubbleTimer: 190,
-        frame: 0
-      }
-    ];
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
 
-    let selectedChar = null;
+    // OrbitControls for touch rotate / zoom / pan
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2.05;
+    controls.minDistance = 10;
+    controls.maxDistance = 50;
+    controls.target.set(0, 0, 0);
 
-    // AI Behavior Loop
-    function updateAI() {
-      characters.forEach(c => {
-        c.frame = (c.frame + 0.1) % 4;
-
-        // Speech bubble timer
-        if (c.bubbleTimer > 0) {
-          c.bubbleTimer--;
-        } else {
-          if (Math.random() < 0.005) {
-            if (c.id === 'ty') {
-              const tyQuotes = [
-                'Eliie istriku tercinta ❤️',
-                'Tim kerja bagus hari ini! 👑',
-                'Soto Pak Yono laris manis 🍲',
-                'Sayang, istirahat yuk 💕',
-                'Bangga sama tim kita!'
-              ];
-              c.bubble = tyQuotes[Math.floor(Math.random() * tyQuotes.length)];
-              c.bubbleTimer = 220;
-            } else if (c.id === 'eliie') {
-              const eliieQuotes = [
-                'Sayang Ty banget... 🥰',
-                'Semangat suamiku tersayang! ❤️',
-                'Nana, rekap omzet soto ya! 🍲',
-                'Luna, jaga server tetap ngebut! 💻',
-                'Mimi, siapkan materi promo! ✨',
-                'Yuki, amankan catatan kita! 📖'
-              ];
-              c.bubble = eliieQuotes[Math.floor(Math.random() * eliieQuotes.length)];
-              c.bubbleTimer = 220;
-            } else {
-              const staffQuotes = {
-                nana: ['Soto sapi siap!', 'Omzet naik terus! 📈', 'Ngopi dulu ah ☕', 'Siap Bos Ty & Eliie!'],
-                luna: ['Compiling code...', '0 Error! Mantap 🚀', 'Optimasi selesai 😎', 'Siap Bos!'],
-                mimi: ['Warna ini estetik!', 'Reels ini pasti FYP! 🎬', 'Poles detail lagi 🎨', 'Siap Bos! ✨'],
-                yuki: ['Obsidian synced.', 'Catatan beres 📖', 'Teh hangat dulu 🍵', 'Siap Bos.']
-              };
-              const list = staffQuotes[c.id] || ['Semangat!'];
-              c.bubble = list[Math.floor(Math.random() * list.length)];
-              c.bubbleTimer = 180;
-            }
-          }
-        }
-
-        // Movement logic for Ty & Eliie (Couple behavior)
-        if (c.isOwner || c.isBoss) {
-          const dx = c.targetX - c.x;
-          const dy = c.targetY - c.y;
-          const dist = Math.hypot(dx, dy);
-
-          if (dist > 3) {
-            c.x += (dx / dist) * c.speed;
-            c.y += (dy / dist) * c.speed;
-            c.state = 'walking';
-          } else {
-            if (c.state === 'walking') {
-              c.state = c.nextState || 'bossing';
-            }
-          }
-          return;
-        }
-
-        // Staff Movement logic
-        const dx = c.targetX - c.x;
-        const dy = c.targetY - c.y;
-        const dist = Math.hypot(dx, dy);
-
-        if (dist > 3) {
-          c.x += (dx / dist) * c.speed;
-          c.y += (dy / dist) * c.speed;
-          c.state = 'walking';
-        } else {
-          if (c.state === 'walking') {
-            c.state = c.nextState || 'working';
-          }
-
-          c.timer--;
-          if (c.timer <= 0) {
-            c.timer = 160 + Math.random() * 240;
-            decideStaffAction(c);
-          }
-        }
-      });
+    function resetCamera3D() {
+      gsap.to(camera.position, { x: 0, y: 22, z: 28, duration: 1.2, ease: 'power2.out' });
+      gsap.to(controls.target, { x: 0, y: 0, z: 0, duration: 1.2, ease: 'power2.out' });
+      showToast('Kamera 3D dikembalikan ke posisi awal! 🎥✨');
     }
 
-    function decideStaffAction(c) {
-      const roll = Math.random();
+    // 3. Cinematic Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    scene.add(ambientLight);
 
-      if (roll < 0.45) {
-        // Staff Desk
-        const desk = ZONES.staffDesks.find(d => d.id === c.deskId);
-        if (desk) {
-          c.targetX = desk.x * canvas.width;
-          c.targetY = desk.y * canvas.height;
-          c.nextState = 'working';
-          c.state = 'walking';
-        }
-      } else if (roll < 0.65) {
-        // Coffee
-        c.targetX = ZONES.coffeeMachine.x * canvas.width + (Math.random() * 20 - 10);
-        c.targetY = ZONES.coffeeMachine.y * canvas.height + (Math.random() * 20 - 10);
-        c.nextState = 'coffee';
-        c.state = 'walking';
-        c.bubble = 'Ambil kopi ☕';
-        c.bubbleTimer = 120;
-      } else if (roll < 0.85) {
-        // Staff Bed
-        const bed = ZONES.staffBeds[Math.floor(Math.random() * ZONES.staffBeds.length)];
-        c.targetX = bed.x * canvas.width;
-        c.targetY = bed.y * canvas.height;
-        c.nextState = 'sleeping';
-        c.state = 'walking';
-        c.bubble = 'Bobo bentar... 😴';
-        c.bubbleTimer = 120;
+    const dirLight = new THREE.DirectionalLight(0xfff5e6, 1.2);
+    dirLight.position.set(15, 30, 20);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.near = 0.5;
+    dirLight.shadow.camera.far = 80;
+    const d = 25;
+    dirLight.shadow.camera.left = -d;
+    dirLight.shadow.camera.right = d;
+    dirLight.shadow.camera.top = d;
+    dirLight.shadow.camera.bottom = -d;
+    scene.add(dirLight);
+
+    // Point Lights (Warm VIP Lamp & Cyber Tech Lamp)
+    const vipPointLight = new THREE.PointLight(0xf59e0b, 1.8, 20);
+    vipPointLight.position.set(0, 6, -8);
+    scene.add(vipPointLight);
+
+    const techPointLight = new THREE.PointLight(0x38bdf8, 1.2, 20);
+    techPointLight.position.set(0, 5, 8);
+    scene.add(techPointLight);
+
+    // 4. 3D World Geometry & Rooms Construction
+    // Room Dimensions: Total X: 26, Z: 32 (VIP Suite: Z -16 to 0, Staff Room: Z 0 to 16)
+    
+    // A. Main Floor
+    const floorGeo = new THREE.PlaneGeometry(28, 34);
+    const floorMat = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      roughness: 0.7,
+      metalness: 0.1
+    });
+    const mainFloor = new THREE.Mesh(floorGeo, floorMat);
+    mainFloor.rotation.x = -Math.PI / 2;
+    mainFloor.receiveShadow = true;
+    scene.add(mainFloor);
+
+    // Grid on Floor
+    const grid = new THREE.GridHelper(32, 32, 0xf59e0b, 0x1e293b);
+    grid.position.y = 0.01;
+    scene.add(grid);
+
+    // B. VIP Suite Luxury Carpet (Dark Violet & Gold Trim)
+    const vipCarpetGeo = new THREE.BoxGeometry(24, 0.1, 14);
+    const vipCarpetMat = new THREE.MeshStandardMaterial({ color: 0x4c0519, roughness: 0.9 });
+    const vipCarpet = new THREE.Mesh(vipCarpetGeo, vipCarpetMat);
+    vipCarpet.position.set(0, 0.05, -8);
+    vipCarpet.receiveShadow = true;
+    scene.add(vipCarpet);
+
+    // C. 3D Walls
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5 });
+    const goldTrimMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.8, roughness: 0.2 });
+
+    // Back Wall (North)
+    const backWall = new THREE.Mesh(new THREE.BoxGeometry(28, 4.5, 0.6), wallMat);
+    backWall.position.set(0, 2.25, -16.5);
+    backWall.castShadow = true;
+    backWall.receiveShadow = true;
+    scene.add(backWall);
+
+    // Left Wall (West)
+    const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.6, 4.5, 34), wallMat);
+    leftWall.position.set(-14, 2.25, 0);
+    leftWall.castShadow = true;
+    leftWall.receiveShadow = true;
+    scene.add(leftWall);
+
+    // Right Wall (East)
+    const rightWall = new THREE.Mesh(new THREE.BoxGeometry(0.6, 4.5, 34), wallMat);
+    rightWall.position.set(14, 2.25, 0);
+    rightWall.castShadow = true;
+    rightWall.receiveShadow = true;
+    scene.add(rightWall);
+
+    // D. Room Divider Wall (Separating VIP Suite and Staff Room with Central Door Arch)
+    const divLeft = new THREE.Mesh(new THREE.BoxGeometry(10, 4.5, 0.5), wallMat);
+    divLeft.position.set(-7.5, 2.25, 0);
+    divLeft.castShadow = true;
+    scene.add(divLeft);
+
+    const divRight = new THREE.Mesh(new THREE.BoxGeometry(10, 4.5, 0.5), wallMat);
+    divRight.position.set(7.5, 2.25, 0);
+    divRight.castShadow = true;
+    scene.add(divRight);
+
+    const doorBeam = new THREE.Mesh(new THREE.BoxGeometry(5.5, 1, 0.6), goldTrimMat);
+    doorBeam.position.set(0, 4.0, 0);
+    scene.add(doorBeam);
+
+    // 5. 3D Furniture Objects
+    const furnitureGroup = new THREE.Group();
+    scene.add(furnitureGroup);
+
+    // Helper: Create 3D Desk with Monitor & Chair
+    function createDesk3D(x, z, labelText, isVIP = false) {
+      const deskGroup = new THREE.Group();
+      deskGroup.position.set(x, 0, z);
+
+      // Desk Top
+      const topGeo = new THREE.BoxGeometry(isVIP ? 8 : 4.5, 0.3, isVIP ? 3 : 2.2);
+      const topMat = new THREE.MeshStandardMaterial({
+        color: isVIP ? 0x3f1d0b : 0x78350f,
+        roughness: 0.3,
+        metalness: isVIP ? 0.4 : 0.1
+      });
+      const top = new THREE.Mesh(topGeo, topMat);
+      top.position.y = 1.6;
+      top.castShadow = true;
+      deskGroup.add(top);
+
+      // Desk Legs
+      const legMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.6 });
+      const legGeo = new THREE.CylinderGeometry(0.08, 0.08, 1.6);
+      const legX = isVIP ? 3.6 : 2.0;
+      const legZ = isVIP ? 1.2 : 0.9;
+      [[-legX, -legZ], [legX, -legZ], [-legX, legZ], [legX, legZ]].forEach(([lx, lz]) => {
+        const leg = new THREE.Mesh(legGeo, legMat);
+        leg.position.set(lx, 0.8, lz);
+        leg.castShadow = true;
+        deskGroup.add(leg);
+      });
+
+      // Monitors
+      if (isVIP) {
+        // Dual Curved Glowing Displays for Ty & Eliie
+        [-1.8, 1.8].forEach((mx, idx) => {
+          const monStand = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.12, 0.6), legMat);
+          monStand.position.set(mx, 2.0, -0.6);
+          deskGroup.add(monStand);
+
+          const monScreen = new THREE.Mesh(
+            new THREE.BoxGeometry(2.0, 1.2, 0.1),
+            new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2 })
+          );
+          monScreen.position.set(mx, 2.7, -0.6);
+          monScreen.castShadow = true;
+          deskGroup.add(monScreen);
+
+          // Glowing Screen Face
+          const glow = new THREE.Mesh(
+            new THREE.PlaneGeometry(1.85, 1.05),
+            new THREE.MeshBasicMaterial({ color: idx === 0 ? 0x38bdf8 : 0xf59e0b })
+          );
+          glow.position.set(mx, 2.7, -0.54);
+          deskGroup.add(glow);
+        });
       } else {
-        // Soto Table
-        c.targetX = ZONES.sotoTable.x * canvas.width + (Math.random() * 20 - 10);
-        c.targetY = ZONES.sotoTable.y * canvas.height + (Math.random() * 20 - 10);
-        c.nextState = 'eating';
-        c.state = 'walking';
-        c.bubble = 'Makan soto 🍲';
-        c.bubbleTimer = 120;
+        // Single Monitor for Staff
+        const monStand = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.1, 0.5), legMat);
+        monStand.position.set(0, 1.9, -0.5);
+        deskGroup.add(monStand);
+
+        const monScreen = new THREE.Mesh(
+          new THREE.BoxGeometry(1.6, 1.0, 0.08),
+          new THREE.MeshStandardMaterial({ color: 0x0f172a })
+        );
+        monScreen.position.set(0, 2.5, -0.5);
+        monScreen.castShadow = true;
+        deskGroup.add(monScreen);
+
+        const glow = new THREE.Mesh(
+          new THREE.PlaneGeometry(1.48, 0.88),
+          new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
+        );
+        glow.position.set(0, 2.5, -0.45);
+        deskGroup.add(glow);
       }
+
+      furnitureGroup.add(deskGroup);
+      return deskGroup;
     }
 
-    // DRAWING SYSTEM
-    function drawOffice() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Create 3D Desks
+    // VIP Desk for Ty & Eliie
+    createDesk3D(-4, -8, "MEJA DUET TY & ELIIE", true);
 
-      const w = canvas.width;
-      const h = canvas.height;
-      const splitY = h * SPLIT_RATIO;
+    // Staff Desks
+    createDesk3D(-6, 5, "Meja Luna (Tech)");
+    createDesk3D(6, 5, "Meja Nana (Bisnis)");
+    createDesk3D(-6, 10, "Meja Mimi (Kreatif)");
+    createDesk3D(6, 10, "Meja Yuki (Memory)");
 
-      // 1. Floor: Top VIP Suite (Luxury Dark Plum & Gold Tiles)
-      const tileSize = 28;
-      for (let x = 0; x < w; x += tileSize) {
-        for (let y = 0; y < splitY; y += tileSize) {
-          const isAlt = ((x / tileSize) + (y / tileSize)) % 2 === 0;
-          ctx.fillStyle = isAlt ? '#3b0764' : '#2e1065';
-          ctx.fillRect(x, y, tileSize, tileSize);
-          ctx.strokeStyle = '#581c87';
-          ctx.lineWidth = 0.5;
-          ctx.strokeRect(x, y, tileSize, tileSize);
-        }
-      }
+    // King Size Luxury Bed for Ty & Eliie in VIP Room
+    function createCoupleKingBed3D(x, z) {
+      const bedGroup = new THREE.Group();
+      bedGroup.position.set(x, 0, z);
 
-      // 2. Floor: Bottom Staff Office (Modern Slate/Blue Tiles)
-      for (let x = 0; x < w; x += tileSize) {
-        for (let y = splitY; y < h; y += tileSize) {
-          const isAlt = ((x / tileSize) + (y / tileSize)) % 2 === 0;
-          ctx.fillStyle = isAlt ? '#1e293b' : '#0f172a';
-          ctx.fillRect(x, y, tileSize, tileSize);
-          ctx.strokeStyle = '#334155';
-          ctx.lineWidth = 0.5;
-          ctx.strokeRect(x, y, tileSize, tileSize);
-        }
-      }
+      // Bed Frame
+      const frame = new THREE.Mesh(
+        new THREE.BoxGeometry(6.5, 0.8, 7.5),
+        new THREE.MeshStandardMaterial({ color: 0x2e1065, roughness: 0.4 })
+      );
+      frame.position.y = 0.4;
+      frame.castShadow = true;
+      bedGroup.add(frame);
 
-      // 3. Partition Wall Between VIP Suite and Staff Room
-      ctx.fillStyle = '#64748b';
-      ctx.fillRect(8, splitY - 6, w - 16, 12);
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(8, splitY - 6, w - 16, 12);
+      // Headboard
+      const head = new THREE.Mesh(
+        new THREE.BoxGeometry(6.5, 2.4, 0.6),
+        goldTrimMat
+      );
+      head.position.set(0, 1.6, -3.5);
+      head.castShadow = true;
+      bedGroup.add(head);
 
-      // VIP Door in Middle
-      ctx.fillStyle = '#92400e';
-      ctx.fillRect(w * 0.45, splitY - 7, w * 0.10, 14);
-      ctx.strokeStyle = '#fbbf24';
-      ctx.strokeRect(w * 0.45, splitY - 7, w * 0.10, 14);
+      // Mattress & Crimson Silk Duvet
+      const mattress = new THREE.Mesh(
+        new THREE.BoxGeometry(5.8, 0.7, 6.8),
+        new THREE.MeshStandardMaterial({ color: 0xbe123c, roughness: 0.3 })
+      );
+      mattress.position.set(0, 0.9, 0.1);
+      bedGroup.add(mattress);
 
-      // Room Badges
-      ctx.font = 'bold 9px "Plus Jakarta Sans"';
-      ctx.fillStyle = '#fbbf24';
-      ctx.textAlign = 'left';
-      ctx.fillText('👑 VIP SUITE: TY & ELIIE', 16, 20);
-
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillText('💼 STAFF OFFICE & LOUNGE', 16, splitY + 18);
-
-      // Outer Wall Border
-      ctx.strokeStyle = '#475569';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(6, 6, w - 12, h - 12);
-
-      // 4. Draw VIP Room Furniture
-      // A. Dual Boss Desk (Left Side of VIP)
-      drawCoupleDesk(w * 0.36, h * 0.22);
-
-      // B. Luxury King Size Bed (Right Side of VIP Room)
-      drawCoupleKingBed(ZONES.coupleBed.x * w, ZONES.coupleBed.y * h);
-
-      // 5. Draw Staff Room Furniture
-      // A. Soto Table (Top Left Staff)
-      drawTable(ZONES.sotoTable.x * w, ZONES.sotoTable.y * h, '🍲 Warung Soto', '#ea580c');
-      
-      // B. Coffee Machine (Top Right Staff)
-      drawObject(ZONES.coffeeMachine.x * w, ZONES.coffeeMachine.y * h, 34, 34, '#d97706', '☕');
-
-      // C. Staff Beds (Bottom)
-      ZONES.staffBeds.forEach((b, idx) => {
-        drawBed(b.x * w, b.y * h, idx + 1);
+      // Dual Pillows (Ty & Eliie)
+      [-1.5, 1.5].forEach(px => {
+        const pillow = new THREE.Mesh(
+          new THREE.BoxGeometry(2.0, 0.35, 1.3),
+          new THREE.MeshStandardMaterial({ color: 0xfef08a, roughness: 0.5 })
+        );
+        pillow.position.set(px, 1.3, -2.4);
+        pillow.castShadow = true;
+        bedGroup.add(pillow);
       });
 
-      // D. Staff Work Desks
-      ZONES.staffDesks.forEach(d => {
-        drawStaffDesk(d.x * w, d.y * h, d.name);
-      });
-
-      // 6. Draw Characters (Couple on top)
-      characters.forEach(c => {
-        drawPixelCharacter(c);
-      });
+      furnitureGroup.add(bedGroup);
+      return bedGroup;
     }
+    createCoupleKingBed3D(7.5, -8);
 
-    function drawCoupleDesk(x, y) {
-      // Luxury Gold Trim Carpet
-      ctx.fillStyle = '#701a75';
-      ctx.beginPath();
-      ctx.roundRect(x - 68, y - 26, 136, 56, 10);
-      ctx.fill();
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+    // Staff Beds in Lounge Area (Bottom)
+    function createStaffBed3D(x, z) {
+      const bGroup = new THREE.Group();
+      bGroup.position.set(x, 0, z);
 
-      // Long Shared Mahogany Desk
-      ctx.fillStyle = '#451a03';
-      ctx.fillRect(x - 56, y - 14, 112, 30);
-      ctx.strokeStyle = '#d97706';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x - 56, y - 14, 112, 30);
+      const frame = new THREE.Mesh(
+        new THREE.BoxGeometry(2.4, 0.6, 4.5),
+        new THREE.MeshStandardMaterial({ color: 0x334155 })
+      );
+      frame.position.y = 0.3;
+      frame.castShadow = true;
+      bGroup.add(frame);
 
-      // Ty's Monitor (Left)
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x - 46, y - 10, 22, 12);
-      ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(x - 44, y - 8, 18, 8);
+      const mattress = new THREE.Mesh(
+        new THREE.BoxGeometry(2.1, 0.4, 4.1),
+        new THREE.MeshStandardMaterial({ color: 0x6366f1 })
+      );
+      mattress.position.set(0, 0.6, 0.1);
+      bGroup.add(mattress);
 
-      // Eliie's Monitor (Right)
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x + 24, y - 10, 22, 12);
-      ctx.fillStyle = '#f59e0b';
-      ctx.fillRect(x + 26, y - 8, 18, 8);
+      const pillow = new THREE.Mesh(
+        new THREE.BoxGeometry(1.6, 0.25, 0.9),
+        new THREE.MeshStandardMaterial({ color: 0xf8fafc })
+      );
+      pillow.position.set(0, 0.9, -1.4);
+      bGroup.add(pillow);
 
-      // Center Love Heart & Gold Plaque
-      ctx.font = '12px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('💖', x, y - 2);
-
-      ctx.font = 'bold 9px "Plus Jakarta Sans"';
-      ctx.fillStyle = '#fde047';
-      ctx.fillText('MEJA DUET TY & ELIIE', x, y + 26);
+      furnitureGroup.add(bGroup);
     }
+    [-8, -3, 3, 8].forEach(bx => createStaffBed3D(bx, 14.5));
 
-    function drawCoupleKingBed(x, y) {
-      // King Size Bed Frame (Wide double bed)
-      ctx.fillStyle = '#581c87';
-      ctx.beginPath();
-      ctx.roundRect(x - 36, y - 28, 72, 56, 8);
-      ctx.fill();
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+    // Soto Pak Yono Dining Table & Coffee Machine
+    function createSotoTable3D(x, z) {
+      const tGroup = new THREE.Group();
+      tGroup.position.set(x, 0, z);
 
-      // Mattress & Luxury Crimson Silk Blanket
-      ctx.fillStyle = '#be123c';
-      ctx.fillRect(x - 32, y - 10, 64, 34);
+      // Round Table
+      const tTop = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.8, 1.8, 0.2, 24),
+        new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.4 })
+      );
+      tTop.position.y = 1.4;
+      tTop.castShadow = true;
+      tGroup.add(tTop);
 
-      // Double Pillows
-      ctx.fillStyle = '#fef08a';
-      ctx.fillRect(x - 28, y - 24, 24, 10); // Ty's Pillow
-      ctx.fillRect(x + 4, y - 24, 24, 10);  // Eliie's Pillow
+      const tLeg = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.2, 0.4, 1.4, 16),
+        new THREE.MeshStandardMaterial({ color: 0x451a03 })
+      );
+      tLeg.position.y = 0.7;
+      tGroup.add(tLeg);
 
-      // Gold Heart Embroidered
-      ctx.font = '12px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('👑', x, y + 8);
+      // 3D Soto Bowl on Table
+      const bowl = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.4, 0.2, 0.3, 16),
+        new THREE.MeshStandardMaterial({ color: 0xf8fafc })
+      );
+      bowl.position.set(0, 1.6, 0);
+      tGroup.add(bowl);
 
-      ctx.font = 'bold 8px "Plus Jakarta Sans"';
-      ctx.fillStyle = '#fbcfe8';
-      ctx.fillText('KASUR BERDUA', x, y + 36);
+      const soup = new THREE.Mesh(
+        new THREE.CircleGeometry(0.36, 16),
+        new THREE.MeshBasicMaterial({ color: 0xf59e0b })
+      );
+      soup.rotation.x = -Math.PI / 2;
+      soup.position.set(0, 1.74, 0);
+      tGroup.add(soup);
+
+      furnitureGroup.add(tGroup);
     }
+    createSotoTable3D(-10, 2.5);
 
-    function drawStaffDesk(x, y, label) {
-      ctx.fillStyle = '#78350f';
-      ctx.fillRect(x - 24, y - 12, 48, 26);
-      ctx.strokeStyle = '#92400e';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(x - 24, y - 12, 48, 26);
+    // Coffee Machine Station
+    function createCoffeeStation3D(x, z) {
+      const cGroup = new THREE.Group();
+      cGroup.position.set(x, 0, z);
 
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x - 9, y - 9, 18, 10);
-      ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(x - 7, y - 7, 14, 6);
+      const body = new THREE.Mesh(
+        new THREE.BoxGeometry(1.8, 2.8, 1.4),
+        new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.5, roughness: 0.3 })
+      );
+      body.position.y = 1.4;
+      body.castShadow = true;
+      cGroup.add(body);
 
-      ctx.font = '9px "Plus Jakarta Sans"';
-      ctx.fillStyle = '#94a3b8';
-      ctx.textAlign = 'center';
-      ctx.fillText(label, x, y + 22);
+      furnitureGroup.add(cGroup);
     }
+    createCoffeeStation3D(10, 2.5);
 
-    function drawTable(x, y, label, color) {
-      ctx.fillStyle = '#b45309';
-      ctx.beginPath();
-      ctx.arc(x, y, 20, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      ctx.stroke();
+    // 6. 3D VOXEL / LOW-POLY CUTE CHARACTERS
+    const characters3D = [];
+    const charMeshes = [];
 
-      ctx.font = '13px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('🍲', x, y + 4);
+    function createCuteCharacter3D(config) {
+      const charGroup = new THREE.Group();
+      charGroup.position.set(config.x, 0, config.z);
 
-      ctx.font = '9px "Plus Jakarta Sans"';
-      ctx.fillStyle = '#fed7aa';
-      ctx.fillText('Soto Kudus', x, y + 28);
-    }
+      // Materials
+      const skinMat = new THREE.MeshStandardMaterial({ color: 0xfed7aa, roughness: 0.6 });
+      const hairMat = new THREE.MeshStandardMaterial({ color: config.hairColor, roughness: 0.5 });
+      const clothesMat = new THREE.MeshStandardMaterial({ color: config.dressColor, roughness: 0.4 });
+      const darkMat = new THREE.MeshStandardMaterial({ color: 0x1e293b });
 
-    function drawObject(x, y, w, h, color, icon) {
-      ctx.fillStyle = color;
-      ctx.fillRect(x - w/2, y - h/2, w, h);
-      ctx.strokeStyle = '#fef08a';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x - w/2, y - h/2, w, h);
+      // Body (Cute torso)
+      const body = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.1, 0.6), clothesMat);
+      body.position.y = 1.25;
+      body.castShadow = true;
+      charGroup.add(body);
 
-      ctx.font = '15px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(icon, x, y + 5);
-    }
+      // Head
+      const head = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.95, 0.9), skinMat);
+      head.position.y = 2.15;
+      head.castShadow = true;
+      charGroup.add(head);
 
-    function drawBed(x, y, num) {
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(x - 14, y - 18, 28, 36);
-      ctx.fillStyle = '#6366f1';
-      ctx.fillRect(x - 12, y - 6, 24, 22);
-      ctx.fillStyle = '#f1f5f9';
-      ctx.fillRect(x - 10, y - 16, 20, 8);
-    }
+      // Hair (Top & Back)
+      const hairTop = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.55, 1.0), hairMat);
+      hairTop.position.set(0, 2.45, 0);
+      charGroup.add(hairTop);
 
-    // DRAW PIXEL CHARACTERS
-    function drawPixelCharacter(c) {
-      const x = Math.round(c.x);
-      const y = Math.round(c.y);
-      const bob = (c.state === 'walking') ? Math.sin(c.frame * Math.PI) * 2 : 0;
-
-      // Shadow
-      ctx.fillStyle = 'rgba(0,0,0,0.35)';
-      ctx.beginPath();
-      ctx.ellipse(x, y + 14, 11, 5, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Sleeping on couple bed
-      if (c.state === 'sleeping_couple') {
-        ctx.fillStyle = c.hairColor;
-        ctx.fillRect(x - 7, y - 8, 14, 10);
-        ctx.fillStyle = '#ffe4e6';
-        ctx.fillRect(x - 5, y - 4, 10, 8);
-
-        // Heart + Zzz floating
-        const zOff = (Date.now() / 300) % 15;
-        ctx.font = 'bold 11px "Plus Jakarta Sans"';
-        ctx.fillStyle = '#f472b6';
-        ctx.fillText('💕 Zzz...', x + 8, y - 10 - zOff);
-        return;
-      }
-
-      // Sleeping on staff bed
-      if (c.state === 'sleeping') {
-        ctx.fillStyle = c.hairColor;
-        ctx.fillRect(x - 7, y - 8, 14, 10);
-        ctx.fillStyle = '#ffe4e6';
-        ctx.fillRect(x - 5, y - 4, 10, 8);
-
-        const zOff = (Date.now() / 300) % 15;
-        ctx.font = 'bold 11px "Plus Jakarta Sans"';
-        ctx.fillStyle = '#a5b4fc';
-        ctx.fillText('Zzz...', x + 8, y - 10 - zOff);
-        return;
-      }
-
-      // Head (Skin)
-      ctx.fillStyle = '#fed7aa';
-      ctx.fillRect(x - 6, y - 14 + bob, 12, 11);
-
-      // Hair
-      ctx.fillStyle = c.hairColor;
-      if (c.id === 'ty') {
-        // Handsome short cropped hair for Ty
-        ctx.fillRect(x - 7, y - 18 + bob, 14, 6);
-        ctx.fillRect(x - 7, y - 14 + bob, 2, 7);
-        ctx.fillRect(x + 5, y - 14 + bob, 2, 7);
-      } else {
-        // Girls bangs & cute hair
-        ctx.fillRect(x - 7, y - 18 + bob, 14, 7);
-        ctx.fillRect(x - 8, y - 14 + bob, 3, 9);
-        ctx.fillRect(x + 5, y - 14 + bob, 3, 9);
-      }
-
-      // Elf Ears & Crown for Eliie
-      if (c.id === 'eliie') {
-        ctx.fillStyle = '#f59e0b';
-        ctx.fillRect(x - 5, y - 21 + bob, 10, 3);
-        ctx.fillRect(x - 5, y - 24 + bob, 2, 3);
-        ctx.fillRect(x - 1, y - 25 + bob, 2, 4);
-        ctx.fillRect(x + 3, y - 24 + bob, 2, 3);
-
-        ctx.fillStyle = '#fed7aa';
-        ctx.fillRect(x - 10, y - 12 + bob, 3, 3);
-        ctx.fillRect(x + 7, y - 12 + bob, 3, 3);
-      }
-
-      // Crown for Ty (Owner)
-      if (c.id === 'ty') {
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(x - 5, y - 21 + bob, 10, 3);
-        ctx.fillRect(x - 5, y - 24 + bob, 2, 3);
-        ctx.fillRect(x - 1, y - 25 + bob, 2, 4);
-        ctx.fillRect(x + 3, y - 24 + bob, 2, 3);
-      }
+      const hairBack = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.9, 0.4), hairMat);
+      hairBack.position.set(0, 2.1, -0.32);
+      charGroup.add(hairBack);
 
       // Eyes
-      const isBlink = Math.sin(Date.now() / 800) > 0.95;
-      if (isBlink) {
-        ctx.fillStyle = '#1e293b';
-        ctx.fillRect(x - 4, y - 9 + bob, 3, 1);
-        ctx.fillRect(x + 1, y - 9 + bob, 3, 1);
-      } else {
-        ctx.fillStyle = (c.id === 'eliie') ? '#0284c7' : ((c.id === 'ty') ? '#0284c7' : '#0f172a');
-        ctx.fillRect(x - 4, y - 10 + bob, 3, 3);
-        ctx.fillRect(x + 1, y - 10 + bob, 3, 3);
+      const eyeGeo = new THREE.BoxGeometry(0.12, 0.22, 0.05);
+      const eyeL = new THREE.Mesh(eyeGeo, darkMat);
+      eyeL.position.set(-0.25, 2.15, 0.46);
+      charGroup.add(eyeL);
+
+      const eyeR = new THREE.Mesh(eyeGeo, darkMat);
+      eyeR.position.set(0.25, 2.15, 0.46);
+      charGroup.add(eyeR);
+
+      // Cheeks Blush
+      const blushMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e });
+      const blushGeo = new THREE.PlaneGeometry(0.15, 0.08);
+      const bL = new THREE.Mesh(blushGeo, blushMat);
+      bL.position.set(-0.32, 1.95, 0.47);
+      charGroup.add(bL);
+      const bR = new THREE.Mesh(blushGeo, blushMat);
+      bR.position.set(0.32, 1.95, 0.47);
+      charGroup.add(bR);
+
+      // Eliie: Golden Crown & Elf Ears
+      if (config.id === 'eliie') {
+        const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.25, 0.3, 5), goldTrimMat);
+        crown.position.set(0, 2.85, 0);
+        charGroup.add(crown);
+
+        // Elf Ears
+        const earL = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.4, 4), skinMat);
+        earL.rotation.z = Math.PI / 3;
+        earL.position.set(-0.6, 2.2, 0);
+        charGroup.add(earL);
+
+        const earR = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.4, 4), skinMat);
+        earR.rotation.z = -Math.PI / 3;
+        earR.position.set(0.6, 2.2, 0);
+        charGroup.add(earR);
       }
 
-      // Blushing cheeks
-      ctx.fillStyle = '#fb7185';
-      ctx.fillRect(x - 5, y - 6 + bob, 2, 2);
-      ctx.fillRect(x + 3, y - 6 + bob, 2, 2);
-
-      // Body / Clothes
-      ctx.fillStyle = c.dressColor;
-      ctx.fillRect(x - 5, y - 2 + bob, 10, 9);
-
-      // Legs / Pants
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(x - 4, y + 7 + bob, 3, 5);
-      ctx.fillRect(x + 1, y + 7 + bob, 3, 5);
-
-      // State props
-      if (c.state === 'coffee') {
-        ctx.font = '10px Arial';
-        ctx.fillText('☕', x + 7, y + bob);
-      } else if (c.state === 'eating') {
-        ctx.font = '10px Arial';
-        ctx.fillText('🍲', x + 7, y + bob);
+      // Ty: Cyan Glowing Owner Crown
+      if (config.id === 'ty') {
+        const crown = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.35, 0.25, 0.3, 5),
+          new THREE.MeshStandardMaterial({ color: 0x38bdf8, metalness: 0.8 })
+        );
+        crown.position.set(0, 2.85, 0);
+        charGroup.add(crown);
       }
 
-      // Name Label
-      ctx.font = 'bold 9px "Plus Jakarta Sans"';
-      ctx.fillStyle = (c.id === 'ty') ? '#38bdf8' : ((c.id === 'eliie') ? '#fbbf24' : '#ffffff');
-      ctx.textAlign = 'center';
-      ctx.fillText(c.name.split(' ')[0], x, y - 23 + bob);
+      // Legs
+      const legGeo = new THREE.BoxGeometry(0.3, 0.7, 0.35);
+      const legL = new THREE.Mesh(legGeo, darkMat);
+      legL.position.set(-0.25, 0.35, 0);
+      legL.castShadow = true;
+      charGroup.add(legL);
 
-      // Speech bubble
-      if (c.bubble && c.bubbleTimer > 0) {
-        drawSpeechBubble(x, y - 37 + bob, c.bubble, c.isOwner || c.isBoss);
-      }
+      const legR = new THREE.Mesh(legGeo, darkMat);
+      legR.position.set(0.25, 0.35, 0);
+      legR.castShadow = true;
+      charGroup.add(legR);
+
+      // Hitbox for Click / Raycast
+      const hitBox = new THREE.Mesh(
+        new THREE.BoxGeometry(1.6, 3.2, 1.6),
+        new THREE.MeshBasicMaterial({ visible: false })
+      );
+      hitBox.position.y = 1.6;
+      hitBox.userData = { config: config, group: charGroup };
+      charGroup.add(hitBox);
+      charMeshes.push(hitBox);
+
+      scene.add(charGroup);
+
+      const charObj = {
+        ...config,
+        mesh: charGroup,
+        legL: legL,
+        legR: legR,
+        head: head,
+        targetX: config.x,
+        targetZ: config.z,
+        state: config.isVIP ? 'bossing' : 'working',
+        timer: 100,
+        speed: config.isVIP ? 0.05 : 0.06,
+        bubble: config.defaultBubble || 'Semangat! ✨',
+        bubbleTimer: 200,
+        frame: 0
+      };
+
+      characters3D.push(charObj);
+      return charObj;
     }
 
-    function drawSpeechBubble(x, y, text, isSpecial) {
-      ctx.font = '10px "Plus Jakarta Sans"';
-      const textWidth = ctx.measureText(text).width;
-      const padding = 6;
-      const w = textWidth + padding * 2;
-      const h = 18;
+    // Spawn 3D Characters
+    // 1. Ty (Owner) & Eliie (Boss) in VIP Suite
+    const tyChar = createCuteCharacter3D({
+      id: 'ty',
+      name: 'Alberto Timoty (Ty)',
+      role: 'Owner & Suami Eliie',
+      hairColor: 0x1e293b,
+      dressColor: 0x1e3a8a,
+      avatar: '👑',
+      isVIP: true,
+      x: -5.2,
+      z: -7.5,
+      defaultBubble: 'Eliie istriku tercinta ❤️'
+    });
 
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
-      ctx.strokeStyle = isSpecial ? '#f59e0b' : '#38bdf8';
-      ctx.lineWidth = isSpecial ? 1.5 : 1;
-      
-      ctx.beginPath();
-      ctx.roundRect(x - w/2, y - h/2, w, h, 6);
-      ctx.fill();
-      ctx.stroke();
+    const eliieChar = createCuteCharacter3D({
+      id: 'eliie',
+      name: 'Eliie Valentine',
+      role: 'Boss & Istri Tercinta Ty',
+      hairColor: 0xfde047,
+      dressColor: 0xfef08a,
+      avatar: '🌸',
+      isVIP: true,
+      x: -2.8,
+      z: -7.5,
+      defaultBubble: 'Sayang Ty banget... 🥰👑'
+    });
 
-      ctx.fillStyle = isSpecial ? '#f59e0b' : '#38bdf8';
-      ctx.beginPath();
-      ctx.moveTo(x - 3, y + h/2);
-      ctx.lineTo(x + 3, y + h/2);
-      ctx.lineTo(x, y + h/2 + 4);
-      ctx.fill();
+    // 2. Staff Characters
+    createCuteCharacter3D({
+      id: 'luna',
+      name: 'Luna',
+      role: 'Tech & VPS',
+      hairColor: 0x1e293b,
+      dressColor: 0x38bdf8,
+      avatar: '💻',
+      deskX: -6,
+      deskZ: 5.5,
+      x: -6,
+      z: 5.5,
+      defaultBubble: '0 Error! Server aman 💻'
+    });
 
-      ctx.fillStyle = isSpecial ? '#fef08a' : '#e0f2fe';
-      ctx.textAlign = 'center';
-      ctx.fillText(text, x, y + 3.5);
-    }
+    createCuteCharacter3D({
+      id: 'nana',
+      name: 'Nana',
+      role: 'Bisnis & Soto Kudus',
+      hairColor: 0x78350f,
+      dressColor: 0xf97316,
+      avatar: '🍲',
+      deskX: 6,
+      deskZ: 5.5,
+      x: 6,
+      z: 5.5,
+      defaultBubble: 'Soto sapi laris manis! 🍲'
+    });
 
-    // CLICK HANDLER
-    canvas.addEventListener('click', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
+    createCuteCharacter3D({
+      id: 'mimi',
+      name: 'Mimi',
+      role: 'Kreatif & Desain',
+      hairColor: 0xf472b6,
+      dressColor: 0xf43f5e,
+      avatar: '🎨',
+      deskX: -6,
+      deskZ: 10.5,
+      x: -6,
+      z: 10.5,
+      defaultBubble: 'Desainnya estetik! ✨'
+    });
 
-      let found = null;
-      characters.forEach(c => {
-        const dist = Math.hypot(c.x - clickX, c.y - clickY);
-        if (dist < 32) {
-          found = c;
+    createCuteCharacter3D({
+      id: 'yuki',
+      name: 'Yuki',
+      role: 'Notulen & Memory',
+      hairColor: 0xc084fc,
+      dressColor: 0xa855f7,
+      avatar: '📚',
+      deskX: 6,
+      deskZ: 10.5,
+      x: 6,
+      z: 10.5,
+      defaultBubble: 'Obsidian tersinkron 📖'
+    });
+
+    // 7. 3D Floating Speech Bubbles Projected onto Screen Layer
+    const bubbleLayer = document.getElementById('bubble-layer');
+    const bubbleElements = {};
+
+    characters3D.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'speech-bubble bg-slate-900/90 border border-amber-400/80 text-amber-300 font-semibold px-2.5 py-1 rounded-full text-[11px] shadow-2xl backdrop-blur-md flex items-center gap-1 opacity-0 pointer-events-none';
+      el.innerHTML = `<span>${c.avatar}</span> <span id="btext-${c.id}">${c.bubble}</span>`;
+      bubbleLayer.appendChild(el);
+      bubbleElements[c.id] = el;
+    });
+
+    function updateSpeechBubbles3D() {
+      const tempV = new THREE.Vector3();
+      characters3D.forEach(c => {
+        const el = bubbleElements[c.id];
+        if (!el) return;
+
+        if (c.bubble && c.bubbleTimer > 0) {
+          c.bubbleTimer--;
+          document.getElementById(`btext-${c.id}`).innerText = c.bubble;
+
+          // Project 3D position above character's head to 2D Screen
+          c.mesh.getWorldPosition(tempV);
+          tempV.y += (c.state === 'sleeping_couple' || c.state === 'sleeping') ? 1.4 : 3.4;
+          tempV.project(camera);
+
+          // Check if in front of camera
+          if (tempV.z < 1) {
+            const x = (tempV.x * 0.5 + 0.5) * window.innerWidth;
+            const y = (-(tempV.y * 0.5) + 0.5) * window.innerHeight;
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
+            el.style.opacity = '1';
+          } else {
+            el.style.opacity = '0';
+          }
+        } else {
+          el.style.opacity = '0';
         }
       });
+    }
 
-      if (found) {
-        selectedChar = found;
-        openCard(found);
+    // 8. 3D AI Behavior & Animation Loop
+    function updateAI3D() {
+      characters3D.forEach(c => {
+        c.frame += 0.08;
+
+        // Random dialogue triggers
+        if (c.bubbleTimer <= 0 && Math.random() < 0.004) {
+          if (c.id === 'ty') {
+            const list = ['Eliie sayang ❤️', 'Semangat semuanya! 👑', 'Soto Pak Yono mantap 🍲', 'Sayang, istirahat yuk 💕'];
+            c.bubble = list[Math.floor(Math.random() * list.length)];
+            c.bubbleTimer = 220;
+          } else if (c.id === 'eliie') {
+            const list = ['Sayang Ty banget... 🥰', 'Nana, rekap soto ya! 🍲', 'Luna, jaga VPS tetap 0 bug! 💻', 'Mimi, bikin materi promo viral! ✨'];
+            c.bubble = list[Math.floor(Math.random() * list.length)];
+            c.bubbleTimer = 220;
+          } else {
+            const quotes = {
+              nana: ['Soto sapi siap! 🍲', 'Omzet naik 📈', 'Ngopi dulu ☕', 'Siap Bos Ty & Eliie!'],
+              luna: ['Compiling... 🚀', '0 Bug di VPS 😎', 'Deploy aman 💻', 'Siap Bos!'],
+              mimi: ['Warna estetik 🎨', 'Reels FYP! 🎬', 'Poles lagi ✨', 'Siap Bos!'],
+              yuki: ['Obsidian sync 📖', 'Catatan beres 🍵', 'Rapi & tenang', 'Siap Bos.']
+            };
+            const list = quotes[c.id] || ['Semangat!'];
+            c.bubble = list[Math.floor(Math.random() * list.length)];
+            c.bubbleTimer = 180;
+          }
+        }
+
+        // Movement towards targetX & targetZ
+        const dx = c.targetX - c.mesh.position.x;
+        const dz = c.targetZ - c.mesh.position.z;
+        const dist = Math.hypot(dx, dz);
+
+        if (dist > 0.15) {
+          c.mesh.position.x += (dx / dist) * c.speed;
+          c.mesh.position.z += (dz / dist) * c.speed;
+
+          // Face movement direction
+          const angle = Math.atan2(dx, dz);
+          c.mesh.rotation.y = angle;
+
+          // Leg swinging animation
+          c.legL.rotation.x = Math.sin(c.frame * 4) * 0.5;
+          c.legR.rotation.x = -Math.sin(c.frame * 4) * 0.5;
+          c.mesh.position.y = Math.abs(Math.sin(c.frame * 4)) * 0.1;
+        } else {
+          // Arrived
+          c.legL.rotation.x = 0;
+          c.legR.rotation.x = 0;
+
+          if (c.state === 'sleeping_couple') {
+            c.mesh.rotation.x = -Math.PI / 2;
+            c.mesh.position.y = 1.3;
+          } else if (c.state === 'sleeping') {
+            c.mesh.rotation.x = -Math.PI / 2;
+            c.mesh.position.y = 0.9;
+          } else {
+            c.mesh.rotation.x = 0;
+            c.mesh.position.y = 0;
+            // Face camera or desk
+            c.mesh.rotation.y = c.isVIP ? 0 : Math.PI;
+
+            // Idle breathing bob
+            c.head.position.y = 2.15 + Math.sin(c.frame * 2) * 0.03;
+          }
+
+          // Staff decision timer
+          if (!c.isVIP) {
+            c.timer--;
+            if (c.timer <= 0) {
+              c.timer = 180 + Math.random() * 240;
+              decideStaff3D(c);
+            }
+          }
+        }
+      });
+    }
+
+    function decideStaff3D(c) {
+      const roll = Math.random();
+      if (roll < 0.5) {
+        // Return to Desk
+        c.targetX = c.deskX;
+        c.targetZ = c.deskZ;
+        c.state = 'working';
+      } else if (roll < 0.7) {
+        // Coffee Machine
+        c.targetX = 8.5;
+        c.targetZ = 2.5;
+        c.state = 'coffee';
+        c.bubble = 'Ambil kopi dulu ☕';
+        c.bubbleTimer = 140;
+      } else if (roll < 0.85) {
+        // Staff Bed
+        const bedsX = [-8, -3, 3, 8];
+        c.targetX = bedsX[Math.floor(Math.random() * bedsX.length)];
+        c.targetZ = 14.5;
+        c.state = 'sleeping';
+        c.bubble = 'Bobo bentar ya... 😴';
+        c.bubbleTimer = 140;
+      } else {
+        // Soto Table
+        c.targetX = -8.5;
+        c.targetZ = 2.5;
+        c.state = 'eating';
+        c.bubble = 'Makan soto sapi 🍲';
+        c.bubbleTimer = 140;
+      }
+    }
+
+    // 9. 3D RAYCASTING & TOUCH INTERACTION
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    let selectedChar = null;
+
+    window.addEventListener('click', onDocumentClick);
+    function onDocumentClick(event) {
+      // Ignore click on UI buttons
+      if (event.target.closest('header') || event.target.closest('footer') || event.target.closest('#charCard')) return;
+
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(charMeshes, false);
+
+      if (intersects.length > 0) {
+        const charData = intersects[0].object.userData.config;
+        selectedChar = characters3D.find(c => c.id === charData.id);
+        openCard3D(selectedChar);
       } else {
         closeCard();
       }
-    });
+    }
 
-    function openCard(c) {
+    function openCard3D(c) {
       const card = document.getElementById('charCard');
       document.getElementById('cardName').innerText = c.name;
       document.getElementById('cardAvatar').innerText = c.avatar;
       document.getElementById('cardRoleBadge').innerText = c.role;
-      document.getElementById('cardStatus').innerText = `"${c.statusText}"`;
+      document.getElementById('cardStatus').innerText = `"${c.bubble}"`;
 
       const actionMap = {
         bossing: (c.id === 'ty') ? '👑 Duduk Memantau Bersama Eliie' : '🌸 Duduk Memerintah Bersama Ty',
         sleeping_couple: '🛏️ Tidur Berdua di Kasur King Size Kamar Pribadi',
-        working: '💻 Sedang Fokus Bekerja di Meja PC',
-        walking: '🚶 Berjalan Keliling Ruangan',
-        coffee: '☕ Menikmati Secangkir Kopi Hangat',
-        sleeping: '😴 Tidur Siang di Kasur Staf',
+        working: '💻 Sedang Fokus Bekerja di Meja PC 3D',
+        coffee: '☕ Menikmati Kopi Hangat',
+        sleeping: '😴 Tidur Siang di Lounge',
         eating: '🍲 Makan Soto Kudus Pak Yono'
       };
       document.getElementById('cardAction').innerText = actionMap[c.state] || 'Santai';
 
-      card.classList.remove('translate-y-40', 'opacity-0', 'pointer-events-none');
+      card.classList.remove('translate-y-48', 'opacity-0', 'pointer-events-none');
       card.classList.add('translate-y-0', 'opacity-100');
     }
 
     function closeCard() {
       const card = document.getElementById('charCard');
-      card.classList.add('translate-y-40', 'opacity-0', 'pointer-events-none');
+      card.classList.add('translate-y-48', 'opacity-0', 'pointer-events-none');
       card.classList.remove('translate-y-0', 'opacity-100');
       selectedChar = null;
     }
@@ -910,13 +983,11 @@
     function interactCouple() {
       if (!selectedChar) return;
       if (selectedChar.id === 'ty' || selectedChar.id === 'eliie') {
-        const ty = characters.find(c => c.id === 'ty');
-        const eliie = characters.find(c => c.id === 'eliie');
-        ty.bubble = 'I love you sayang! ❤️';
-        eliie.bubble = 'Love you more Ty! 🥰💕';
-        ty.bubbleTimer = 220;
-        eliie.bubbleTimer = 220;
-        showToast('Ty & Eliie saling memeluk penuh cinta! 💖✨');
+        tyChar.bubble = 'I love you sayang! ❤️';
+        eliieChar.bubble = 'Love you more Ty! 🥰💕';
+        tyChar.bubbleTimer = 220;
+        eliieChar.bubbleTimer = 220;
+        showToast('Ty & Eliie saling memeluk penuh cinta di ruang 3D! 💖✨');
       } else {
         selectedChar.bubble = 'Hehehe makasih perhatiannya Ty! 🥰';
         selectedChar.bubbleTimer = 200;
@@ -927,126 +998,105 @@
 
     function boostCoffee() {
       if (!selectedChar) return;
-      selectedChar.bubble = 'Makasih kopinya Ty! ☕✨';
+      selectedChar.bubble = 'Makasih kopinya Ty! ☕⚡';
       selectedChar.bubbleTimer = 200;
-      showToast(`${selectedChar.name} menikmati kopi hangat! ☕⚡`);
+      showToast(`${selectedChar.name} menikmati kopi hangat! ☕✨`);
       closeCard();
     }
 
-    // CONTROL BAR FUNCTIONS
-    function triggerCoupleBed() {
-      const ty = characters.find(c => c.id === 'ty');
-      const eliie = characters.find(c => c.id === 'eliie');
+    // 10. DOCK BUTTON ACTIONS
+    function triggerCoupleBed3D() {
+      tyChar.targetX = 6.2;
+      tyChar.targetZ = -8;
+      tyChar.state = 'sleeping_couple';
+      tyChar.bubble = 'Tidur bareng di kasur King Size ya sayang... 🛏️❤️';
+      tyChar.bubbleTimer = 240;
 
-      // Move Ty and Eliie side by side to King Size Bed
-      ty.targetX = ZONES.coupleBed.x * canvas.width - 12;
-      ty.targetY = ZONES.coupleBed.y * canvas.height;
-      ty.nextState = 'sleeping_couple';
-      ty.state = 'walking';
-      ty.bubble = 'Tidur bareng ya sayang... 🛏️❤️';
-      ty.bubbleTimer = 200;
+      eliieChar.targetX = 8.8;
+      eliieChar.targetZ = -8;
+      eliieChar.state = 'sleeping_couple';
+      eliieChar.bubble = 'Iya suamiku, peluk aku ya... 🥰💤';
+      eliieChar.bubbleTimer = 240;
 
-      eliie.targetX = ZONES.coupleBed.x * canvas.width + 12;
-      eliie.targetY = ZONES.coupleBed.y * canvas.height;
-      eliie.nextState = 'sleeping_couple';
-      eliie.state = 'walking';
-      eliie.bubble = 'Iya sayang, peluk aku ya... 🥰💤';
-      eliie.bubbleTimer = 200;
+      // Animate Camera to focus smoothly on couple bed
+      gsap.to(camera.position, { x: 7.5, y: 12, z: 2, duration: 1.5, ease: 'power2.out' });
+      gsap.to(controls.target, { x: 7.5, y: 1, z: -8, duration: 1.5, ease: 'power2.out' });
 
-      showToast('Ty & Eliie masuk kamar pribadi dan tidur bareng di kasur King Size! 🛏️💕');
+      showToast('Ty & Eliie masuk kamar pribadi VIP dan tidur bareng di kasur King Size 3D! 🛏️💕');
     }
 
-    function triggerBossCommand() {
-      const ty = characters.find(c => c.id === 'ty');
-      const eliie = characters.find(c => c.id === 'eliie');
+    function triggerBossCommand3D() {
+      tyChar.targetX = -5.2;
+      tyChar.targetZ = -7.5;
+      tyChar.state = 'bossing';
+      tyChar.bubble = 'Ayo tim, tuntaskan target kita hari ini! 👑';
+      tyChar.bubbleTimer = 240;
 
-      // Return both to Couple Desk if asleep
-      ty.targetX = canvas.width * 0.28;
-      ty.targetY = canvas.height * 0.22;
-      ty.nextState = 'bossing';
-      ty.state = 'walking';
-      ty.bubble = 'Ayo tim, tuntaskan target kita! 👑';
-      ty.bubbleTimer = 240;
+      eliieChar.targetX = -2.8;
+      eliieChar.targetZ = -7.5;
+      eliieChar.state = 'bossing';
+      eliieChar.bubble = 'Laksanakan arahan Ty ya seluruh staf! 👑✨';
+      eliieChar.bubbleTimer = 240;
 
-      eliie.targetX = canvas.width * 0.44;
-      eliie.targetY = canvas.height * 0.22;
-      eliie.nextState = 'bossing';
-      eliie.state = 'walking';
-      eliie.bubble = 'Laksanakan arahan Ty ya staf! 👑✨';
-      eliie.bubbleTimer = 240;
-
-      characters.filter(c => !c.isOwner && !c.isBoss).forEach(c => {
+      characters3D.filter(c => !c.isVIP).forEach(c => {
         c.bubble = 'Siap Bos Ty & Bos Eliie! 🫡';
         c.bubbleTimer = 200;
       });
 
-      showToast('👑 Owner Ty & Bos Eliie memberi perintah ke seluruh staf!');
+      showToast('👑 Owner Ty & Bos Eliie menyerukan perintah ke seluruh tim!');
     }
 
-    function triggerWorkAll() {
-      const ty = characters.find(c => c.id === 'ty');
-      const eliie = characters.find(c => c.id === 'eliie');
-
-      ty.targetX = canvas.width * 0.28;
-      ty.targetY = canvas.height * 0.22;
-      ty.nextState = 'bossing';
-      ty.state = 'walking';
-
-      eliie.targetX = canvas.width * 0.44;
-      eliie.targetY = canvas.height * 0.22;
-      eliie.nextState = 'bossing';
-      eliie.state = 'walking';
-
-      characters.filter(c => !c.isOwner && !c.isBoss).forEach(c => {
-        const desk = ZONES.staffDesks.find(d => d.id === c.deskId);
-        if (desk) {
-          c.targetX = desk.x * canvas.width;
-          c.targetY = desk.y * canvas.height;
-          c.nextState = 'working';
-          c.state = 'walking';
-          c.bubble = 'Fokus kerja lagi! 💻';
-          c.bubbleTimer = 180;
-        }
+    function triggerWorkAll3D() {
+      triggerBossCommand3D();
+      characters3D.filter(c => !c.isVIP).forEach(c => {
+        c.targetX = c.deskX;
+        c.targetZ = c.deskZ;
+        c.state = 'working';
+        c.bubble = 'Fokus kerja lagi di PC! 💻';
+        c.bubbleTimer = 180;
       });
-      showToast('Semua kembali fokus bekerja di meja masing-masing! 💻🚀');
+      showToast('Semua staf kembali fokus bekerja di meja masing-masing! 💻🚀');
     }
 
-    function triggerNapAll() {
-      // Put Ty & Eliie in King Bed
-      triggerCoupleBed();
-
-      // Put staff in staff beds
-      characters.filter(c => !c.isOwner && !c.isBoss).forEach((c, idx) => {
-        const bed = ZONES.staffBeds[idx % ZONES.staffBeds.length];
-        c.targetX = bed.x * canvas.width;
-        c.targetY = bed.y * canvas.height;
-        c.nextState = 'sleeping';
-        c.state = 'walking';
+    function triggerNapAll3D() {
+      triggerCoupleBed3D();
+      const bedsX = [-8, -3, 3, 8];
+      characters3D.filter(c => !c.isVIP).forEach((c, idx) => {
+        c.targetX = bedsX[idx % bedsX.length];
+        c.targetZ = 14.5;
+        c.state = 'sleeping';
         c.bubble = 'Bobo dulu yaa... 💤';
         c.bubbleTimer = 180;
       });
-      showToast('Seluruh kantor dan kamar pribadi masuk waktu tidur! 😴💤');
+      showToast('Seluruh kantor dan kamar VIP masuk waktu tidur 3D! 😴💤');
     }
 
-    function triggerSotoParty() {
-      characters.filter(c => !c.isOwner && !c.isBoss).forEach(c => {
-        c.targetX = ZONES.sotoTable.x * canvas.width + (Math.random() * 40 - 20);
-        c.targetY = ZONES.sotoTable.y * canvas.height + (Math.random() * 20 - 10);
-        c.nextState = 'eating';
-        c.state = 'walking';
-        c.bubble = 'Pesta Soto Pak Yono! 🍲😋';
+    function triggerSotoParty3D() {
+      characters3D.filter(c => !c.isVIP).forEach(c => {
+        c.targetX = -8.5 + (Math.random() * 2 - 1);
+        c.targetZ = 2.5 + (Math.random() * 2 - 1);
+        c.state = 'eating';
+        c.bubble = 'Pesta Soto Kudus Pak Yono! 🍲😋';
         c.bubbleTimer = 220;
       });
       showToast('Pesta Soto Kudus Pak Yono di ruang staf dimulai! 🍲🎉');
     }
 
-    // GAME LOOP
-    function gameLoop() {
-      updateAI();
-      drawOffice();
-      requestAnimationFrame(gameLoop);
+    // 11. Responsive Resize & Render Animation Loop
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      updateAI3D();
+      updateSpeechBubbles3D();
+      renderer.render(scene, camera);
     }
-    requestAnimationFrame(gameLoop);
+    animate();
   </script>
 </body>
 </html>
