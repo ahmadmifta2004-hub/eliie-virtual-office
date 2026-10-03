@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-mansion-v2';
+const CACHE_NAME = 'eliie-office-turbo-v3';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

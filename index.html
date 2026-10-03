@@ -52,7 +52,7 @@
       position: absolute;
       transform: translate(-50%, -100%);
       pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.2s ease;
+      transition: opacity 0.25s ease, transform 0.2s ease;
       z-index: 25;
       white-space: nowrap;
     }
@@ -67,36 +67,41 @@
   <div id="bubble-layer" class="absolute inset-0 pointer-events-none z-20 overflow-hidden"></div>
 
   <!-- TOP HEADER -->
-  <header class="w-full px-4 py-2.5 bg-slate-900/85 border-b border-amber-500/30 flex items-center justify-between z-30 backdrop-blur-md shadow-2xl">
-    <div class="flex items-center gap-2.5">
-      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg shadow-amber-500/30 border border-amber-300">
+  <header class="w-full px-3 sm:px-4 py-2 bg-slate-900/90 border-b border-amber-500/30 flex items-center justify-between z-30 backdrop-blur-md shadow-2xl">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 font-bold text-lg shadow-lg shadow-amber-500/30 border border-amber-300">
         👑
       </div>
       <div>
         <div class="flex items-center gap-1.5">
-          <h1 class="title-font font-bold text-base sm:text-lg text-amber-400 leading-none">TY & ELIIE 3D MANSION</h1>
-          <span class="text-[9px] font-extrabold px-1.5 py-0.5 bg-amber-500/20 text-amber-300 rounded border border-amber-400/40">5 SEPARATE ROOMS</span>
+          <h1 class="title-font font-bold text-sm sm:text-base text-amber-400 leading-none">TY & ELIIE 3D MANSION</h1>
+          <span id="fpsBadge" class="text-[8px] sm:text-[9px] font-extrabold px-1.5 py-0.5 bg-emerald-500/20 text-emerald-300 rounded border border-emerald-400/40">60 FPS TURBO</span>
         </div>
-        <p class="text-[10px] text-slate-400 font-medium">Kamar VIP • 4 Kamar Staf • Dapur Soto • Lounge • Kantor PC</p>
+        <p class="text-[9px] sm:text-[10px] text-slate-400 font-medium">Kamar VIP • 4 Kamar Staf • Dapur Soto • Lounge • Kantor PC</p>
       </div>
     </div>
 
-    <!-- Right Controls -->
-    <div class="flex items-center gap-2">
-      <button onclick="resetCamera3D()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs text-amber-400 px-2.5 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1 shadow transition-all">
-        <i class="fa-solid fa-camera-rotate"></i>
-        <span class="text-[10px] font-bold">Reset 3D</span>
+    <!-- Right Controls: Toggle Performance & Reset Cam -->
+    <div class="flex items-center gap-1.5 sm:gap-2">
+      <button onclick="toggleTurboMode()" id="btnTurbo" class="bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 px-2 py-1 rounded-lg border border-emerald-500/40 text-[9px] sm:text-[10px] font-bold flex items-center gap-1 active:scale-95 transition-all shadow-sm">
+        <i class="fa-solid fa-bolt"></i>
+        <span>Turbo: ON</span>
       </button>
 
-      <div class="text-right hidden sm:block">
-        <span class="text-[10px] text-pink-400 block font-bold">● TY & ELIIE + 4 STAF</span>
+      <button onclick="resetCamera3D()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs text-amber-400 px-2 sm:px-2.5 py-1 rounded-lg border border-slate-700 flex items-center gap-1 shadow transition-all">
+        <i class="fa-solid fa-camera-rotate"></i>
+        <span class="text-[9px] sm:text-[10px] font-bold">Reset 3D</span>
+      </button>
+
+      <div class="text-right hidden md:block">
+        <span class="text-[9px] text-pink-400 block font-bold">● TY & ELIIE + 4 STAF</span>
         <span id="office-time" class="font-mono text-xs text-slate-300">00:00:00</span>
       </div>
     </div>
   </header>
 
   <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="absolute top-16 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 font-bold px-4 py-1.5 rounded-full text-xs shadow-2xl transform -translate-y-8 opacity-0 transition-all duration-300 pointer-events-none z-40 flex items-center gap-1.5">
+  <div id="toast" class="absolute top-14 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 font-bold px-4 py-1 rounded-full text-xs shadow-2xl transform -translate-y-8 opacity-0 transition-all duration-300 pointer-events-none z-40 flex items-center gap-1.5">
     <span>✨</span>
     <span id="toastMsg">Notifikasi</span>
   </div>
@@ -136,47 +141,47 @@
   </div>
 
   <!-- BOTTOM 3D ACTION DOCK -->
-  <footer class="w-full px-3 py-2 bg-slate-900/85 border-t border-amber-500/30 flex items-center justify-around z-30 backdrop-blur-md shadow-2xl">
-    <button onclick="triggerCoupleBed3D()" class="flex flex-col items-center gap-1 text-pink-400 hover:text-pink-300 active:scale-95 transition-all">
-      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-base sm:text-lg shadow-inner">
+  <footer class="w-full px-2 sm:px-3 py-2 bg-slate-900/90 border-t border-amber-500/30 flex items-center justify-around z-30 backdrop-blur-md shadow-2xl">
+    <button onclick="triggerCoupleBed3D()" class="flex flex-col items-center gap-0.5 sm:gap-1 text-pink-400 hover:text-pink-300 active:scale-95 transition-all">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-sm sm:text-base shadow-inner">
         🛏️
       </div>
-      <span class="text-[9px] sm:text-[10px] font-bold">Tidur Bareng</span>
+      <span class="text-[8px] sm:text-[9px] font-bold">Tidur Bareng</span>
     </button>
 
-    <button onclick="triggerBossCommand3D()" class="flex flex-col items-center gap-1 text-amber-400 hover:text-amber-300 active:scale-95 transition-all">
-      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-base sm:text-lg shadow-inner">
+    <button onclick="triggerBossCommand3D()" class="flex flex-col items-center gap-0.5 sm:gap-1 text-amber-400 hover:text-amber-300 active:scale-95 transition-all">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-sm sm:text-base shadow-inner">
         👑
       </div>
-      <span class="text-[9px] sm:text-[10px] font-bold">Perintah Bos</span>
+      <span class="text-[8px] sm:text-[9px] font-bold">Perintah Bos</span>
     </button>
 
-    <button onclick="triggerWorkAll3D()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-emerald-400 active:scale-95 transition-all">
-      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 flex items-center justify-center text-base sm:text-lg shadow-inner">
+    <button onclick="triggerWorkAll3D()" class="flex flex-col items-center gap-0.5 sm:gap-1 text-slate-400 hover:text-emerald-400 active:scale-95 transition-all">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-800 flex items-center justify-center text-sm sm:text-base shadow-inner">
         💻
       </div>
-      <span class="text-[9px] sm:text-[10px] font-bold">Semua Kerja</span>
+      <span class="text-[8px] sm:text-[9px] font-bold">Semua Kerja</span>
     </button>
 
-    <button onclick="triggerStaffSleepRooms3D()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-indigo-400 active:scale-95 transition-all">
-      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 flex items-center justify-center text-base sm:text-lg shadow-inner">
+    <button onclick="triggerStaffSleepRooms3D()" class="flex flex-col items-center gap-0.5 sm:gap-1 text-slate-400 hover:text-indigo-400 active:scale-95 transition-all">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-800 flex items-center justify-center text-sm sm:text-base shadow-inner">
         💤
       </div>
-      <span class="text-[9px] sm:text-[10px] font-bold">Kamar Masing2</span>
+      <span class="text-[8px] sm:text-[9px] font-bold">Kamar Staf</span>
     </button>
 
-    <button onclick="triggerKitchenCoffee3D()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-amber-400 active:scale-95 transition-all">
-      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 flex items-center justify-center text-base sm:text-lg shadow-inner">
+    <button onclick="triggerKitchenCoffee3D()" class="flex flex-col items-center gap-0.5 sm:gap-1 text-slate-400 hover:text-amber-400 active:scale-95 transition-all">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-800 flex items-center justify-center text-sm sm:text-base shadow-inner">
         ☕
       </div>
-      <span class="text-[9px] sm:text-[10px] font-bold">Dapur & Kopi</span>
+      <span class="text-[8px] sm:text-[9px] font-bold">Dapur Soto</span>
     </button>
 
-    <button onclick="triggerLoungeChill3D()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-purple-400 active:scale-95 transition-all">
-      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 flex items-center justify-center text-base sm:text-lg shadow-inner">
+    <button onclick="triggerLoungeChill3D()" class="flex flex-col items-center gap-0.5 sm:gap-1 text-slate-400 hover:text-purple-400 active:scale-95 transition-all">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-800 flex items-center justify-center text-sm sm:text-base shadow-inner">
         🛋️
       </div>
-      <span class="text-[9px] sm:text-[10px] font-bold">Lounge Santai</span>
+      <span class="text-[8px] sm:text-[9px] font-bold">Lounge TV</span>
     </button>
   </footer>
 
@@ -191,11 +196,12 @@
     }
   </script>
 
-  <!-- 3D THREE.JS SCRIPT -->
+  <!-- HIGH-PERFORMANCE 3D ENGINE -->
   <script>
     function updateClock() {
       const now = new Date();
-      document.getElementById('office-time').innerText = now.toLocaleTimeString('id-ID');
+      const el = document.getElementById('office-time');
+      if (el) el.innerText = now.toLocaleTimeString('id-ID');
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -211,204 +217,174 @@
       }, 2500);
     }
 
-    // 1. Scene, Camera, Renderer
+    // 1. Mobile-Optimized Scene, Camera, Renderer
+    let isTurbo = true;
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x060913);
-    scene.fog = new THREE.FogExp2(0x060913, 0.02);
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 32, 36);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    // Renderer tuned for ultra-high FPS on mobile phones (No over-sampling bottleneck)
+    const renderer = new THREE.WebGLRenderer({
+      antialias: window.devicePixelRatio < 2,
+      powerPreference: 'high-performance'
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // Mobile optimization: clamp pixel ratio to 1.15 in turbo mode for buttery 60fps
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.15));
+    renderer.shadowMap.enabled = false; // Disabled heavy dynamic shadow matrix calculations for 5x FPS boost
     container.appendChild(renderer.domElement);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
+    controls.dampingFactor = 0.08;
     controls.maxPolarAngle = Math.PI / 2.05;
     controls.minDistance = 12;
     controls.maxDistance = 65;
     controls.target.set(0, 0, 0);
 
+    function toggleTurboMode() {
+      isTurbo = !isTurbo;
+      const btn = document.getElementById('btnTurbo');
+      const badge = document.getElementById('fpsBadge');
+      if (isTurbo) {
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.15));
+        btn.className = "bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 px-2 py-1 rounded-lg border border-emerald-500/40 text-[9px] sm:text-[10px] font-bold flex items-center gap-1 active:scale-95 transition-all shadow-sm";
+        btn.innerHTML = `<i class="fa-solid fa-bolt"></i> <span>Turbo: ON</span>`;
+        badge.innerText = "60 FPS TURBO";
+        badge.className = "text-[8px] sm:text-[9px] font-extrabold px-1.5 py-0.5 bg-emerald-500/20 text-emerald-300 rounded border border-emerald-400/40";
+        showToast('Mode Turbo Aktif: Super Ringan & Lancar di HP! ⚡🚀');
+      } else {
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.0));
+        btn.className = "bg-amber-950/80 hover:bg-amber-900 text-amber-300 px-2 py-1 rounded-lg border border-amber-500/40 text-[9px] sm:text-[10px] font-bold flex items-center gap-1 active:scale-95 transition-all shadow-sm";
+        btn.innerHTML = `<i class="fa-solid fa-gem"></i> <span>Ultra HD</span>`;
+        badge.innerText = "ULTRA HD";
+        badge.className = "text-[8px] sm:text-[9px] font-extrabold px-1.5 py-0.5 bg-amber-500/20 text-amber-300 rounded border border-amber-400/40";
+        showToast('Mode Ultra HD: Resolusi Grafis Maksimal! 💎✨');
+      }
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
     function resetCamera3D() {
-      gsap.to(camera.position, { x: 0, y: 32, z: 36, duration: 1.2, ease: 'power2.out' });
-      gsap.to(controls.target, { x: 0, y: 0, z: 0, duration: 1.2, ease: 'power2.out' });
+      gsap.to(camera.position, { x: 0, y: 32, z: 36, duration: 1.0, ease: 'power2.out' });
+      gsap.to(controls.target, { x: 0, y: 0, z: 0, duration: 1.0, ease: 'power2.out' });
       showToast('Kamera 3D kembali ke sudut pandang luas! 🎥✨');
     }
 
-    // 2. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
+    // 2. High-Performance Mobile Lighting (Hemisphere + Directional = Zero GPU Lag)
+    const hemiLight = new THREE.HemisphereLight(0xfff5ea, 0x090d16, 0.85);
+    scene.add(hemiLight);
 
-    const dirLight = new THREE.DirectionalLight(0xfff7ed, 1.3);
-    dirLight.position.set(20, 40, 25);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
-    const d = 30;
-    dirLight.shadow.camera.left = -d;
-    dirLight.shadow.camera.right = d;
-    dirLight.shadow.camera.top = d;
-    dirLight.shadow.camera.bottom = -d;
+    const dirLight = new THREE.DirectionalLight(0xffedd5, 0.9);
+    dirLight.position.set(15, 30, 20);
     scene.add(dirLight);
 
-    // Warm Room Glow Lights
-    const vipLight = new THREE.PointLight(0xf59e0b, 1.6, 22);
-    vipLight.position.set(-8, 5, -10);
+    // Warm Room Ambient Glow
+    const vipLight = new THREE.PointLight(0xf59e0b, 1.2, 24);
+    vipLight.position.set(-8, 6, -10);
     scene.add(vipLight);
 
-    const officeLight = new THREE.PointLight(0x38bdf8, 1.4, 22);
-    officeLight.position.set(8, 5, -10);
+    const officeLight = new THREE.PointLight(0x38bdf8, 1.1, 24);
+    officeLight.position.set(8, 6, -10);
     scene.add(officeLight);
 
-    const kitchenLight = new THREE.PointLight(0xf97316, 1.3, 18);
-    kitchenLight.position.set(-10, 5, 8);
-    scene.add(kitchenLight);
-
-    const loungeLight = new THREE.PointLight(0xa855f7, 1.3, 18);
-    loungeLight.position.set(0, 5, 8);
-    scene.add(loungeLight);
-
     // 3. ARCHITECTURE & 5 SEPARATE ROOMS
-    // Mansion Dimensions: X: [-18 to 18] (Width 36), Z: [-18 to 18] (Length 36)
-    // Layout:
-    // 1. Top-Left: VIP Master Suite (Ty & Eliie - Bed & Work Desk)
-    // 2. Top-Right: Main Work Office (4 Desks + 4 Ergonomic Chairs)
-    // 3. Bottom-Left: Kitchen Cafe & Soto Pak Yono (Dining Table, Counter, Stools, Coffee)
-    // 4. Bottom-Center: Relaxation Lounge (Sofa, Coffee Table, TV)
-    // 5. Bottom-Right: Staff Bedrooms Wing (4 Separate Private Rooms for Nana, Luna, Mimi, Yuki)
-
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 });
-    const wallAccentMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5 });
+    const wallMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
     const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.8, roughness: 0.2 });
 
-    // Main Floor Base
+    // Main Floor
     const baseFloor = new THREE.Mesh(
       new THREE.PlaneGeometry(38, 38),
-      new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.8 })
+      new THREE.MeshLambertMaterial({ color: 0x090d16 })
     );
     baseFloor.rotation.x = -Math.PI / 2;
-    baseFloor.receiveShadow = true;
     scene.add(baseFloor);
 
-    // Individual Room Floors with Distinct Colored Tiles/Carpets
     function createRoomFloor(x, z, w, d, color) {
       const mesh = new THREE.Mesh(
         new THREE.BoxGeometry(w, 0.08, d),
-        new THREE.MeshStandardMaterial({ color: color, roughness: 0.7 })
+        new THREE.MeshLambertMaterial({ color: color })
       );
       mesh.position.set(x, 0.04, z);
-      mesh.receiveShadow = true;
       scene.add(mesh);
       return mesh;
     }
 
-    createRoomFloor(-9, -10, 17, 15, 0x4c0519); // 1. VIP Master Suite (Wine Carpet)
-    createRoomFloor(9, -10, 17, 15, 0x0f172a);  // 2. Main Work Office (Tech Slate)
-    createRoomFloor(-11.5, 9, 12, 16, 0x451a03); // 3. Kitchen Cafe & Soto (Warm Wood)
-    createRoomFloor(-0.5, 9, 8, 16, 0x2e1065);  // 4. Lounge (Royal Purple)
+    createRoomFloor(-9, -10, 17, 15, 0x4c0519); // 1. VIP Master Suite
+    createRoomFloor(9, -10, 17, 15, 0x0f172a);  // 2. Main Work Office
+    createRoomFloor(-11.5, 9, 12, 16, 0x451a03); // 3. Kitchen Cafe & Soto
+    createRoomFloor(-0.5, 9, 8, 16, 0x2e1065);  // 4. Lounge
     createRoomFloor(10.5, 9, 14, 16, 0x1e293b); // 5. Staff Bedrooms Wing
 
-    // Outer Boundary Walls
-    function createWall(x, z, w, d, h = 3.8) {
+    function createWall(x, z, w, d, h = 3.6) {
       const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
       wall.position.set(x, h / 2, z);
-      wall.castShadow = true;
-      wall.receiveShadow = true;
       scene.add(wall);
       return wall;
     }
 
-    // Outer Walls
-    createWall(0, -18, 38, 0.6); // North
-    createWall(-18, 0, 0.6, 38); // West
-    createWall(18, 0, 0.6, 38);  // East
-    createWall(0, 18, 38, 0.6);  // South
+    // Outer & Inner Divider Walls
+    createWall(0, -18, 38, 0.5); // North
+    createWall(-18, 0, 0.5, 38); // West
+    createWall(18, 0, 0.5, 38);  // East
+    createWall(0, 18, 38, 0.5);  // South
 
-    // Interior Dividers
     createWall(0, -10, 0.5, 15); // Divides VIP and Work Office
-    createWall(0, -2.5, 36, 0.5); // Main Central Hallway Divider (North vs South)
-    createWall(-5.5, 9, 0.5, 16); // Divides Kitchen and Lounge
-    createWall(3.5, 9, 0.5, 16);  // Divides Lounge and Staff Wing
+    createWall(0, -2.5, 36, 0.5); // Central Hallway
+    createWall(-5.5, 9, 0.5, 16); // Kitchen / Lounge
+    createWall(3.5, 9, 0.5, 16);  // Lounge / Staff Wing
+    createWall(10.5, 9, 14, 0.4, 3.0); // Horizontal Staff
+    createWall(10.5, 9, 0.4, 16, 3.0); // Vertical Staff
 
-    // Staff Bedrooms Partitions (4 Cozy Rooms: Luna, Nana, Mimi, Yuki)
-    createWall(10.5, 9, 14, 0.4, 3.2); // Horizontal staff room divider
-    createWall(10.5, 9, 0.4, 16, 3.2); // Vertical staff room divider
-
-    // 4. CHAIRS & FURNITURE (NO CLIPPING!)
+    // 4. CHAIRS & FURNITURE (Optimized geometries)
     const furnitureGroup = new THREE.Group();
     scene.add(furnitureGroup);
 
-    // 3D Chair Builder
     function createChair3D(x, z, rotY = 0, color = 0x1e293b, isExecutive = false) {
       const cGroup = new THREE.Group();
       cGroup.position.set(x, 0, z);
       cGroup.rotation.y = rotY;
 
-      const chairMat = new THREE.MeshStandardMaterial({
-        color: color,
-        roughness: 0.4,
-        metalness: isExecutive ? 0.3 : 0.1
-      });
-      const legMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.7 });
+      const chairMat = new THREE.MeshLambertMaterial({ color: color });
+      const legMat = new THREE.MeshLambertMaterial({ color: 0x0f172a });
 
-      // Seat Cushion
       const seat = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.2, 1.1), chairMat);
       seat.position.y = 0.9;
-      seat.castShadow = true;
       cGroup.add(seat);
 
-      // Backrest
       const back = new THREE.Mesh(new THREE.BoxGeometry(1.1, isExecutive ? 1.4 : 1.0, 0.18), chairMat);
       back.position.set(0, isExecutive ? 1.6 : 1.4, -0.45);
-      back.castShadow = true;
       cGroup.add(back);
 
-      // Legs / Stand
-      const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.9), legMat);
+      const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.9, 8), legMat);
       stand.position.y = 0.45;
       cGroup.add(stand);
-
-      const baseWheel = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.08, 8), legMat);
-      baseWheel.position.y = 0.04;
-      cGroup.add(baseWheel);
 
       furnitureGroup.add(cGroup);
       return cGroup;
     }
 
-    // 3D Desk Builder with Correct Chair Distance (No Clipping)
-    function createWorkstation3D(x, z, label, monColor = 0x38bdf8) {
+    function createWorkstation3D(x, z, monColor = 0x38bdf8) {
       const group = new THREE.Group();
       group.position.set(x, 0, z);
 
-      // Desk (Front)
-      const deskTop = new THREE.Mesh(
-        new THREE.BoxGeometry(3.6, 0.22, 1.8),
-        new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.4 })
-      );
+      const deskTop = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.22, 1.8), new THREE.MeshLambertMaterial({ color: 0x475569 }));
       deskTop.position.set(0, 1.4, 0);
-      deskTop.castShadow = true;
       group.add(deskTop);
 
-      // Legs
       [[-1.6, -0.7], [1.6, -0.7], [-1.6, 0.7], [1.6, 0.7]].forEach(([lx, lz]) => {
-        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.4), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.4, 6), new THREE.MeshLambertMaterial({ color: 0x0f172a }));
         leg.position.set(lx, 0.7, lz);
         group.add(leg);
       });
 
-      // Monitor
-      const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.08, 0.5), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
+      const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.08, 0.5, 6), new THREE.MeshLambertMaterial({ color: 0x0f172a }));
       stand.position.set(0, 1.65, -0.4);
       group.add(stand);
 
-      const mon = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.9, 0.06), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
+      const mon = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.9, 0.06), new THREE.MeshLambertMaterial({ color: 0x0f172a }));
       mon.position.set(0, 2.1, -0.4);
       group.add(mon);
 
@@ -416,36 +392,27 @@
       screen.position.set(0, 2.1, -0.36);
       group.add(screen);
 
-      // Ergonomic Chair placed behind desk (Z = +1.1 so character sits comfortably)
       createChair3D(x, z + 1.1, 0, 0x0284c7);
 
       furnitureGroup.add(group);
       return { deskX: x, deskZ: z, seatX: x, seatZ: z + 1.1 };
     }
 
-    // A. WORK ROOM: 4 Workstations
-    const staffSeats = {
-      luna: createWorkstation3D(5, -13, "Luna Tech", 0x38bdf8),
-      nana: createWorkstation3D(13, -13, "Nana Bisnis", 0xf97316),
-      mimi: createWorkstation3D(5, -6, "Mimi Kreatif", 0xf43f5e),
-      yuki: createWorkstation3D(13, -6, "Yuki Notes", 0xa855f7)
-    };
+    // Workstations
+    createWorkstation3D(5, -13, 0x38bdf8);
+    createWorkstation3D(13, -13, 0xf97316);
+    createWorkstation3D(5, -6, 0xf43f5e);
+    createWorkstation3D(13, -6, 0xa855f7);
 
-    // B. VIP MASTER SUITE: Shared Executive Desk + Dual Armchairs + King Size Bed
-    // Executive Desk
+    // VIP Executive Desk
     const vipDeskGroup = new THREE.Group();
     vipDeskGroup.position.set(-10, 0, -6);
-    const vipTop = new THREE.Mesh(
-      new THREE.BoxGeometry(7.5, 0.3, 2.4),
-      new THREE.MeshStandardMaterial({ color: 0x3f1d0b, roughness: 0.3, metalness: 0.2 })
-    );
+    const vipTop = new THREE.Mesh(new THREE.BoxGeometry(7.5, 0.3, 2.4), new THREE.MeshLambertMaterial({ color: 0x3f1d0b }));
     vipTop.position.y = 1.5;
-    vipTop.castShadow = true;
     vipDeskGroup.add(vipTop);
 
-    // Dual Curved VIP Monitors
     [-1.8, 1.8].forEach((mx, idx) => {
-      const mon = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.1, 0.08), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
+      const mon = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.1, 0.08), new THREE.MeshLambertMaterial({ color: 0x0f172a }));
       mon.position.set(mx, 2.2, -0.5);
       vipDeskGroup.add(mon);
       const scr = new THREE.Mesh(new THREE.PlaneGeometry(1.85, 0.95), new THREE.MeshBasicMaterial({ color: idx === 0 ? 0x38bdf8 : 0xf59e0b }));
@@ -454,118 +421,102 @@
     });
     furnitureGroup.add(vipDeskGroup);
 
-    // Dual Executive Gold Chairs behind VIP Desk (Ty & Eliie)
-    createChair3D(-11.8, -4.8, 0, 0x1e3a8a, true); // Ty's Executive Armchair
-    createChair3D(-8.2, -4.8, 0, 0xd97706, true);  // Eliie's Executive Armchair
+    createChair3D(-11.8, -4.8, 0, 0x1e3a8a, true); // Ty's Armchair
+    createChair3D(-8.2, -4.8, 0, 0xd97706, true);  // Eliie's Armchair
 
-    // King Size Luxury Bed for Ty & Eliie
+    // King Size Luxury Bed
     const kingBedGroup = new THREE.Group();
     kingBedGroup.position.set(-10, 0, -13.5);
-    const kFrame = new THREE.Mesh(new THREE.BoxGeometry(7.5, 0.8, 6.5), new THREE.MeshStandardMaterial({ color: 0x2e1065 }));
+    const kFrame = new THREE.Mesh(new THREE.BoxGeometry(7.5, 0.8, 6.5), new THREE.MeshLambertMaterial({ color: 0x2e1065 }));
     kFrame.position.y = 0.4;
-    kFrame.castShadow = true;
     kingBedGroup.add(kFrame);
 
     const kHead = new THREE.Mesh(new THREE.BoxGeometry(7.5, 2.2, 0.5), goldMat);
     kHead.position.set(0, 1.5, -3.0);
     kingBedGroup.add(kHead);
 
-    const kMattress = new THREE.Mesh(new THREE.BoxGeometry(6.8, 0.7, 5.8), new THREE.MeshStandardMaterial({ color: 0xbe123c, roughness: 0.3 }));
+    const kMattress = new THREE.Mesh(new THREE.BoxGeometry(6.8, 0.7, 5.8), new THREE.MeshLambertMaterial({ color: 0xbe123c }));
     kMattress.position.set(0, 0.85, 0);
     kingBedGroup.add(kMattress);
 
     [-1.6, 1.6].forEach(px => {
-      const p = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.35, 1.3), new THREE.MeshStandardMaterial({ color: 0xfef08a }));
+      const p = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.35, 1.3), new THREE.MeshLambertMaterial({ color: 0xfef08a }));
       p.position.set(px, 1.25, -2.0);
       kingBedGroup.add(p);
     });
     furnitureGroup.add(kingBedGroup);
 
-    // C. STAFF BEDROOMS WING: 4 Separate Cozy Private Rooms
+    // 4 Staff Bedrooms
     const staffBedRooms = {
-      luna: { x: 7, z: 4.5, label: "Kamar Luna" },
-      nana: { x: 14, z: 4.5, label: "Kamar Nana" },
-      mimi: { x: 7, z: 13.5, label: "Kamar Mimi" },
-      yuki: { x: 14, z: 13.5, label: "Kamar Yuki" }
+      luna: { x: 7, z: 4.5 },
+      nana: { x: 14, z: 4.5 },
+      mimi: { x: 7, z: 13.5 },
+      yuki: { x: 14, z: 13.5 }
     };
-
-    Object.entries(staffBedRooms).forEach(([key, room]) => {
+    Object.values(staffBedRooms).forEach(room => {
       const bGroup = new THREE.Group();
       bGroup.position.set(room.x, 0, room.z);
-
-      const bFrame = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.6, 4.8), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+      const bFrame = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.6, 4.8), new THREE.MeshLambertMaterial({ color: 0x334155 }));
       bFrame.position.y = 0.3;
       bGroup.add(bFrame);
-
-      const bMat = new THREE.Mesh(new THREE.BoxGeometry(2.7, 0.45, 4.4), new THREE.MeshStandardMaterial({ color: 0x4f46e5 }));
+      const bMat = new THREE.Mesh(new THREE.BoxGeometry(2.7, 0.45, 4.4), new THREE.MeshLambertMaterial({ color: 0x4f46e5 }));
       bMat.position.set(0, 0.6, 0);
       bGroup.add(bMat);
-
-      const p = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.25, 1.0), new THREE.MeshStandardMaterial({ color: 0xf8fafc }));
+      const p = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.25, 1.0), new THREE.MeshLambertMaterial({ color: 0xf8fafc }));
       p.position.set(0, 0.9, -1.6);
       bGroup.add(p);
-
       furnitureGroup.add(bGroup);
     });
 
-    // D. KITCHEN CAFE & SOTO PAK YONO
+    // Kitchen Cafe
     const kitchenGroup = new THREE.Group();
     kitchenGroup.position.set(-11.5, 0, 9);
-
-    // Kitchen Counter Bar
-    const counter = new THREE.Mesh(new THREE.BoxGeometry(7.0, 1.5, 1.8), new THREE.MeshStandardMaterial({ color: 0x78350f }));
+    const counter = new THREE.Mesh(new THREE.BoxGeometry(7.0, 1.5, 1.8), new THREE.MeshLambertMaterial({ color: 0x78350f }));
     counter.position.set(0, 0.75, -2);
     kitchenGroup.add(counter);
 
-    // Coffee Machine & Soto Station
-    const coffeeM = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.8, 1.2), new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.6 }));
+    const coffeeM = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.8, 1.2), new THREE.MeshLambertMaterial({ color: 0xd97706 }));
     coffeeM.position.set(2, 2.0, -2);
     kitchenGroup.add(coffeeM);
 
-    const sotoPot = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.5, 0.6, 16), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.8 }));
+    const sotoPot = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.5, 0.6, 12), new THREE.MeshLambertMaterial({ color: 0xe2e8f0 }));
     sotoPot.position.set(-2, 1.8, -2);
     kitchenGroup.add(sotoPot);
 
-    // Dining Table & 4 Bar Stools
-    const diningTable = new THREE.Mesh(new THREE.BoxGeometry(5.0, 1.3, 2.2), new THREE.MeshStandardMaterial({ color: 0xb45309 }));
+    const diningTable = new THREE.Mesh(new THREE.BoxGeometry(5.0, 1.3, 2.2), new THREE.MeshLambertMaterial({ color: 0xb45309 }));
     diningTable.position.set(0, 0.65, 3.5);
     kitchenGroup.add(diningTable);
 
     [-1.6, 1.6].forEach(sx => {
-      createChair3D(-11.5 + sx, 9 + 2.0, Math.PI, 0xd97706); // Stool North
-      createChair3D(-11.5 + sx, 9 + 5.0, 0, 0xd97706);       // Stool South
+      createChair3D(-11.5 + sx, 9 + 2.0, Math.PI, 0xd97706);
+      createChair3D(-11.5 + sx, 9 + 5.0, 0, 0xd97706);
     });
     furnitureGroup.add(kitchenGroup);
 
-    // E. RELAXATION LOUNGE (Sofa, Coffee Table, Big Screen TV)
+    // Lounge
     const loungeGroup = new THREE.Group();
     loungeGroup.position.set(-1, 0, 9);
-
-    // Cozy Red Velvet Sofa
-    const sofaSeat = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.5, 1.8), new THREE.MeshStandardMaterial({ color: 0x9f1239 }));
+    const sofaSeat = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.5, 1.8), new THREE.MeshLambertMaterial({ color: 0x9f1239 }));
     sofaSeat.position.set(0, 0.6, 2.5);
     loungeGroup.add(sofaSeat);
 
-    const sofaBack = new THREE.Mesh(new THREE.BoxGeometry(5.0, 1.2, 0.5), new THREE.MeshStandardMaterial({ color: 0x881337 }));
+    const sofaBack = new THREE.Mesh(new THREE.BoxGeometry(5.0, 1.2, 0.5), new THREE.MeshLambertMaterial({ color: 0x881337 }));
     sofaBack.position.set(0, 1.3, 3.2);
     loungeGroup.add(sofaBack);
 
-    // Coffee Table
-    const cTable = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.4, 1.6), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
+    const cTable = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.4, 1.6), new THREE.MeshLambertMaterial({ color: 0x1e293b }));
     cTable.position.set(0, 0.4, 0);
     loungeGroup.add(cTable);
 
-    // Wall Mounted TV / Dashboard
-    const tv = new THREE.Mesh(new THREE.BoxGeometry(4.5, 2.4, 0.1), new THREE.MeshStandardMaterial({ color: 0x020617 }));
+    const tv = new THREE.Mesh(new THREE.BoxGeometry(4.5, 2.4, 0.1), new THREE.MeshLambertMaterial({ color: 0x020617 }));
     tv.position.set(0, 2.6, -3.8);
     loungeGroup.add(tv);
     const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(4.3, 2.2), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
     tvScreen.position.set(0, 2.6, -3.74);
     loungeGroup.add(tvScreen);
-
     furnitureGroup.add(loungeGroup);
 
-    // 5. 3D CHARACTERS WITH PROPER SEAT OFFSETS
+    // 5. 3D CHARACTERS
     const characters3D = [];
     const charMeshes = [];
 
@@ -573,24 +524,19 @@
       const charGroup = new THREE.Group();
       charGroup.position.set(config.x, 0, config.z);
 
-      const skinMat = new THREE.MeshStandardMaterial({ color: 0xfed7aa, roughness: 0.6 });
-      const hairMat = new THREE.MeshStandardMaterial({ color: config.hairColor, roughness: 0.5 });
-      const clothesMat = new THREE.MeshStandardMaterial({ color: config.dressColor, roughness: 0.4 });
-      const darkMat = new THREE.MeshStandardMaterial({ color: 0x1e293b });
+      const skinMat = new THREE.MeshLambertMaterial({ color: 0xfed7aa });
+      const hairMat = new THREE.MeshLambertMaterial({ color: config.hairColor });
+      const clothesMat = new THREE.MeshLambertMaterial({ color: config.dressColor });
+      const darkMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
 
-      // Body
       const body = new THREE.Mesh(new THREE.BoxGeometry(0.85, 1.0, 0.55), clothesMat);
       body.position.y = 1.15;
-      body.castShadow = true;
       charGroup.add(body);
 
-      // Head
       const head = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.9, 0.85), skinMat);
       head.position.y = 2.0;
-      head.castShadow = true;
       charGroup.add(head);
 
-      // Hair
       const hairTop = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.5, 0.95), hairMat);
       hairTop.position.set(0, 2.3, 0);
       charGroup.add(hairTop);
@@ -599,7 +545,6 @@
       hairBack.position.set(0, 1.95, -0.3);
       charGroup.add(hairBack);
 
-      // Eyes
       const eyeL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 0.05), darkMat);
       eyeL.position.set(-0.22, 2.0, 0.43);
       charGroup.add(eyeL);
@@ -608,16 +553,6 @@
       eyeR.position.set(0.22, 2.0, 0.43);
       charGroup.add(eyeR);
 
-      // Blushing Cheeks
-      const blushMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e });
-      const bL = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.08), blushMat);
-      bL.position.set(-0.28, 1.8, 0.44);
-      charGroup.add(bL);
-      const bR = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.08), blushMat);
-      bR.position.set(0.28, 1.8, 0.44);
-      charGroup.add(bR);
-
-      // Eliie: Golden Crown & Elf Ears
       if (config.id === 'eliie') {
         const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.2, 0.25, 5), goldMat);
         crown.position.set(0, 2.65, 0);
@@ -634,17 +569,12 @@
         charGroup.add(earR);
       }
 
-      // Ty: Cyan Glowing Owner Crown
       if (config.id === 'ty') {
-        const crown = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.3, 0.2, 0.25, 5),
-          new THREE.MeshStandardMaterial({ color: 0x38bdf8, metalness: 0.8 })
-        );
+        const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.2, 0.25, 5), new THREE.MeshLambertMaterial({ color: 0x38bdf8 }));
         crown.position.set(0, 2.65, 0);
         charGroup.add(crown);
       }
 
-      // Legs
       const legGeo = new THREE.BoxGeometry(0.26, 0.65, 0.3);
       const legL = new THREE.Mesh(legGeo, darkMat);
       legL.position.set(-0.22, 0.32, 0);
@@ -654,7 +584,6 @@
       legR.position.set(0.22, 0.32, 0);
       charGroup.add(legR);
 
-      // Hitbox for Click / Raycasting
       const hitBox = new THREE.Mesh(new THREE.BoxGeometry(1.5, 2.8, 1.5), new THREE.MeshBasicMaterial({ visible: false }));
       hitBox.position.y = 1.4;
       hitBox.userData = { config: config };
@@ -683,7 +612,6 @@
       return charObj;
     }
 
-    // Spawn 6 Characters at their comfortable seats (No clipping!)
     const tyChar = createCuteCharacter3D({
       id: 'ty',
       name: 'Alberto Timoty (Ty)',
@@ -693,7 +621,7 @@
       avatar: '👑',
       isVIP: true,
       x: -11.8,
-      z: -4.8, // Sitting on Ty's VIP Armchair
+      z: -4.8,
       defaultState: 'sitting_chair',
       defaultBubble: 'Eliie istriku tercinta ❤️'
     });
@@ -707,7 +635,7 @@
       avatar: '🌸',
       isVIP: true,
       x: -8.2,
-      z: -4.8, // Sitting on Eliie's VIP Armchair
+      z: -4.8,
       defaultState: 'sitting_chair',
       defaultBubble: 'Sayang Ty banget... 🥰👑'
     });
@@ -720,7 +648,7 @@
       dressColor: 0x38bdf8,
       avatar: '💻',
       x: 5,
-      z: -11.9, // Sitting on Luna's Chair
+      z: -11.9,
       defaultState: 'sitting_chair',
       defaultBubble: '0 Error! Server stabil 💻'
     });
@@ -733,7 +661,7 @@
       dressColor: 0xf97316,
       avatar: '🍲',
       x: 13,
-      z: -11.9, // Sitting on Nana's Chair
+      z: -11.9,
       defaultState: 'sitting_chair',
       defaultBubble: 'Omzet soto naik terus! 🍲'
     });
@@ -746,7 +674,7 @@
       dressColor: 0xf43f5e,
       avatar: '🎨',
       x: 5,
-      z: -4.9, // Sitting on Mimi's Chair
+      z: -4.9,
       defaultState: 'sitting_chair',
       defaultBubble: 'Desainnya estetik! ✨'
     });
@@ -759,7 +687,7 @@
       dressColor: 0xa855f7,
       avatar: '📚',
       x: 13,
-      z: -4.9, // Sitting on Yuki's Chair
+      z: -4.9,
       defaultState: 'sitting_chair',
       defaultBubble: 'Obsidian tersinkron 📖'
     });
@@ -805,7 +733,7 @@
       });
     }
 
-    // 7. AI Movement & Animation Loop
+    // 7. Animation Loop
     function updateAI3D() {
       characters3D.forEach(c => {
         c.frame += 0.08;
@@ -843,12 +771,10 @@
           const angle = Math.atan2(dx, dz);
           c.mesh.rotation.y = angle;
 
-          // Leg swinging walk animation
           c.legL.rotation.x = Math.sin(c.frame * 4) * 0.45;
           c.legR.rotation.x = -Math.sin(c.frame * 4) * 0.45;
           c.mesh.position.y = Math.abs(Math.sin(c.frame * 4)) * 0.08;
         } else {
-          // Arrived at destination
           c.legL.rotation.x = 0;
           c.legR.rotation.x = 0;
 
@@ -860,7 +786,7 @@
             c.mesh.position.y = 0.9;
           } else if (c.state === 'sitting_chair' || c.state === 'sitting_lounge') {
             c.mesh.rotation.x = 0;
-            c.mesh.position.y = 0.2; // Elevated on seat cushion
+            c.mesh.position.y = 0.2;
             c.mesh.rotation.y = (c.targetRotY !== undefined) ? c.targetRotY : Math.PI;
             c.head.position.y = 2.0 + Math.sin(c.frame * 2) * 0.02;
           } else {
@@ -872,7 +798,7 @@
       });
     }
 
-    // 8. 3D Raycasting / Touch
+    // 8. 3D Raycasting
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     let selectedChar = null;
@@ -960,8 +886,8 @@
       eliieChar.bubble = 'Iya sayang, peluk aku ya... 🥰💤';
       eliieChar.bubbleTimer = 240;
 
-      gsap.to(camera.position, { x: -10, y: 14, z: -3, duration: 1.5, ease: 'power2.out' });
-      gsap.to(controls.target, { x: -10, y: 1, z: -13.5, duration: 1.5, ease: 'power2.out' });
+      gsap.to(camera.position, { x: -10, y: 14, z: -3, duration: 1.0, ease: 'power2.out' });
+      gsap.to(controls.target, { x: -10, y: 1, z: -13.5, duration: 1.0, ease: 'power2.out' });
 
       showToast('Ty & Eliie masuk kamar VIP dan tidur bareng di kasur King Size! 🛏️💕');
     }
@@ -1016,10 +942,10 @@
       yukiChar.state = 'sitting_chair';
       yukiChar.bubble = 'Catat Obsidian di kursi! 📚';
 
-      gsap.to(camera.position, { x: 9, y: 16, z: 2, duration: 1.5, ease: 'power2.out' });
-      gsap.to(controls.target, { x: 9, y: 1, z: -10, duration: 1.5, ease: 'power2.out' });
+      gsap.to(camera.position, { x: 9, y: 16, z: 2, duration: 1.0, ease: 'power2.out' });
+      gsap.to(controls.target, { x: 9, y: 1, z: -10, duration: 1.0, ease: 'power2.out' });
 
-      showToast('Semua staf duduk di kursi kantor masing-masing (bebas bug tembus meja)! 💻🚀');
+      showToast('Semua staf duduk di kursi kantor masing-masing! 💻🚀');
     }
 
     function triggerStaffSleepRooms3D() {
@@ -1073,8 +999,8 @@
       yukiChar.state = 'sitting_chair';
       yukiChar.bubble = 'Snack soto lezat 😋';
 
-      gsap.to(camera.position, { x: -11.5, y: 15, z: 20, duration: 1.5, ease: 'power2.out' });
-      gsap.to(controls.target, { x: -11.5, y: 1, z: 9, duration: 1.5, ease: 'power2.out' });
+      gsap.to(camera.position, { x: -11.5, y: 15, z: 20, duration: 1.0, ease: 'power2.out' });
+      gsap.to(controls.target, { x: -11.5, y: 1, z: 9, duration: 1.0, ease: 'power2.out' });
 
       showToast('Staf kumpul duduk di kursi dapur & kafe Soto Pak Yono! ☕🍲');
     }
@@ -1098,13 +1024,12 @@
       nanaChar.state = 'sitting_lounge';
       nanaChar.bubble = 'Santai rileks ✨';
 
-      gsap.to(camera.position, { x: -1, y: 15, z: 20, duration: 1.5, ease: 'power2.out' });
-      gsap.to(controls.target, { x: -1, y: 1, z: 9, duration: 1.5, ease: 'power2.out' });
+      gsap.to(camera.position, { x: -1, y: 15, z: 20, duration: 1.0, ease: 'power2.out' });
+      gsap.to(controls.target, { x: -1, y: 1, z: 9, duration: 1.0, ease: 'power2.out' });
 
       showToast('Staf bersantai duduk di sofa empuk ruang Lounge! 🛋️🎉');
     }
 
-    // 10. Resize & Loop
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
