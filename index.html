@@ -493,21 +493,50 @@
       cityGroup.add(win);
     }
 
-    // 2. PENTHOUSE EXPANSIVE STRUCTURE (72M X 58M MEGA-PENTHOUSE SUITE)
+    // 2. PENTHOUSE EXPANSIVE STRUCTURE (72M X 58M MEGA-PENTHOUSE SUITE WITH 4 DISTINCT THEMED ROOMS)
     const penthouse = new THREE.Group();
     scene.add(penthouse);
 
-    // A. Grand Marble Floor Base (72m x 58m)
-    const floor = new THREE.Mesh(new THREE.BoxGeometry(72, 0.8, 58), marbleFloorMat);
-    floor.position.y = -0.4;
-    floor.receiveShadow = true;
-    penthouse.add(floor);
+    // A. Themed Floorings per Room Zone
+    // 1. Center Hallway & Corridor (Polished White Carrara Marble)
+    const floorCorridor = new THREE.Mesh(new THREE.BoxGeometry(72, 0.8, 58), marbleFloorMat);
+    floorCorridor.position.y = -0.4;
+    floorCorridor.receiveShadow = true;
+    penthouse.add(floorCorridor);
 
-    // Hardwood Inlay for Conference Center (24m x 18m)
-    const woodCenter = new THREE.Mesh(new THREE.BoxGeometry(24, 0.02, 18), woodParquetMat);
-    woodCenter.position.set(0, 0.01, 0);
+    // 2. Ruang Rapat (Center 24m x 18m - Walnut Hardwood Parquet)
+    const woodCenter = new THREE.Mesh(new THREE.BoxGeometry(24, 0.04, 18), woodParquetMat);
+    woodCenter.position.set(0, 0.02, 0);
     woodCenter.receiveShadow = true;
     penthouse.add(woodCenter);
+
+    // 3. Kamar Tidur VIP & Staf (Kiri Belakang 24m x 24m - Soft Lavender Velvet Carpet)
+    const bedCarpetMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.9 });
+    const bedCarpet = new THREE.Mesh(new THREE.BoxGeometry(24, 0.04, 24), bedCarpetMat);
+    bedCarpet.position.set(-24, 0.02, -17);
+    bedCarpet.receiveShadow = true;
+    penthouse.add(bedCarpet);
+
+    // 4. Ruang Kerja Workstation (Kanan Belakang 24m x 24m - Dark Tech Tile Grid)
+    const techTileMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3, metalness: 0.2 });
+    const techTile = new THREE.Mesh(new THREE.BoxGeometry(24, 0.04, 24), techTileMat);
+    techTile.position.set(24, 0.02, -17);
+    techTile.receiveShadow = true;
+    penthouse.add(techTile);
+
+    // 5. Ruang Makan / Sky Bar Soto (Kiri Depan 24m x 24m - Warm Amber Bistro Wood)
+    const bistroFloorMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.4 });
+    const bistroFloor = new THREE.Mesh(new THREE.BoxGeometry(24, 0.04, 24), bistroFloorMat);
+    bistroFloor.position.set(-24, 0.02, 17);
+    bistroFloor.receiveShadow = true;
+    penthouse.add(bistroFloor);
+
+    // 6. Panorama Sky Lounge (Kanan Depan 24m x 24m - Luxury Midnight Blue Carpet)
+    const loungeCarpetMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.95 });
+    const loungeCarpet = new THREE.Mesh(new THREE.BoxGeometry(24, 0.04, 24), loungeCarpetMat);
+    loungeCarpet.position.set(24, 0.02, 17);
+    loungeCarpet.receiveShadow = true;
+    penthouse.add(loungeCarpet);
 
     // B. OPEN-TOP PENTHOUSE ARCHITECTURE (NO ROOF / OPEN CEILING FOR CLEAR TOP-DOWN 3D VIEW)
 
@@ -563,7 +592,7 @@
       penthouse.add(pillar);
     });
 
-    // D. TEMBOK PEMISAH RUANGAN SEAMLESS TERATUR (OPEN TOP VIEW)
+    // D. TEMBOK PEMISAH RUANGAN SEAMLESS TERATUR (4 RUANGAN UTAMA TERPISAH DENGAN PAPAN NAMA)
     function createPartitionWall(w, h, d, x, y, z) {
       const wallGroup = new THREE.Group();
       const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallPartitionMat);
@@ -589,37 +618,55 @@
       return col;
     }
 
-    // 1. RUANG VIP EXECUTIVE MASTER SUITE (KIRI BELAKANG)
+    // Papan Nama Ruangan Gantung Elegan di Pintu Masuk
+    function createRoomSignboard(text, x, y, z, color = 0x38bdf8) {
+      const signGroup = new THREE.Group();
+      signGroup.position.set(x, y, z);
+
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.9, 0.2), new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3, metalness: 0.8 }));
+      signGroup.add(plate);
+
+      const border = new THREE.Mesh(new THREE.BoxGeometry(4.35, 1.05, 0.15), new THREE.MeshStandardMaterial({ color: color, roughness: 0.2, metalness: 0.9 }));
+      signGroup.add(border);
+
+      return signGroup;
+    }
+
+    // 1. KAMAR TIDUR / REST SUITE (KIRI BELAKANG: X: -36 to -13.5, Z: -29 to -5)
     penthouse.add(createPartitionWall(0.4, 6.0, 24.0, -13.5, 3.0, -17.0)); // Dinding Timur
     penthouse.add(createPartitionWall(13.0, 6.0, 0.4, -29.5, 3.0, -5.0));  // Dinding Selatan (Sisi Kiri)
     penthouse.add(createPartitionWall(6.0, 6.0, 0.4, -16.5, 3.0, -5.0));   // Dinding Selatan (Sisi Kanan)
     penthouse.add(createPartitionWall(3.5, 1.5, 0.4, -21.25, 5.25, -5.0));  // Tembok Atas Pintu (Lintel)
     penthouse.add(createCornerPillar(-13.5, -5.0));
     penthouse.add(createCornerPillar(-13.5, -29.0));
+    penthouse.add(createRoomSignboard("🛏️ KAMAR TIDUR SUITE", -21.25, 4.2, -4.8, 0xf43f5e));
 
-    // 2. RUANG WORK OFFICE STAF (KANAN BELAKANG)
+    // 2. RUANG KERJA STAF / OPEN WORKSTATION (KANAN BELAKANG: X: 13.5 to 36, Z: -29 to -5)
     penthouse.add(createPartitionWall(0.4, 6.0, 24.0, 13.5, 3.0, -17.0));  // Dinding Barat
     penthouse.add(createPartitionWall(13.0, 6.0, 0.4, 29.5, 3.0, -5.0));   // Dinding Selatan (Sisi Kanan)
     penthouse.add(createPartitionWall(6.0, 6.0, 0.4, 16.5, 3.0, -5.0));    // Dinding Selatan (Sisi Kiri)
     penthouse.add(createPartitionWall(3.5, 1.5, 0.4, 21.25, 5.25, -5.0));  // Tembok Atas Pintu (Lintel)
     penthouse.add(createCornerPillar(13.5, -5.0));
     penthouse.add(createCornerPillar(13.5, -29.0));
+    penthouse.add(createRoomSignboard("💻 RUANG KERJA DEV PODS", 21.25, 4.2, -4.8, 0x06b6d4));
 
-    // 3. RUANG SKY BAR & SOTO PAK YONO (KIRI DEPAN)
+    // 3. RUANG MAKAN / SKY BAR SOTO PAK YONO (KIRI DEPAN: X: -36 to -13.5, Z: 5 to 29)
     penthouse.add(createPartitionWall(0.4, 6.0, 24.0, -13.5, 3.0, 17.0));  // Dinding Timur
     penthouse.add(createPartitionWall(13.0, 6.0, 0.4, -29.5, 3.0, 5.0));   // Dinding Utara (Sisi Kiri)
     penthouse.add(createPartitionWall(6.0, 6.0, 0.4, -16.5, 3.0, 5.0));    // Dinding Utara (Sisi Kanan)
     penthouse.add(createPartitionWall(3.5, 1.5, 0.4, -21.25, 5.25, 5.0));  // Tembok Atas Pintu (Lintel)
     penthouse.add(createCornerPillar(-13.5, 5.0));
     penthouse.add(createCornerPillar(-13.5, 29.0));
+    penthouse.add(createRoomSignboard("🍲 RUANG MAKAN SOTO", -21.25, 4.2, 4.8, 0xf59e0b));
 
-    // 4. RUANG PANORAMA SKY LOUNGE (KANAN DEPAN)
+    // 4. RUANG PANORAMA SKY LOUNGE (KANAN DEPAN: X: 13.5 to 36, Z: 5 to 29)
     penthouse.add(createPartitionWall(0.4, 6.0, 24.0, 13.5, 3.0, 17.0));   // Dinding Barat
     penthouse.add(createPartitionWall(13.0, 6.0, 0.4, 29.5, 3.0, 5.0));    // Dinding Utara (Sisi Kanan)
     penthouse.add(createPartitionWall(6.0, 6.0, 0.4, 16.5, 3.0, 5.0));     // Dinding Utara (Sisi Kiri)
     penthouse.add(createPartitionWall(3.5, 1.5, 0.4, 21.25, 5.25, 5.0));   // Tembok Atas Pintu (Lintel)
     penthouse.add(createCornerPillar(13.5, 5.0));
     penthouse.add(createCornerPillar(13.5, 29.0));
+    penthouse.add(createRoomSignboard("🛋️ PANORAMA LOUNGE", 21.25, 4.2, 4.8, 0xa855f7));
 
     // E. PINTU MASUK & KELUAR LENGKAP
     // 1. PINTU MASUK UTAMA LOBBY (Z = 29)
@@ -695,9 +742,9 @@
       return dg;
     }
 
-    penthouse.add(createRoomDoor(-21.25, -5.0, 0, doorWoodMat)); // Pintu VIP Suite
-    penthouse.add(createRoomDoor(21.25, -5.0, 0, doorWoodMat));  // Pintu Work Office
-    penthouse.add(createRoomDoor(-21.25, 5.0, 0, doorWoodMat));  // Pintu Sky Bar Soto
+    penthouse.add(createRoomDoor(-21.25, -5.0, 0, doorWoodMat)); // Pintu Kamar Tidur
+    penthouse.add(createRoomDoor(21.25, -5.0, 0, doorWoodMat));  // Pintu Ruang Kerja
+    penthouse.add(createRoomDoor(-21.25, 5.0, 0, doorWoodMat));  // Pintu Ruang Makan Soto
     penthouse.add(createRoomDoor(21.25, 5.0, 0, doorWoodMat));   // Pintu Panorama Lounge
 
     // 3. HIGH-DETAIL ARCHITECTURAL 3D FURNITURE (THE SIMS / ARCHITECTURAL REALISM)
@@ -845,10 +892,10 @@
 
     penthouse.add(confGroup);
 
-    // B. LEFT ZONE: VIP EXECUTIVE MASTER BEDROOM & OFFICE (REALISTIC LUXURY BED & DESK)
+    // B. LEFT ZONE: KAMAR TIDUR SUITE (KASUR VIP KING SIZE & KASUR STAF DILENGKAPI NAMA)
     const vipGroup = new THREE.Group();
 
-    // 1. Luxury King Size Bed (Tufted Headboard, Fluffy Mattress, Duvet & Pillows)
+    // 1. Luxury King Size Bed Ty & Eliie
     const bedGroup = new THREE.Group();
     bedGroup.position.set(-25, 0, -20);
 
@@ -930,9 +977,36 @@
 
     vipGroup.add(bedGroup);
 
-    // 2. VIP Executive Duet Desk & Dual Curved Monitors
+    // 2. Kasur Tambahan Khusus Sub-Agen Staf (Single Cosy Beds)
+    function createStaffBed(bx, bz, duvetColor = 0x0284c7) {
+      const sbg = new THREE.Group();
+      sbg.position.set(bx, 0, bz);
+
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.4, 7.5), woodDarkMat);
+      frame.position.y = 0.2;
+      sbg.add(frame);
+
+      const mattr = new THREE.Mesh(new THREE.BoxGeometry(3.9, 0.8, 7.2), new THREE.MeshStandardMaterial({ color: 0xf8fafc }));
+      mattr.position.y = 0.7;
+      sbg.add(mattr);
+
+      const sduvet = new THREE.Mesh(new THREE.BoxGeometry(4.0, 0.7, 4.8), new THREE.MeshStandardMaterial({ color: duvetColor, roughness: 0.7 }));
+      sduvet.position.set(0, 0.95, 1.1);
+      sbg.add(sduvet);
+
+      const spillow = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.4, 1.6), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+      spillow.position.set(0, 1.2, -2.4);
+      sbg.add(spillow);
+
+      return sbg;
+    }
+
+    vipGroup.add(createStaffBed(-16.5, -11, 0x0284c7)); // Kasur Luna (Cyan)
+    vipGroup.add(createStaffBed(-31.5, -11, 0xea580c)); // Kasur Nana (Orange)
+
+    // VIP Executive Desk
     const vipDeskGroup = new THREE.Group();
-    vipDeskGroup.position.set(-24, 0, -10);
+    vipDeskGroup.position.set(-24, 0, -8);
 
     const deskTop = new THREE.Mesh(new THREE.BoxGeometry(9.5, 0.35, 3.6), woodParquetMat);
     deskTop.position.set(0, 2.4, 0);

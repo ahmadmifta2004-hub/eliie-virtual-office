@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v28-tiktok-aldialdiansyah-hq';
+const CACHE_NAME = 'eliie-office-v29-milestone-1-four-rooms';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
