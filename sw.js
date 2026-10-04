@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-aligned-v5';
+const CACHE_NAME = 'eliie-office-tiktok-v6';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
