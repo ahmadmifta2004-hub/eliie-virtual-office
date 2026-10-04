@@ -606,7 +606,7 @@
         head: head,
         targetX: config.x,
         targetZ: config.z,
-        targetRotY: 0, // Faces North (towards desks/monitors)
+        targetRotY: Math.PI, // Default face North towards computer monitors
         state: config.defaultState || 'sitting_chair',
         timer: 100,
         speed: 0.06,
@@ -791,20 +791,26 @@
             c.mesh.position.y = 1.15;
             if (c.id === 'ty') {
               c.mesh.rotation.x = -Math.PI / 2;
-              c.mesh.rotation.z = Math.PI / 3.5; // Ty tilted facing right towards Eliie
+              c.mesh.rotation.z = Math.PI / 2.8; // Ty turned to right side embracing Eliie
             } else if (c.id === 'eliie') {
               c.mesh.rotation.x = -Math.PI / 2;
-              c.mesh.rotation.z = -Math.PI / 3.5; // Eliie tilted facing left snuggling Ty
+              c.mesh.rotation.z = -Math.PI / 2.8; // Eliie turned to left side snuggling Ty
             }
           } else if (c.state === 'sleeping_bed') {
             c.mesh.rotation.x = -Math.PI / 2;
             c.mesh.rotation.z = 0;
             c.mesh.position.y = 0.9;
-          } else if (c.state === 'sitting_chair' || c.state === 'sitting_lounge') {
+          } else if (c.state === 'sitting_chair') {
             c.mesh.rotation.x = 0;
             c.mesh.rotation.z = 0;
-            c.mesh.position.y = 0.15; // Cleanly placed on chair cushion without clipping
-            c.mesh.rotation.y = (c.targetRotY !== undefined) ? c.targetRotY : 0;
+            c.mesh.position.y = 0.2; // Elevated on seat cushion
+            c.mesh.rotation.y = (c.targetRotY !== undefined) ? c.targetRotY : Math.PI;
+            c.head.position.y = 2.0 + Math.sin(c.frame * 2) * 0.02;
+          } else if (c.state === 'sitting_lounge') {
+            c.mesh.rotation.x = 0;
+            c.mesh.rotation.z = 0;
+            c.mesh.position.y = 0.65; // Seated comfortably ON the sofa cushion
+            c.mesh.rotation.y = Math.PI; // Looking North at TV
             c.head.position.y = 2.0 + Math.sin(c.frame * 2) * 0.02;
           } else {
             c.mesh.rotation.x = 0;
@@ -913,15 +919,15 @@
 
     function triggerBossCommand3D() {
       tyChar.targetX = -11.8;
-      tyChar.targetZ = -4.4;
-      tyChar.targetRotY = 0; // Faces North towards monitors
+      tyChar.targetZ = -4.3;
+      tyChar.targetRotY = Math.PI; // Faces North towards executive dual monitors
       tyChar.state = 'sitting_chair';
       tyChar.bubble = 'Ayo tim, tuntaskan target hari ini! 👑';
       tyChar.bubbleTimer = 240;
 
       eliieChar.targetX = -8.2;
-      eliieChar.targetZ = -4.4;
-      eliieChar.targetRotY = 0; // Faces North towards monitors
+      eliieChar.targetZ = -4.3;
+      eliieChar.targetRotY = Math.PI; // Faces North towards executive dual monitors
       eliieChar.state = 'sitting_chair';
       eliieChar.bubble = 'Laksanakan arahan Ty ya seluruh staf! 👑✨';
       eliieChar.bubbleTimer = 240;
@@ -938,26 +944,26 @@
       triggerBossCommand3D();
 
       lunaChar.targetX = 5;
-      lunaChar.targetZ = -11.65;
-      lunaChar.targetRotY = 0; // Faces North towards PC
+      lunaChar.targetZ = -11.55;
+      lunaChar.targetRotY = Math.PI; // Faces North towards PC
       lunaChar.state = 'sitting_chair';
       lunaChar.bubble = 'Fokus koding VPS di kursi! 💻';
 
       nanaChar.targetX = 13;
-      nanaChar.targetZ = -11.65;
-      nanaChar.targetRotY = 0; // Faces North towards PC
+      nanaChar.targetZ = -11.55;
+      nanaChar.targetRotY = Math.PI; // Faces North towards PC
       nanaChar.state = 'sitting_chair';
       nanaChar.bubble = 'Rekap soto di kursi kantor! 🍲';
 
       mimiChar.targetX = 5;
-      mimiChar.targetZ = -4.65;
-      mimiChar.targetRotY = 0; // Faces North towards PC
+      mimiChar.targetZ = -4.55;
+      mimiChar.targetRotY = Math.PI; // Faces North towards PC
       mimiChar.state = 'sitting_chair';
       mimiChar.bubble = 'Desain visual di kursi PC! 🎨';
 
       yukiChar.targetX = 13;
-      yukiChar.targetZ = -4.65;
-      yukiChar.targetRotY = 0; // Faces North towards PC
+      yukiChar.targetZ = -4.55;
+      yukiChar.targetRotY = Math.PI; // Faces North towards PC
       yukiChar.state = 'sitting_chair';
       yukiChar.bubble = 'Catat Obsidian di kursi! 📚';
 
@@ -994,27 +1000,28 @@
     }
 
     function triggerKitchenCoffee3D() {
-      lunaChar.targetX = -13.1;
-      lunaChar.targetZ = 11.0;
-      lunaChar.targetRotY = 0;
+      // Stools around dining table without clipping
+      lunaChar.targetX = -13.0;
+      lunaChar.targetZ = 10.7;
+      lunaChar.targetRotY = 0; // Faces South to table
       lunaChar.state = 'sitting_chair';
       lunaChar.bubble = 'Ngopi di dapur ☕';
 
-      nanaChar.targetX = -9.9;
-      nanaChar.targetZ = 11.0;
-      nanaChar.targetRotY = 0;
+      nanaChar.targetX = -10.0;
+      nanaChar.targetZ = 10.7;
+      nanaChar.targetRotY = 0; // Faces South to table
       nanaChar.state = 'sitting_chair';
       nanaChar.bubble = 'Makan Soto Pak Yono 🍲';
 
-      mimiChar.targetX = -13.1;
-      mimiChar.targetZ = 7.0;
-      mimiChar.targetRotY = Math.PI;
+      mimiChar.targetX = -13.0;
+      mimiChar.targetZ = 14.3;
+      mimiChar.targetRotY = Math.PI; // Faces North to table
       mimiChar.state = 'sitting_chair';
       mimiChar.bubble = 'Teh manis hangat 🍵';
 
-      yukiChar.targetX = -9.9;
-      yukiChar.targetZ = 7.0;
-      yukiChar.targetRotY = Math.PI;
+      yukiChar.targetX = -10.0;
+      yukiChar.targetZ = 14.3;
+      yukiChar.targetRotY = Math.PI; // Faces North to table
       yukiChar.state = 'sitting_chair';
       yukiChar.bubble = 'Snack soto lezat 😋';
 
@@ -1025,28 +1032,31 @@
     }
 
     function triggerLoungeChill3D() {
-      lunaChar.targetX = -2.0;
-      lunaChar.targetZ = 11.5;
-      lunaChar.targetRotY = Math.PI;
+      // Sitting side by side on sofa cushion facing North towards TV
+      lunaChar.targetX = -2.2;
+      lunaChar.targetZ = 11.8;
       lunaChar.state = 'sitting_lounge';
       lunaChar.bubble = 'Nonton TV bareng 📺';
 
-      mimiChar.targetX = 0;
-      mimiChar.targetZ = 11.5;
-      mimiChar.targetRotY = Math.PI;
+      mimiChar.targetX = -1.0;
+      mimiChar.targetZ = 11.8;
       mimiChar.state = 'sitting_lounge';
-      mimiChar.bubble = 'Rebahan di sofa merah 🛋️';
+      mimiChar.bubble = 'Duduk di sofa merah 🛋️';
 
-      nanaChar.targetX = 2.0;
-      nanaChar.targetZ = 11.5;
-      nanaChar.targetRotY = Math.PI;
+      nanaChar.targetX = 0.2;
+      nanaChar.targetZ = 11.8;
       nanaChar.state = 'sitting_lounge';
       nanaChar.bubble = 'Santai rileks ✨';
+
+      yukiChar.targetX = 1.4;
+      yukiChar.targetZ = 11.8;
+      yukiChar.state = 'sitting_lounge';
+      yukiChar.bubble = 'Teh hangat di lounge 🍵';
 
       gsap.to(camera.position, { x: -1, y: 15, z: 20, duration: 1.0, ease: 'power2.out' });
       gsap.to(controls.target, { x: -1, y: 1, z: 9, duration: 1.0, ease: 'power2.out' });
 
-      showToast('Staf bersantai duduk di sofa empuk ruang Lounge! 🛋️🎉');
+      showToast('Staf bersantai duduk di sofa empuk ruang Lounge menonton TV! 🛋️🎉');
     }
 
     window.addEventListener('resize', () => {

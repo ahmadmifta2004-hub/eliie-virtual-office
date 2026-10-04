@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-cuddle-v4';
+const CACHE_NAME = 'eliie-office-aligned-v5';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
