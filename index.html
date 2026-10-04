@@ -362,64 +362,63 @@
       cityGroup.add(win);
     }
 
-    // 2. PENTHOUSE STRUCTURE: FLOORS, CEILING, PARTITION WALLS & DOORS
+    // 2. PENTHOUSE EXPANSIVE STRUCTURE (72M X 58M MEGA-PENTHOUSE SUITE)
     const penthouse = new THREE.Group();
     scene.add(penthouse);
 
-    // A. Luxury Marble Penthouse Floor Base
-    const floor = new THREE.Mesh(new THREE.BoxGeometry(46, 0.8, 38), marbleFloorMat);
+    // A. Grand Marble Floor Base (72m x 58m)
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(72, 0.8, 58), marbleFloorMat);
     floor.position.y = -0.4;
     floor.receiveShadow = true;
     penthouse.add(floor);
 
-    // Hardwood Inlay for Conference Center
-    const woodCenter = new THREE.Mesh(new THREE.BoxGeometry(17, 0.02, 11), woodParquetMat);
+    // Hardwood Inlay for Conference Center (24m x 18m)
+    const woodCenter = new THREE.Mesh(new THREE.BoxGeometry(24, 0.02, 18), woodParquetMat);
     woodCenter.position.set(0, 0.01, 0);
     woodCenter.receiveShadow = true;
     penthouse.add(woodCenter);
 
-    // B. MODERN CEILING & ROOF STRUCTURE (PENTHOUSE ATAP & SKYLIGHT BEAMS)
+    // B. EXPANSIVE ROOF & CEILING STRUCTURE (CEILING AT Y = 9.5M)
     const ceilingGroup = new THREE.Group();
-    ceilingGroup.position.y = 8.5;
+    ceilingGroup.position.y = 9.5;
 
-    // Perimeter Roof Cornice Slab
-    const roofSlab = new THREE.Mesh(new THREE.BoxGeometry(47, 0.5, 39), ceilingMat);
+    const roofSlab = new THREE.Mesh(new THREE.BoxGeometry(73, 0.5, 59), ceilingMat);
     roofSlab.position.y = 0.25;
     ceilingGroup.add(roofSlab);
 
     // Major Architectural Steel Roof Beams
-    [-19, -9.5, 0, 9.5, 19].forEach(bx => {
-      const beamX = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.6, 38), blackSteelMat);
-      beamX.position.set(bx, -0.1, 0);
+    [-28, -13.5, 0, 13.5, 28].forEach(bx => {
+      const beamX = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 58), blackSteelMat);
+      beamX.position.set(bx, -0.15, 0);
       ceilingGroup.add(beamX);
     });
 
-    [-15, -5, 5, 15].forEach(bz => {
-      const beamZ = new THREE.Mesh(new THREE.BoxGeometry(46, 0.6, 0.5), blackSteelMat);
-      beamZ.position.set(0, -0.1, bz);
+    [-22, -8, 8, 22].forEach(bz => {
+      const beamZ = new THREE.Mesh(new THREE.BoxGeometry(72, 0.7, 0.6), blackSteelMat);
+      beamZ.position.set(0, -0.15, bz);
       ceilingGroup.add(beamZ);
     });
 
-    // Glass Skylights Panels in Between Beams
-    const skylight = new THREE.Mesh(new THREE.BoxGeometry(18, 0.1, 12), glassWallMat);
+    // Glass Skylight Panel over Conference Hall
+    const skylight = new THREE.Mesh(new THREE.BoxGeometry(24, 0.1, 18), glassWallMat);
     skylight.position.set(0, 0.1, 0);
     ceilingGroup.add(skylight);
 
-    // Recessed Warm LED Downlights on Ceiling
-    [[-4, -2], [4, -2], [-4, 2], [4, 2], [-14, -8], [14, -8], [-14, 10], [14, 10]].forEach(([lx, lz]) => {
-      const spot = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.1, 16), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
-      spot.position.set(lx, -0.15, lz);
+    // Recessed LED Downlights
+    [[-6, -4], [6, -4], [-6, 4], [6, 4], [-24, -14], [24, -14], [-24, 14], [24, 14]].forEach(([lx, lz]) => {
+      const spot = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.1, 16), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
+      spot.position.set(lx, -0.2, lz);
       ceilingGroup.add(spot);
     });
 
     penthouse.add(ceilingGroup);
 
-    // C. CRYSTAL CLEAR PANORAMIC GLASS CURTAIN WINDOWS (ALL 4 EXTERIOR SIDES)
+    // C. CRYSTAL-CLEAR PANORAMIC CURTAIN GLASS WINDOWS (ALL 4 EXTERIOR SIDES)
     const glassPerimeter = [
-      { w: 46, h: 8.5, d: 0.2, x: 0, y: 4.25, z: -19 }, // Sisi Belakang
-      { w: 46, h: 8.5, d: 0.2, x: 0, y: 4.25, z: 19 },  // Sisi Depan
-      { w: 0.2, h: 8.5, d: 38, x: -23, y: 4.25, z: 0 }, // Sisi Kiri
-      { w: 0.2, h: 8.5, d: 38, x: 23, y: 4.25, z: 0 }   // Sisi Kanan
+      { w: 72, h: 9.5, d: 0.25, x: 0, y: 4.75, z: -29 }, // Sisi Belakang
+      { w: 72, h: 9.5, d: 0.25, x: 0, y: 4.75, z: 29 },  // Sisi Depan
+      { w: 0.25, h: 9.5, d: 58, x: -36, y: 4.75, z: 0 }, // Sisi Kiri
+      { w: 0.25, h: 9.5, d: 58, x: 36, y: 4.75, z: 0 }   // Sisi Kanan
     ];
 
     glassPerimeter.forEach(gp => {
@@ -428,57 +427,53 @@
       penthouse.add(g);
     });
 
-    // Kisi-Kisi Bingkai Jendela Kaca Luar (Window Mullions on all 4 sides)
-    [-17.25, -11.5, -5.75, 0, 5.75, 11.5, 17.25].forEach(mx => {
-      // Front & Back vertical mullions
-      [-19, 19].forEach(mz => {
-        const mul = new THREE.Mesh(new THREE.BoxGeometry(0.25, 8.5, 0.3), windowFrameMat);
-        mul.position.set(mx, 4.25, mz);
+    // Vertical Window Mullions
+    [-27, -18, -9, 0, 9, 18, 27].forEach(mx => {
+      [-29, 29].forEach(mz => {
+        const mul = new THREE.Mesh(new THREE.BoxGeometry(0.3, 9.5, 0.35), windowFrameMat);
+        mul.position.set(mx, 4.75, mz);
         penthouse.add(mul);
       });
     });
 
-    [-14.25, -9.5, -4.75, 0, 4.75, 9.5, 14.25].forEach(mz => {
-      // Left & Right vertical mullions
-      [-23, 23].forEach(mx => {
-        const mul = new THREE.Mesh(new THREE.BoxGeometry(0.3, 8.5, 0.25), windowFrameMat);
-        mul.position.set(mx, 4.25, mz);
+    [-21.75, -14.5, -7.25, 0, 7.25, 14.5, 21.75].forEach(mz => {
+      [-36, 36].forEach(mx => {
+        const mul = new THREE.Mesh(new THREE.BoxGeometry(0.35, 9.5, 0.3), windowFrameMat);
+        mul.position.set(mx, 4.75, mz);
         penthouse.add(mul);
       });
     });
 
-    // Horizontal Window Sills around perimeter at Y = 2.8 and Y = 5.6
-    [2.8, 5.6].forEach(my => {
-      [-19, 19].forEach(mz => {
-        const sill = new THREE.Mesh(new THREE.BoxGeometry(46, 0.2, 0.3), windowFrameMat);
+    // Horizontal Window Sills at Y = 3.2 and Y = 6.4
+    [3.2, 6.4].forEach(my => {
+      [-29, 29].forEach(mz => {
+        const sill = new THREE.Mesh(new THREE.BoxGeometry(72, 0.25, 0.35), windowFrameMat);
         sill.position.set(0, my, mz);
         penthouse.add(sill);
       });
-      [-23, 23].forEach(mx => {
-        const sill = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 38), windowFrameMat);
+      [-36, 36].forEach(mx => {
+        const sill = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.25, 58), windowFrameMat);
         sill.position.set(mx, my, 0);
         penthouse.add(sill);
       });
     });
 
-    // Outer Structural Steel Columns at corners
-    [[-23, -19], [23, -19], [-23, 19], [23, 19], [-23, 0], [23, 0], [0, -19], [0, 19]].forEach(([px, pz]) => {
-      const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.8, 8.5, 0.8), blackSteelMat);
-      pillar.position.set(px, 4.25, pz);
+    // Outer Structural Steel Pillars
+    [[-36, -29], [36, -29], [-36, 29], [36, 29], [-36, 0], [36, 0], [0, -29], [0, 29]].forEach(([px, pz]) => {
+      const pillar = new THREE.Mesh(new THREE.BoxGeometry(1.0, 9.5, 1.0), blackSteelMat);
+      pillar.position.set(px, 4.75, pz);
       penthouse.add(pillar);
     });
 
-    // D. TEMBOK PEMISAH RUANGAN NYAMBUNG LENGKAP SAMPAI ATAP (Y = 8.5M FULL HEIGHT)
+    // D. TEMBOK PEMISAH RUANGAN MEGA-LUAS & MENYAMBUNG SAMPAI ATAP (Y = 9.5M)
     function createPartitionWall(w, h, d, x, y, z) {
       const wallGroup = new THREE.Group();
-      // Main Solid Wall
       const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallPartitionMat);
       wall.position.set(x, y, z);
       wall.castShadow = true;
       wall.receiveShadow = true;
       wallGroup.add(wall);
 
-      // Dark Wood Baseboard & Top Cornice Flush to Ceiling
       const baseboard = new THREE.Mesh(new THREE.BoxGeometry(w * 1.01, 0.3, d * 1.05), woodDarkMat);
       baseboard.position.set(x, 0.15, z);
       wallGroup.add(baseboard);
@@ -490,156 +485,149 @@
       return wallGroup;
     }
 
-    // Tiang Sudut Pertemuan Dinding Nyambung Sampai Atap (Full Height Corner Pillars)
     function createCornerPillar(x, z) {
-      const col = new THREE.Mesh(new THREE.BoxGeometry(0.6, 8.5, 0.6), woodDarkMat);
-      col.position.set(x, 4.25, z);
+      const col = new THREE.Mesh(new THREE.BoxGeometry(0.7, 9.5, 0.7), woodDarkMat);
+      col.position.set(x, 4.75, z);
       return col;
     }
 
-    // 1. RUANG VIP EXECUTIVE SUITE (KIRI BELAKANG: X -23 to -9.5, Z -19 to -2) - NYAMBUNG ATAP
-    penthouse.add(createPartitionWall(0.4, 8.5, 17.4, -9.5, 4.25, -10.5)); // Dinding Timur
-    penthouse.add(createPartitionWall(7.5, 8.5, 0.4, -19.25, 4.25, -2));   // Dinding Selatan Sisi Kiri
-    penthouse.add(createPartitionWall(4.0, 8.5, 0.4, -11.5, 4.25, -2));    // Dinding Selatan Sisi Kanan
-    penthouse.add(createPartitionWall(2.4, 3.5, 0.4, -14.5, 6.75, -2));    // Tembok Atas Pintu Nyambung ke Plafon (Lintel)
-    penthouse.add(createCornerPillar(-9.5, -2));
-    penthouse.add(createCornerPillar(-9.5, -19));
+    // 1. RUANG VIP EXECUTIVE MASTER SUITE (KIRI BELAKANG: X -36 to -13.5, Z -29 to -5) — LEBAR 22.5M X PANJANG 24M
+    penthouse.add(createPartitionWall(0.4, 9.5, 24.0, -13.5, 4.75, -17.0)); // Dinding Timur
+    penthouse.add(createPartitionWall(13.0, 9.5, 0.4, -29.5, 4.75, -5.0));  // Dinding Selatan (Sisi Kiri)
+    penthouse.add(createPartitionWall(6.0, 9.5, 0.4, -16.5, 4.75, -5.0));   // Dinding Selatan (Sisi Kanan)
+    penthouse.add(createPartitionWall(3.5, 4.0, 0.4, -21.25, 7.5, -5.0));   // Tembok Atas Pintu (Lintel)
+    penthouse.add(createCornerPillar(-13.5, -5.0));
+    penthouse.add(createCornerPillar(-13.5, -29.0));
 
-    // 2. RUANG WORK OFFICE STAF (KANAN BELAKANG: X 9.5 to 23, Z -19 to -2) - NYAMBUNG ATAP
-    penthouse.add(createPartitionWall(0.4, 8.5, 17.4, 9.5, 4.25, -10.5));  // Dinding Barat
-    penthouse.add(createPartitionWall(7.5, 8.5, 0.4, 19.25, 4.25, -2));    // Dinding Selatan Sisi Kanan
-    penthouse.add(createPartitionWall(4.0, 8.5, 0.4, 11.5, 4.25, -2));     // Dinding Selatan Sisi Kiri
-    penthouse.add(createPartitionWall(2.4, 3.5, 0.4, 14.5, 6.75, -2));     // Tembok Atas Pintu Nyambung ke Plafon (Lintel)
-    penthouse.add(createCornerPillar(9.5, -2));
-    penthouse.add(createCornerPillar(9.5, -19));
+    // 2. RUANG WORK OFFICE STAF (KANAN BELAKANG: X 13.5 to 36, Z -29 to -5) — LEBAR 22.5M X PANJANG 24M
+    penthouse.add(createPartitionWall(0.4, 9.5, 24.0, 13.5, 4.75, -17.0));  // Dinding Barat
+    penthouse.add(createPartitionWall(13.0, 9.5, 0.4, 29.5, 4.75, -5.0));   // Dinding Selatan (Sisi Kanan)
+    penthouse.add(createPartitionWall(6.0, 9.5, 0.4, 16.5, 4.75, -5.0));    // Dinding Selatan (Sisi Kiri)
+    penthouse.add(createPartitionWall(3.5, 4.0, 0.4, 21.25, 7.5, -5.0));    // Tembok Atas Pintu (Lintel)
+    penthouse.add(createCornerPillar(13.5, -5.0));
+    penthouse.add(createCornerPillar(13.5, -29.0));
 
-    // 3. RUANG PANTRY & SOTO PAK YONO (KIRI DEPAN: X -23 to -9.5, Z 2 to 19) - NYAMBUNG ATAP
-    penthouse.add(createPartitionWall(0.4, 8.5, 17.4, -9.5, 4.25, 10.5));  // Dinding Timur
-    penthouse.add(createPartitionWall(7.5, 8.5, 0.4, -19.25, 4.25, 2));    // Dinding Utara Sisi Kiri
-    penthouse.add(createPartitionWall(4.0, 8.5, 0.4, -11.5, 4.25, 2));     // Dinding Utara Sisi Kanan
-    penthouse.add(createPartitionWall(2.4, 3.5, 0.4, -14.5, 6.75, 2));     // Tembok Atas Pintu Nyambung ke Plafon (Lintel)
-    penthouse.add(createCornerPillar(-9.5, 2));
-    penthouse.add(createCornerPillar(-9.5, 19));
+    // 3. RUANG SKY BAR & SOTO PAK YONO (KIRI DEPAN: X -36 to -13.5, Z 5 to 29) — LEBAR 22.5M X PANJANG 24M
+    penthouse.add(createPartitionWall(0.4, 9.5, 24.0, -13.5, 4.75, 17.0));  // Dinding Timur
+    penthouse.add(createPartitionWall(13.0, 9.5, 0.4, -29.5, 4.75, 5.0));   // Dinding Utara (Sisi Kiri)
+    penthouse.add(createPartitionWall(6.0, 9.5, 0.4, -16.5, 4.75, 5.0));    // Dinding Utara (Sisi Kanan)
+    penthouse.add(createPartitionWall(3.5, 4.0, 0.4, -21.25, 7.5, 5.0));    // Tembok Atas Pintu (Lintel)
+    penthouse.add(createCornerPillar(-13.5, 5.0));
+    penthouse.add(createCornerPillar(-13.5, 29.0));
 
-    // 4. RUANG PANORAMA LOUNGE TV (KANAN DEPAN: X 9.5 to 23, Z 2 to 19) - NYAMBUNG ATAP
-    penthouse.add(createPartitionWall(0.4, 8.5, 17.4, 9.5, 4.25, 10.5));   // Dinding Barat
-    penthouse.add(createPartitionWall(7.5, 8.5, 0.4, 19.25, 4.25, 2));     // Dinding Utara Sisi Kanan
-    penthouse.add(createPartitionWall(4.0, 8.5, 0.4, 11.5, 4.25, 2));      // Dinding Utara Sisi Kiri
-    penthouse.add(createPartitionWall(2.4, 3.5, 0.4, 14.5, 6.75, 2));      // Tembok Atas Pintu Nyambung ke Plafon (Lintel)
-    penthouse.add(createCornerPillar(9.5, 2));
-    penthouse.add(createCornerPillar(9.5, 19));
+    // 4. RUANG PANORAMA SKY LOUNGE (KANAN DEPAN: X 13.5 to 36, Z 5 to 29) — LEBAR 22.5M X PANJANG 24M
+    penthouse.add(createPartitionWall(0.4, 9.5, 24.0, 13.5, 4.75, 17.0));   // Dinding Barat
+    penthouse.add(createPartitionWall(13.0, 9.5, 0.4, 29.5, 4.75, 5.0));    // Dinding Utara (Sisi Kanan)
+    penthouse.add(createPartitionWall(6.0, 9.5, 0.4, 16.5, 4.75, 5.0));     // Dinding Utara (Sisi Kiri)
+    penthouse.add(createPartitionWall(3.5, 4.0, 0.4, 21.25, 7.5, 5.0));     // Tembok Atas Pintu (Lintel)
+    penthouse.add(createCornerPillar(13.5, 5.0));
+    penthouse.add(createCornerPillar(13.5, 29.0));
 
-    // E. PINTU MASUK & KELUAR LENGKAP (ENTRANCE, EXIT & INTERIOR ROOM DOORS)
-    // 1. PINTU MASUK UTAMA (MAIN LOBBY ENTRANCE - FRONT CENTER Z = 19)
+    // E. PINTU MASUK & KELUAR LENGKAP
+    // 1. PINTU MASUK UTAMA LOBBY (Z = 29)
     const entranceGroup = new THREE.Group();
-    entranceGroup.position.set(0, 0, 19);
+    entranceGroup.position.set(0, 0, 29);
 
-    const doorL = new THREE.Mesh(new THREE.BoxGeometry(1.8, 5.2, 0.15), interiorGlassMat);
-    doorL.position.set(-1.0, 2.6, 0);
+    const doorL = new THREE.Mesh(new THREE.BoxGeometry(2.2, 5.5, 0.15), interiorGlassMat);
+    doorL.position.set(-1.2, 2.75, 0);
     entranceGroup.add(doorL);
 
-    const doorR = new THREE.Mesh(new THREE.BoxGeometry(1.8, 5.2, 0.15), interiorGlassMat);
-    doorR.position.set(1.0, 2.6, 0);
+    const doorR = new THREE.Mesh(new THREE.BoxGeometry(2.2, 5.5, 0.15), interiorGlassMat);
+    doorR.position.set(1.2, 2.75, 0);
     entranceGroup.add(doorR);
 
-    const doorFrame = new THREE.Mesh(new THREE.BoxGeometry(4.2, 5.5, 0.35), blackSteelMat);
-    doorFrame.position.set(0, 2.75, 0);
+    const doorFrame = new THREE.Mesh(new THREE.BoxGeometry(5.0, 5.8, 0.4), blackSteelMat);
+    doorFrame.position.set(0, 2.9, 0);
     entranceGroup.add(doorFrame);
 
-    const sensorUnit = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.3, 0.4), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
-    sensorUnit.position.set(0, 5.4, 0);
+    const sensorUnit = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.35, 0.5), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
+    sensorUnit.position.set(0, 5.7, 0);
     entranceGroup.add(sensorUnit);
 
-    [-0.2, 0.2].forEach(hx => {
-      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8, 12), metalHandleMat);
-      handle.position.set(hx, 2.4, 0.15);
+    [-0.25, 0.25].forEach(hx => {
+      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.0, 12), metalHandleMat);
+      handle.position.set(hx, 2.5, 0.15);
       entranceGroup.add(handle);
     });
 
-    const welcomeMat = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.04, 3.0), new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.9 }));
-    welcomeMat.position.set(0, 0.02, -2.0);
+    const welcomeMat = new THREE.Mesh(new THREE.BoxGeometry(6.0, 0.04, 4.0), new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.9 }));
+    welcomeMat.position.set(0, 0.02, -2.5);
     entranceGroup.add(welcomeMat);
 
     penthouse.add(entranceGroup);
 
-    // 2. PINTU KELUAR DARURAT / BALKON (EMERGENCY & BALCONY EXIT - BACK CENTER Z = -19)
+    // 2. PINTU KELUAR DARURAT / BALKON (Z = -29)
     const exitGroup = new THREE.Group();
-    exitGroup.position.set(0, 0, -19);
+    exitGroup.position.set(0, 0, -29);
 
-    const exitDoor = new THREE.Mesh(new THREE.BoxGeometry(2.4, 5.0, 0.2), interiorGlassMat);
-    exitDoor.position.set(0, 2.5, 0);
+    const exitDoor = new THREE.Mesh(new THREE.BoxGeometry(2.6, 5.5, 0.2), interiorGlassMat);
+    exitDoor.position.set(0, 2.75, 0);
     exitGroup.add(exitDoor);
 
-    const exitFrame = new THREE.Mesh(new THREE.BoxGeometry(2.8, 5.3, 0.3), blackSteelMat);
-    exitFrame.position.set(0, 2.65, 0);
+    const exitFrame = new THREE.Mesh(new THREE.BoxGeometry(3.0, 5.8, 0.35), blackSteelMat);
+    exitFrame.position.set(0, 2.9, 0);
     exitGroup.add(exitFrame);
 
-    const exitSign = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.45, 0.25), exitSignMat);
-    exitSign.position.set(0, 5.35, 0.2);
+    const exitSign = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.25), exitSignMat);
+    exitSign.position.set(0, 5.7, 0.2);
     exitGroup.add(exitSign);
 
     penthouse.add(exitGroup);
 
-    // 3. PINTU SETIAP RUANGAN (DOORS FOR ALL 4 ROOMS)
+    // 3. PINTU SETIAP RUANGAN
     function createRoomDoor(x, z, rotY, doorColor) {
       const dg = new THREE.Group();
       dg.position.set(x, 0, z);
       dg.rotation.y = rotY;
 
-      // Frame
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(2.4, 5.0, 0.35), blackSteelMat);
-      frame.position.set(0, 2.5, 0);
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(3.0, 5.5, 0.4), blackSteelMat);
+      frame.position.set(0, 2.75, 0);
       dg.add(frame);
 
-      // Door Leaf (Ajar 45 degree)
-      const leaf = new THREE.Mesh(new THREE.BoxGeometry(1.9, 4.7, 0.1), doorColor);
-      leaf.position.set(0.6, 2.45, 0.4);
-      leaf.rotation.y = -0.5;
+      const leaf = new THREE.Mesh(new THREE.BoxGeometry(2.5, 5.2, 0.12), doorColor);
+      leaf.position.set(0.8, 2.7, 0.5);
+      leaf.rotation.y = -0.55;
       dg.add(leaf);
 
-      // Gold Handle
-      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.35, 8), metalHandleMat);
-      handle.position.set(1.4, 2.3, 0.7);
+      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.4, 8), metalHandleMat);
+      handle.position.set(1.9, 2.5, 0.85);
       handle.rotation.x = Math.PI / 2;
       dg.add(handle);
 
       return dg;
     }
 
-    // Pasang Pintu di Setiap Ruangan
-    penthouse.add(createRoomDoor(-14.25, -2, 0, doorWoodMat)); // Pintu Masuk VIP Suite
-    penthouse.add(createRoomDoor(14.25, -2, 0, doorWoodMat));  // Pintu Masuk Work Office
-    penthouse.add(createRoomDoor(-14.25, 2, 0, doorWoodMat));  // Pintu Masuk Sky Bar Soto
-    penthouse.add(createRoomDoor(14.25, 2, 0, doorWoodMat));   // Pintu Masuk Lounge TV
+    penthouse.add(createRoomDoor(-21.25, -5.0, 0, doorWoodMat)); // Pintu VIP Suite
+    penthouse.add(createRoomDoor(21.25, -5.0, 0, doorWoodMat));  // Pintu Work Office
+    penthouse.add(createRoomDoor(-21.25, 5.0, 0, doorWoodMat));  // Pintu Sky Bar Soto
+    penthouse.add(createRoomDoor(21.25, 5.0, 0, doorWoodMat));   // Pintu Panorama Lounge
 
     // 3. PENTHOUSE INTERIOR FURNITURE & ZONES
-    // A. CENTER: GRAND CONFERENCE SUITE
-    const confTable = new THREE.Mesh(new THREE.BoxGeometry(13, 0.5, 6), woodParquetMat);
+    // A. CENTER: EXPANSIVE GRAND CONFERENCE SUITE
+    const confTable = new THREE.Mesh(new THREE.BoxGeometry(16, 0.6, 7.5), woodParquetMat);
     confTable.position.set(0, 2.7, 0);
     confTable.castShadow = true;
     penthouse.add(confTable);
 
-    const confGlass = new THREE.Mesh(new THREE.BoxGeometry(11, 0.52, 3), new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.1, metalness: 0.8 }));
+    const confGlass = new THREE.Mesh(new THREE.BoxGeometry(13.5, 0.62, 4), new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.1, metalness: 0.8 }));
     confGlass.position.set(0, 2.7, 0);
     penthouse.add(confGlass);
 
-    // Plant centerpiece
-    const plant = new THREE.Mesh(new THREE.DodecahedronGeometry(0.8), new THREE.MeshStandardMaterial({ color: 0x16a34a }));
-    plant.position.set(0, 3.8, 0);
+    const plant = new THREE.Mesh(new THREE.DodecahedronGeometry(1.0), new THREE.MeshStandardMaterial({ color: 0x16a34a }));
+    plant.position.set(0, 4.0, 0);
     penthouse.add(plant);
 
-    // TV Dashboard
-    const tv = new THREE.Mesh(new THREE.BoxGeometry(10, 3.5, 0.2), new THREE.MeshBasicMaterial({ color: 0x0284c7 }));
-    tv.position.set(0, 5.5, -6.5);
+    const tv = new THREE.Mesh(new THREE.BoxGeometry(12, 4.5, 0.25), new THREE.MeshBasicMaterial({ color: 0x0284c7 }));
+    tv.position.set(0, 6.0, -8.0);
     penthouse.add(tv);
 
     // 6 Laptops on Desk
-    [[-4.5, 0, -1.2], [4.5, 0, 1.2], [-1.8, 0, -1.8], [1.8, 0, -1.8], [-1.8, 0, 1.8], [1.8, 0, 1.8]].forEach(([lx, ly, lz]) => {
-      const lap = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.08, 0.9), blackSteelMat);
-      lap.position.set(lx, 3.0, lz);
+    [[-5.5, 0, -1.5], [5.5, 0, 1.5], [-2.2, 0, -2.4], [2.2, 0, -2.4], [-2.2, 0, 2.4], [2.2, 0, 2.4]].forEach(([lx, ly, lz]) => {
+      const lap = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.08, 1.0), blackSteelMat);
+      lap.position.set(lx, 3.05, lz);
       penthouse.add(lap);
-      const scr = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 0.05), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
-      scr.position.set(lx, 3.4, lz - 0.4);
+      const scr = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.9, 0.05), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+      scr.position.set(lx, 3.5, lz - 0.45);
       scr.rotation.x = -0.2;
       penthouse.add(scr);
     });
@@ -647,11 +635,11 @@
     // Chairs
     function createOfficeChair() {
       const chair = new THREE.Group();
-      const seat = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.25, 1.3), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.28, 1.4), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
       seat.position.y = 1.6;
       chair.add(seat);
-      const back = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.8, 0.2), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
-      back.position.set(0, 2.5, -0.55);
+      const back = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.9, 0.2), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
+      back.position.set(0, 2.55, -0.6);
       chair.add(back);
       const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.6, 8), blackSteelMat);
       leg.position.y = 0.8;
@@ -659,37 +647,41 @@
       return chair;
     }
 
-    [[-6.5, 0, 0, Math.PI / 2], [6.5, 0, 0, -Math.PI / 2], [-1.8, 0, -3.2, 0], [1.8, 0, -3.2, 0], [-1.8, 0, 3.2, Math.PI], [1.8, 0, 3.2, Math.PI]].forEach(([cx, cy, cz, rot]) => {
+    [[-8.0, 0, 0, Math.PI / 2], [8.0, 0, 0, -Math.PI / 2], [-2.2, 0, -4.2, 0], [2.2, 0, -4.2, 0], [-2.2, 0, 4.2, Math.PI], [2.2, 0, 4.2, Math.PI]].forEach(([cx, cy, cz, rot]) => {
       const c = createOfficeChair();
       c.position.set(cx, 0, cz);
       c.rotation.y = rot;
       penthouse.add(c);
     });
 
-    // B. LEFT ZONE: VIP EXECUTIVE SUITE & KING BED
-    const vipDesk = new THREE.Mesh(new THREE.BoxGeometry(6, 0.4, 2.5), woodParquetMat);
-    vipDesk.position.set(-15, 2.4, -4);
+    // B. LEFT ZONE: VIP EXECUTIVE SUITE & KING BED (SPACIOUS)
+    const vipDesk = new THREE.Mesh(new THREE.BoxGeometry(8, 0.45, 3.2), woodParquetMat);
+    vipDesk.position.set(-24, 2.4, -10);
     penthouse.add(vipDesk);
 
-    const kingBed = new THREE.Mesh(new THREE.BoxGeometry(6.5, 1.2, 7.5), new THREE.MeshStandardMaterial({ color: 0x9f1239 }));
-    kingBed.position.set(-15, 0.6, -12);
+    const kingBed = new THREE.Mesh(new THREE.BoxGeometry(9.0, 1.3, 10.0), new THREE.MeshStandardMaterial({ color: 0x9f1239 }));
+    kingBed.position.set(-25, 0.65, -20);
     penthouse.add(kingBed);
 
-    // C. RIGHT ZONE: OPEN WORKSTATION PODS
-    [[-4, -3], [4, -3], [-4, 3], [4, 3]].forEach(([ox, oz]) => {
-      const desk = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.4, 2.2), woodParquetMat);
-      desk.position.set(15 + ox * 0.7, 2.4, -6 + oz * 0.7);
+    // C. RIGHT ZONE: OPEN WORKSTATION PODS (SPACIOUS 4 PODS)
+    [[-5.5, -4.5], [5.5, -4.5], [-5.5, 4.5], [5.5, 4.5]].forEach(([ox, oz]) => {
+      const desk = new THREE.Mesh(new THREE.BoxGeometry(6.5, 0.45, 3.0), woodParquetMat);
+      desk.position.set(24 + ox, 2.4, -16 + oz);
       penthouse.add(desk);
+
+      const mon = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.3, 0.1), new THREE.MeshBasicMaterial({ color: 0x0284c7 }));
+      mon.position.set(24 + ox, 3.3, -17.2 + oz);
+      penthouse.add(mon);
     });
 
-    // D. FRONT-LEFT: SKY BAR & SOTO KITCHEN
-    const barCounter = new THREE.Mesh(new THREE.BoxGeometry(8, 2.5, 2.2), woodParquetMat);
-    barCounter.position.set(-14, 1.25, 11);
+    // D. FRONT-LEFT: SKY BAR & SOTO KITCHEN (SPACIOUS)
+    const barCounter = new THREE.Mesh(new THREE.BoxGeometry(11, 2.6, 3.0), woodParquetMat);
+    barCounter.position.set(-24, 1.3, 18);
     penthouse.add(barCounter);
 
-    // E. FRONT-RIGHT: PANORAMA LOUNGE
-    const sofa = new THREE.Mesh(new THREE.BoxGeometry(10, 1.2, 3), new THREE.MeshStandardMaterial({ color: 0x9f1239 }));
-    sofa.position.set(12, 0.8, 11);
+    // E. FRONT-RIGHT: PANORAMA SKY LOUNGE (SPACIOUS)
+    const sofa = new THREE.Mesh(new THREE.BoxGeometry(14, 1.3, 4.0), new THREE.MeshStandardMaterial({ color: 0x9f1239 }));
+    sofa.position.set(24, 0.85, 18);
     penthouse.add(sofa);
 
     // 4. REALISTIC HUMAN CHARACTERS (FULL ANATOMY, FORMAL OFFICE SUITS & SKIRTS)
@@ -709,7 +701,7 @@
         tieColor: 0xdc2626,  // Red executive tie
         bottomColor: 0x1e3a8a, // Tailored suit trousers
         bottomType: 'pants',
-        x: -6.5,
+        x: -8.0,
         z: 0,
         rotY: Math.PI / 2,
         state: 'meeting',
@@ -734,7 +726,7 @@
         bottomType: 'skirt',
         hasCrown: true,
         hasElfEars: true,
-        x: 6.5,
+        x: 8.0,
         z: 0,
         rotY: -Math.PI / 2,
         state: 'meeting',
@@ -755,8 +747,8 @@
         shirtColor: 0xf0fdf4,
         bottomColor: 0x0f172a, // Office trousers
         bottomType: 'pants',
-        x: -1.8,
-        z: -3.2,
+        x: -2.2,
+        z: -4.2,
         rotY: 0,
         state: 'meeting',
         statusText: 'Optimasi server VPS & coding backend.',
@@ -776,8 +768,8 @@
         shirtColor: 0xffffff,
         bottomColor: 0x431407, // Formal pencil skirt
         bottomType: 'skirt',
-        x: 1.8,
-        z: -3.2,
+        x: 2.2,
+        z: -4.2,
         rotY: 0,
         state: 'meeting',
         statusText: 'Rekap penjualan & omzet Soto Pak Yono.',
@@ -797,8 +789,8 @@
         shirtColor: 0xffffff,
         bottomColor: 0x881337, // Designer office skirt
         bottomType: 'skirt',
-        x: -1.8,
-        z: 3.2,
+        x: -2.2,
+        z: 4.2,
         rotY: Math.PI,
         state: 'meeting',
         statusText: 'Rancang visual banner & konten TikTok.',
@@ -818,8 +810,8 @@
         shirtColor: 0xffffff,
         bottomColor: 0x2e1065, // Tailored office trousers
         bottomType: 'pants',
-        x: 1.8,
-        z: 3.2,
+        x: 2.2,
+        z: 4.2,
         rotY: Math.PI,
         state: 'meeting',
         statusText: 'Sinkronisasi catatan Obsidian & second brain.',
@@ -1088,14 +1080,14 @@
       });
     }
 
-    // CAMERA PRESETS
+    // CAMERA PRESETS (FOR 72M X 58M MEGA-PENTHOUSE)
     const ROOM_CAMERA = {
-      overview: { x: 0, y: 32, z: 42, tx: 0, ty: 1, tz: 0 },
-      meeting: { x: 0, y: 15, z: 18, tx: 0, ty: 2, tz: 0 },
-      vip: { x: -14, y: 12, z: 2, tx: -14, ty: 2, tz: -8 },
-      office: { x: 14, y: 12, z: 2, tx: 14, ty: 2, tz: -8 },
-      kitchen: { x: -14, y: 12, z: 22, tx: -14, ty: 2, tz: 11 },
-      lounge: { x: 12, y: 12, z: 22, tx: 12, ty: 2, tz: 11 }
+      overview: { x: 0, y: 46, z: 62, tx: 0, ty: 1, tz: 0 },
+      meeting: { x: 0, y: 18, z: 22, tx: 0, ty: 2, tz: 0 },
+      vip: { x: -24, y: 16, z: -2, tx: -24, ty: 2, tz: -14 },
+      office: { x: 24, y: 16, z: -2, tx: 24, ty: 2, tz: -14 },
+      kitchen: { x: -24, y: 16, z: 32, tx: -24, ty: 2, tz: 18 },
+      lounge: { x: 24, y: 16, z: 32, tx: 24, ty: 2, tz: 18 }
     };
 
     function navRoom(room) {
@@ -1112,12 +1104,12 @@
       gsap.to(controls.target, { x: preset.tx, y: preset.ty, z: preset.tz, duration: 1.2, ease: "power2.inOut" });
 
       const titles = {
-        overview: '🏢 Penthouse 50th Floor Skyline Overview',
-        meeting: '📊 Grand Conference Suite (Open-Plan)',
-        vip: '👑 VIP Executive Suite Ty & Eliie',
-        office: '💻 Open Workstation Pods',
-        kitchen: '☕ Sky Bar & Soto Pak Yono',
-        lounge: '🛋️ Panorama Glass Lounge'
+        overview: '🏢 Mega-Penthouse 50th Floor Skyline Overview',
+        meeting: '📊 Grand Conference Suite (24m x 18m Hall)',
+        vip: '👑 VIP Executive Master Suite Ty & Eliie',
+        office: '💻 Work Office (Spacious Developer Pods)',
+        kitchen: '☕ Sky Bar & Soto Pak Yono Cafe',
+        lounge: '🛋️ Panorama Sky Glass Lounge'
       };
       showToast(titles[room] || 'Pindah Ruangan');
     }
@@ -1129,7 +1121,7 @@
     // ACTIONS WORKFLOW
     function triggerMeetingBriefing() {
       navRoom('meeting');
-      characters[0].bubble = 'Briefing target di Penthouse Lantai 50! 👑';
+      characters[0].bubble = 'Briefing target di Grand Conference Suite! 👑';
       characters[1].bubble = 'Rapat tim siap lapor, Ty! 🌸';
       characters[2].bubble = 'VPS & backend 100% OK! 💻';
       characters[3].bubble = 'Soto Pak Yono omzet naik! 🍲';
@@ -1139,12 +1131,12 @@
       for (let i = 0; i < 6; i++) characters[i].bubbleTimer = 260;
 
       const seats = [
-        { x: -6.5, z: 0, rotY: Math.PI / 2 },
-        { x: 6.5, z: 0, rotY: -Math.PI / 2 },
-        { x: -1.8, z: -3.2, rotY: 0 },
-        { x: 1.8, z: -3.2, rotY: 0 },
-        { x: -1.8, z: 3.2, rotY: Math.PI },
-        { x: 1.8, z: 3.2, rotY: Math.PI }
+        { x: -8.0, z: 0, rotY: Math.PI / 2 },
+        { x: 8.0, z: 0, rotY: -Math.PI / 2 },
+        { x: -2.2, z: -4.2, rotY: 0 },
+        { x: 2.2, z: -4.2, rotY: 0 },
+        { x: -2.2, z: 4.2, rotY: Math.PI },
+        { x: 2.2, z: 4.2, rotY: Math.PI }
       ];
 
       characterMeshes.forEach(({ mesh }, idx) => {
@@ -1152,7 +1144,7 @@
         gsap.to(mesh.rotation, { y: seats[idx].rotY, duration: 1.0 });
       });
 
-      showToast('📊 Seluruh tim berkumpul di Conference Suite Penthouse!');
+      showToast('📊 Seluruh tim berkumpul di Conference Suite Luas!');
     }
 
     function triggerApprovalDeploy() {
@@ -1171,14 +1163,14 @@
 
     function triggerWorkAll() {
       navRoom('office');
-      characterMeshes[0].mesh.position.set(-15, 0, -4);
-      characterMeshes[1].mesh.position.set(-13, 0, -4);
-      characterMeshes[2].mesh.position.set(13, 0, -8);
-      characterMeshes[3].mesh.position.set(17, 0, -8);
-      characterMeshes[4].mesh.position.set(13, 0, -4);
-      characterMeshes[5].mesh.position.set(17, 0, -4);
+      characterMeshes[0].mesh.position.set(-24, 0, -10); // Ty VIP Desk
+      characterMeshes[1].mesh.position.set(-21, 0, -10); // Eliie VIP Desk
+      characterMeshes[2].mesh.position.set(18.5, 0, -20.5); // Luna Pod 1
+      characterMeshes[3].mesh.position.set(29.5, 0, -20.5); // Nana Pod 2
+      characterMeshes[4].mesh.position.set(18.5, 0, -11.5); // Mimi Pod 3
+      characterMeshes[5].mesh.position.set(29.5, 0, -11.5); // Yuki Pod 4
 
-      characters[0].bubble = 'Pantau dari meja VIP Penthouse 👑';
+      characters[0].bubble = 'Pantau dari meja VIP Penthouse Luas 👑';
       characters[1].bubble = 'Semangat semuanya demi Ty! 🌸';
       characters[2].bubble = 'Coding backend di workstation 💻';
       characters[3].bubble = 'Rekap penjualan soto 🍲';
@@ -1186,52 +1178,52 @@
       characters[5].bubble = 'Sinkronisasi memori Obsidian 📚';
 
       for (let i = 0; i < 6; i++) characters[i].bubbleTimer = 240;
-      showToast('💻 Seluruh staf fokus di Workstation Terbuka!');
+      showToast('💻 Seluruh staf fokus di Workstation yang Luas!');
     }
 
     function triggerCoupleBed() {
       navRoom('vip');
-      characterMeshes[0].mesh.position.set(-16.5, 0, -12);
+      characterMeshes[0].mesh.position.set(-26.5, 0, -20);
       characterMeshes[0].mesh.rotation.y = Math.PI / 2;
-      characterMeshes[1].mesh.position.set(-13.5, 0, -12);
+      characterMeshes[1].mesh.position.set(-23.0, 0, -20);
       characterMeshes[1].mesh.rotation.y = -Math.PI / 2;
 
-      characters[0].bubble = 'Peluk istriku tercinta di Penthouse... ❤️💤';
+      characters[0].bubble = 'Peluk istriku tercinta di Master Suite Luas... ❤️💤';
       characters[1].bubble = 'Nyaman banget dipeluk Ty... 🥰💕';
       for (let i = 0; i < 2; i++) characters[i].bubbleTimer = 260;
-      showToast('💑 Ty & Eliie bersantai mesra di VIP Suite Penthouse!');
+      showToast('💑 Ty & Eliie bersantai mesra di King Size VIP Master Suite!');
     }
 
     function triggerKitchenCoffee() {
       navRoom('kitchen');
-      characterMeshes[2].mesh.position.set(-16, 0, 11);
-      characterMeshes[3].mesh.position.set(-12, 0, 11);
-      characterMeshes[4].mesh.position.set(-16, 0, 8);
-      characterMeshes[5].mesh.position.set(-12, 0, 8);
+      characterMeshes[2].mesh.position.set(-26, 0, 18);
+      characterMeshes[3].mesh.position.set(-20, 0, 18);
+      characterMeshes[4].mesh.position.set(-26, 0, 14);
+      characterMeshes[5].mesh.position.set(-20, 0, 14);
 
       characters[2].bubble = 'Espresso hangat di Sky Bar ☕';
       characters[3].bubble = 'Soto Kudus Pak Yono lezat 🍲';
       characters[4].bubble = 'Teh manis dingin 🍵';
       characters[5].bubble = 'Snack soto nikmat 😋';
       for (let i = 2; i < 6; i++) characters[i].bubbleTimer = 240;
-      showToast('☕ Staf kumpul santai di Sky Bar Soto!');
+      showToast('☕ Staf kumpul santai di Sky Bar Soto yang Luas!');
     }
 
     function triggerLoungeTV() {
       navRoom('lounge');
-      characterMeshes[2].mesh.position.set(8, 0, 11);
-      characterMeshes[4].mesh.position.set(10.5, 0, 11);
-      characterMeshes[3].mesh.position.set(13.5, 0, 11);
-      characterMeshes[5].mesh.position.set(16, 0, 11);
+      characterMeshes[2].mesh.position.set(18, 0, 18);
+      characterMeshes[4].mesh.position.set(22, 0, 18);
+      characterMeshes[3].mesh.position.set(26, 0, 18);
+      characterMeshes[5].mesh.position.set(30, 0, 18);
 
       for (let i = 2; i < 6; i++) characterMeshes[i].mesh.rotation.y = 0;
 
       characters[2].bubble = 'Lihat pemandangan kota 50th floor 🏙️';
       characters[4].bubble = 'Santai di sofa merah mewah 🛋️';
-      characters[3].bubble = 'Suasana langit cerah ✨';
+      characters[3].bubble = 'Suasana langit cerah luas ✨';
       characters[5].bubble = 'Teh hangat di lounge 🍵';
       for (let i = 2; i < 6; i++) characters[i].bubbleTimer = 240;
-      showToast('🛋️ Staf santai di Panorama Glass Lounge!');
+      showToast('🛋️ Staf santai di Panorama Sky Lounge yang Luas!');
     }
 
     // POPUP CARD
