@@ -675,59 +675,197 @@
 
     const characterMeshes = [];
 
-    // CREATE HIGH-DETAIL 3D SIMS CHARACTER MESH
+    // CREATE REALISTIC 3D HUMANOID ANATOMY MESH (THE SIMS 3D HUMAN BODY)
     function createSimsAvatar(c) {
       const charGroup = new THREE.Group();
 
-      const skinMat = new THREE.MeshStandardMaterial({ color: c.skinColor, roughness: 0.6 });
-      const hairMat = new THREE.MeshStandardMaterial({ color: c.hairColor, roughness: 0.5 });
-      const shirtMat = new THREE.MeshStandardMaterial({ color: c.shirtColor, roughness: 0.7 });
-      const pantsMat = new THREE.MeshStandardMaterial({ color: c.pantsColor, roughness: 0.7 });
+      const skinMat = new THREE.MeshStandardMaterial({ color: c.skinColor, roughness: 0.55, metalness: 0.05 });
+      const hairMat = new THREE.MeshStandardMaterial({ color: c.hairColor, roughness: 0.45, metalness: 0.1 });
+      const shirtMat = new THREE.MeshStandardMaterial({ color: c.shirtColor, roughness: 0.65, metalness: 0.05 });
+      const pantsMat = new THREE.MeshStandardMaterial({ color: c.pantsColor, roughness: 0.7, metalness: 0.05 });
+      const shoeMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.2 });
+      const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.85 });
 
-      // Torso / Chest
-      const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.55, 1.4, 16), shirtMat);
-      torso.position.y = 2.4;
-      torso.castShadow = true;
-      charGroup.add(torso);
+      // 1. HEAD & NECK
+      // Neck
+      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.6, 16), skinMat);
+      neck.position.y = 3.3;
+      neck.castShadow = true;
+      charGroup.add(neck);
 
-      // Head (Smooth Sphere)
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.6, 24, 24), skinMat);
-      head.position.y = 3.6;
+      // Contoured Head / Face
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.52, 24, 24), skinMat);
+      head.position.y = 3.85;
+      head.scale.set(1.0, 1.15, 1.05); // Human anatomical egg-shape
       head.castShadow = true;
       charGroup.add(head);
 
-      // Hair Mesh (The Sims 3D Stylized Hair)
-      const hair = new THREE.Mesh(new THREE.SphereGeometry(0.65, 16, 16, 0, Math.PI * 2, 0, Math.PI / 1.7), hairMat);
-      hair.position.y = 3.68;
-      charGroup.add(hair);
+      // Chin / Jawline
+      const jaw = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.18, 0.35, 16), skinMat);
+      jaw.position.set(0, 3.52, 0.15);
+      charGroup.add(jaw);
 
-      // Crown for Eliie
-      if (c.hasCrown) {
-        const crown = new THREE.Mesh(new THREE.ConeGeometry(0.35, 0.5, 5), new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.8, roughness: 0.2 }));
-        crown.position.y = 4.4;
-        charGroup.add(crown);
+      // Nose
+      const nose = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.16, 8), skinMat);
+      nose.position.set(0, 3.82, 0.55);
+      nose.rotation.x = Math.PI / 2.2;
+      charGroup.add(nose);
+
+      // Ears
+      if (c.hasElfEars) {
+        // Eliie's cute elf ears
+        [[-0.52, 3.9, 0, -0.4], [0.52, 3.9, 0, 0.4]].forEach(([ex, ey, ez, rotZ]) => {
+          const ear = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.5, 8), skinMat);
+          ear.position.set(ex, ey, ez);
+          ear.rotation.z = rotZ;
+          ear.rotation.x = -0.2;
+          charGroup.add(ear);
+        });
+      } else {
+        // Normal human ears
+        [[-0.52, 3.85, 0], [0.52, 3.85, 0]].forEach(([ex, ey, ez]) => {
+          const ear = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), skinMat);
+          ear.position.set(ex, ey, ez);
+          ear.scale.set(0.5, 1.0, 0.7);
+          charGroup.add(ear);
+        });
       }
 
-      // Seated Legs (Pelvis & Thighs)
-      const thighs = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.4, 1.2), pantsMat);
-      thighs.position.set(0, 1.65, 0.4);
-      charGroup.add(thighs);
+      // Hair Styles Tailored Per Character
+      const hairGroup = new THREE.Group();
+      hairGroup.position.y = 3.92;
 
-      // Lower legs
-      const shins = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.2, 0.4), pantsMat);
-      shins.position.set(0, 0.9, 0.9);
-      charGroup.add(shins);
+      // Main Hair Cap
+      const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 20, 0, Math.PI * 2, 0, Math.PI / 1.6), hairMat);
+      hairCap.scale.set(1.02, 1.15, 1.08);
+      hairGroup.add(hairCap);
 
-      // Arms (Resting on Table)
-      const leftArm = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.2, 12), shirtMat);
-      leftArm.position.set(-0.75, 2.3, 0.3);
-      leftArm.rotation.x = Math.PI / 4;
-      charGroup.add(leftArm);
+      if (c.id === 'ty') {
+        // Ty: Handsome modern parted taper haircut
+        const fringe = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.25, 0.4), hairMat);
+        fringe.position.set(0.1, 0.35, 0.4);
+        fringe.rotation.z = -0.15;
+        hairGroup.add(fringe);
+      } else if (c.id === 'eliie') {
+        // Eliie: Cascading long blonde hair & tiara
+        const bangs = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.6, 0.4, 16, 1, false, 0, Math.PI), hairMat);
+        bangs.position.set(0, 0.2, 0.25);
+        bangs.rotation.x = 0.2;
+        hairGroup.add(bangs);
 
-      const rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.2, 12), shirtMat);
-      rightArm.position.set(0.75, 2.3, 0.3);
-      rightArm.rotation.x = Math.PI / 4;
-      charGroup.add(rightArm);
+        // Long twin flowing hair locks
+        [[-0.45, -0.6, -0.1], [0.45, -0.6, -0.1]].forEach(([lx, ly, lz]) => {
+          const lock = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.08, 1.6, 12), hairMat);
+          lock.position.set(lx, ly, lz);
+          lock.rotation.z = lx > 0 ? -0.15 : 0.15;
+          hairGroup.add(lock);
+        });
+
+        // Golden Tiara
+        const tiara = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.06, 8, 24, Math.PI), goldMat);
+        tiara.position.set(0, 0.42, 0.2);
+        tiara.rotation.x = -Math.PI / 3;
+        hairGroup.add(tiara);
+      } else if (c.id === 'luna') {
+        // Luna: Techie ponytail & over-ear headphones
+        const pony = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.08, 1.1, 12), hairMat);
+        pony.position.set(0, -0.3, -0.6);
+        pony.rotation.x = -0.5;
+        hairGroup.add(pony);
+
+        // Headphones
+        const band = new THREE.Mesh(new THREE.TorusGeometry(0.58, 0.06, 8, 24, Math.PI), goldMat);
+        band.position.set(0, 0.1, 0);
+        band.rotation.z = Math.PI / 2;
+        hairGroup.add(band);
+      } else if (c.id === 'mimi') {
+        // Mimi: Cute side twin tails with ribbons
+        [[-0.6, 0.1, -0.2], [0.6, 0.1, -0.2]].forEach(([tx, ty, tz]) => {
+          const tail = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.9, 12), hairMat);
+          tail.position.set(tx, ty, tz);
+          tail.rotation.z = tx > 0 ? -0.5 : 0.5;
+          hairGroup.add(tail);
+        });
+      }
+
+      charGroup.add(hairGroup);
+
+      // 2. TORSO & UPPER BODY (REALISTIC ANATOMY)
+      // Clavicle & Upper Chest / Shoulders
+      const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.58, 0.9, 16), shirtMat);
+      chest.position.y = 2.75;
+      chest.scale.set(1.2, 1.0, 0.85); // Wider shoulders, flatter front-to-back
+      chest.castShadow = true;
+      charGroup.add(chest);
+
+      // Tapered Waist / Abdomen
+      const waist = new THREE.Mesh(new THREE.CylinderGeometry(0.54, 0.58, 0.75, 16), shirtMat);
+      waist.position.y = 2.05;
+      waist.scale.set(1.1, 1.0, 0.8);
+      waist.castShadow = true;
+      charGroup.add(waist);
+
+      // Pelvis / Hips (Seated Base)
+      const pelvis = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.45, 1.1), pantsMat);
+      pelvis.position.set(0, 1.6, 0.1);
+      charGroup.add(pelvis);
+
+      // 3. ARMS & HANDS (REALISTIC JOINTS)
+      [[-1, 'left'], [1, 'right']].forEach(([side, name]) => {
+        // Shoulder Deltoid Joint
+        const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 16), shirtMat);
+        shoulder.position.set(side * 0.78, 2.95, 0);
+        charGroup.add(shoulder);
+
+        // Upper Arm (Bicep)
+        const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.14, 0.85, 14), shirtMat);
+        upperArm.position.set(side * 0.85, 2.5, 0.2);
+        upperArm.rotation.x = Math.PI / 4;
+        upperArm.rotation.z = side * -0.15;
+        charGroup.add(upperArm);
+
+        // Elbow Joint
+        const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 12), shirtMat);
+        elbow.position.set(side * 0.88, 2.15, 0.52);
+        charGroup.add(elbow);
+
+        // Forearm
+        const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.12, 0.9, 14), skinMat);
+        forearm.position.set(side * 0.75, 2.3, 0.95);
+        forearm.rotation.x = Math.PI / 2.3;
+        forearm.rotation.y = side * -0.25;
+        charGroup.add(forearm);
+
+        // Human Hand (Palm + Fingers resting on table)
+        const palm = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.1, 0.3), skinMat);
+        palm.position.set(side * 0.65, 2.75, 1.35);
+        charGroup.add(palm);
+      });
+
+      // 4. LEGS & FEET (SEATED AT CHAIR)
+      [[-0.38, 'left'], [0.38, 'right']].forEach(([sideX]) => {
+        // Thigh (Horizontal resting on seat cushion)
+        const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.24, 1.25, 16), pantsMat);
+        thigh.position.set(sideX, 1.55, 0.65);
+        thigh.rotation.x = Math.PI / 2;
+        charGroup.add(thigh);
+
+        // Knee Joint
+        const knee = new THREE.Mesh(new THREE.SphereGeometry(0.24, 14, 14), pantsMat);
+        knee.position.set(sideX, 1.55, 1.25);
+        charGroup.add(knee);
+
+        // Calf / Shin (Vertical down to floor)
+        const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 1.25, 16), pantsMat);
+        shin.position.set(sideX, 0.9, 1.25);
+        charGroup.add(shin);
+
+        // Ankle & Foot / Shoe (Touching floor)
+        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.28, 0.75), shoeMat);
+        shoe.position.set(sideX, 0.22, 1.42);
+        shoe.castShadow = true;
+        charGroup.add(shoe);
+      });
 
       charGroup.position.set(c.x, 0, c.z);
       charGroup.rotation.y = c.rotY;

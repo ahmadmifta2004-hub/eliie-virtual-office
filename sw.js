@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-sims3d-v10';
+const CACHE_NAME = 'eliie-office-humanoid3d-v11';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
