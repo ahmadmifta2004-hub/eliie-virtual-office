@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v29-milestone-1-four-rooms';
+const CACHE_NAME = 'eliie-office-v30-proper-chibi-humanoids';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

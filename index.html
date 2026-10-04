@@ -1283,7 +1283,7 @@
 
     penthouse.add(loungeGroup);
 
-    // 4. THE SIMS 3D HUMANOID AVATARS & DYNAMIC WALKING SYSTEM
+    // 4. THE SIMS 3D CHIBI PROPORTIONS & EXPRESSIVE CHARACTERS
     const characters = [
       {
         id: 'ty',
@@ -1311,14 +1311,14 @@
         isWalking: false,
         walkTime: 0,
         state: 'sit_meeting',
-        statusText: 'Approval untuk deploy & leader tim.',
-        bubble: '🚀 Approval deploy K-pop Penthouse siap!',
+        statusText: 'Memimpin briefing seluruh tim AI di Conference Suite.',
+        bubble: '🚀 Siap deploy KD-23 ke production!',
         bubbleTimer: 240
       },
       {
         id: 'eliie',
         name: 'Eliie Valentine',
-        badge: '🌸 Eliie Center Visual Idol',
+        badge: '🌸 Eliie (Manager Utama & Visual)',
         dotColor: '#f59e0b',
         avatar: '🌸',
         isBoss: true,
@@ -1342,14 +1342,14 @@
         isWalking: false,
         walkTime: 0,
         state: 'sit_meeting',
-        statusText: 'Mendampingi Ty & center visual idol.',
-        bubble: 'Siap tampil & deploy, Ty tersayang! 🌸✨',
+        statusText: 'Mendampingi Ty & mengoordinasi seluruh divisi.',
+        bubble: 'Semangat terus suamiku sayang! 🌸✨',
         bubbleTimer: 240
       },
       {
         id: 'luna',
         name: 'Luna',
-        badge: '💻 Luna Cyber-Idol',
+        badge: '💻 Luna (Manager Divisi Tech)',
         dotColor: '#0284c7',
         avatar: '💻',
         gender: 'female',
@@ -1371,14 +1371,14 @@
         isWalking: false,
         walkTime: 0,
         state: 'sit_meeting',
-        statusText: 'Optimasi server VPS & coding backend.',
-        bubble: '⚡ VPS 100% aman & lancar!',
+        statusText: 'Monitor VPS 95.111.193.158 & backend API.',
+        bubble: '⚡ VPS aman 100%, siap deploy!',
         bubbleTimer: 240
       },
       {
         id: 'nana',
         name: 'Nana',
-        badge: '🍲 Nana Cheerful Idol',
+        badge: '🍲 Nana (Manager Divisi Bisnis/Soto)',
         dotColor: '#ea580c',
         avatar: '🍲',
         gender: 'female',
@@ -1400,14 +1400,14 @@
         isWalking: false,
         walkTime: 0,
         state: 'sit_meeting',
-        statusText: 'Rekap penjualan & omzet Soto Pak Yono.',
-        bubble: '📈 Omzet soto meroket, Bos Ty!',
+        statusText: 'Rekap penjualan harian Warung Soto Pak Yono.',
+        bubble: '📈 Omzet soto melonjak pesat, Ty!',
         bubbleTimer: 240
       },
       {
         id: 'mimi',
         name: 'Mimi',
-        badge: '🎨 Mimi Cutie Idol',
+        badge: '🎨 Mimi (Manager Divisi Kreatif)',
         dotColor: '#ec4899',
         avatar: '🎨',
         gender: 'female',
@@ -1430,14 +1430,14 @@
         isWalking: false,
         walkTime: 0,
         state: 'sit_meeting',
-        statusText: 'Rancang visual banner & konten TikTok.',
-        bubble: '🎨 Desain & reels viral FYP!',
+        statusText: 'Rancang visual video estetik & konten TikTok.',
+        bubble: '🎨 Video viral FYP siap tayang!',
         bubbleTimer: 240
       },
       {
         id: 'yuki',
         name: 'Yuki',
-        badge: '📚 Yuki Pure Idol',
+        badge: '📚 Yuki (Manager Divisi Memory/Arsip)',
         dotColor: '#8b5cf6',
         avatar: '📚',
         gender: 'female',
@@ -1460,14 +1460,14 @@
         walkTime: 0,
         state: 'sit_meeting',
         statusText: 'Sinkronisasi catatan Obsidian & second brain.',
-        bubble: '📖 Changelog tersimpan rapi!',
+        bubble: '📖 Log brief tersimpan abadi di Obsidian!',
         bubbleTimer: 240
       }
     ];
 
     const characterMeshes = [];
 
-    // BUILD THE SIMS 3D ARTICULATED HUMANOID AVATAR (SMOOTH CAPSULES, DUAL KNEE/ELBOW JOINTS & EYE BLINK)
+    // BUILD EXPRESSIVE 3D CHIBI HUMANOID AVATAR (PROPORTIONAL HEAD, EYES, BLUSH, HAIR, ARMS, LEGS, SHOES & ROTATING PLUMBOB)
     function buildSimsAvatar(c) {
       const charGroup = new THREE.Group();
 
@@ -1482,233 +1482,251 @@
       const eyePupilMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
       const blushMat = new THREE.MeshBasicMaterial({ color: 0xfb7185, transparent: true, opacity: 0.85 });
       const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 });
-      const plumbobMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.1, metalness: 0.3, emissive: 0x16a34a, emissiveIntensity: 0.6 });
+      const plumbobMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.1, metalness: 0.3, emissive: 0x16a34a, emissiveIntensity: 0.7 });
 
       // 1. PELVIS / HIPS
       const pelvis = new THREE.Group();
-      pelvis.position.y = 1.75;
+      pelvis.position.y = 1.6;
       charGroup.add(pelvis);
 
-      const hipMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.38, 0.45, 16), bottomMat);
+      const hipMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.45, 0.5, 16), bottomMat);
       hipMesh.castShadow = true;
       pelvis.add(hipMesh);
 
-      // 2. DUAL-JOINT ARTICULATED LEGS (HIP -> THIGH -> KNEE JOINT -> SHIN -> FOOT)
+      // 2. CHIBI ARTICULATED LEGS & FEET
       // Left Leg
       const leftHipJoint = new THREE.Group();
-      leftHipJoint.position.set(-0.25, -0.15, 0);
+      leftHipJoint.position.set(-0.28, -0.15, 0);
       pelvis.add(leftHipJoint);
 
-      const leftThigh = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.13, 0.7, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
-      leftThigh.position.y = -0.35;
+      const leftThigh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.65, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      leftThigh.position.y = -0.32;
       leftThigh.castShadow = true;
       leftHipJoint.add(leftThigh);
 
       const leftKneeJoint = new THREE.Group();
-      leftKneeJoint.position.set(0, -0.7, 0);
+      leftKneeJoint.position.set(0, -0.65, 0);
       leftHipJoint.add(leftKneeJoint);
 
-      const leftShin = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.11, 0.7, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
-      leftShin.position.y = -0.35;
+      const leftShin = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.65, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      leftShin.position.y = -0.32;
       leftShin.castShadow = true;
       leftKneeJoint.add(leftShin);
 
-      const leftShoe = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.2, 0.55), shoeMat);
-      leftShoe.position.set(0, -0.75, 0.1);
+      const leftShoe = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.22, 0.6), shoeMat);
+      leftShoe.position.set(0, -0.68, 0.12);
       leftShoe.castShadow = true;
       leftKneeJoint.add(leftShoe);
 
       // Right Leg
       const rightHipJoint = new THREE.Group();
-      rightHipJoint.position.set(0.25, -0.15, 0);
+      rightHipJoint.position.set(0.28, -0.15, 0);
       pelvis.add(rightHipJoint);
 
-      const rightThigh = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.13, 0.7, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
-      rightThigh.position.y = -0.35;
+      const rightThigh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.65, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      rightThigh.position.y = -0.32;
       rightThigh.castShadow = true;
       rightHipJoint.add(rightThigh);
 
       const rightKneeJoint = new THREE.Group();
-      rightKneeJoint.position.set(0, -0.7, 0);
+      rightKneeJoint.position.set(0, -0.65, 0);
       rightHipJoint.add(rightKneeJoint);
 
-      const rightShin = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.11, 0.7, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
-      rightShin.position.y = -0.35;
+      const rightShin = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.65, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      rightShin.position.y = -0.32;
       rightShin.castShadow = true;
       rightKneeJoint.add(rightShin);
 
-      const rightShoe = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.2, 0.55), shoeMat);
-      rightShoe.position.set(0, -0.75, 0.1);
+      const rightShoe = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.22, 0.6), shoeMat);
+      rightShoe.position.set(0, -0.68, 0.12);
       rightShoe.castShadow = true;
       rightKneeJoint.add(rightShoe);
 
-      // 3. TORSO / UPPER BODY
+      // 3. TORSO / UPPER BODY (CHEST, COLLAR, TIE / SKIRT)
       const torsoGroup = new THREE.Group();
       torsoGroup.position.y = 0.22;
       pelvis.add(torsoGroup);
 
-      const chestMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.42, 0.95, 16), suitMat);
-      chestMesh.position.y = 0.48;
-      chestMesh.scale.set(1.15, 1.0, 0.85);
+      const chestMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.48, 1.05, 16), suitMat);
+      chestMesh.position.y = 0.52;
+      chestMesh.scale.set(1.2, 1.0, 0.9);
       chestMesh.castShadow = true;
       torsoGroup.add(chestMesh);
 
-      const collar = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.35, 4), shirtMat);
-      collar.position.set(0, 0.75, 0.3);
+      const collar = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.38, 4), shirtMat);
+      collar.position.set(0, 0.85, 0.32);
       collar.rotation.z = Math.PI;
       torsoGroup.add(collar);
 
       if (c.gender === 'male' && c.tieColor) {
-        const tie = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.55, 0.04), new THREE.MeshStandardMaterial({ color: c.tieColor }));
-        tie.position.set(0, 0.5, 0.33);
+        const tie = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.6, 0.05), new THREE.MeshStandardMaterial({ color: c.tieColor }));
+        tie.position.set(0, 0.55, 0.36);
         torsoGroup.add(tie);
       }
 
       if (c.bottomType === 'skirt') {
-        const skirt = new THREE.Mesh(new THREE.ConeGeometry(0.75, 0.65, 18, 1, true), bottomMat);
+        const skirt = new THREE.Mesh(new THREE.ConeGeometry(0.85, 0.75, 18, 1, true), bottomMat);
         skirt.position.set(0, 0.05, 0);
         skirt.rotation.x = 0.08;
         torsoGroup.add(skirt);
       }
 
-      // 4. DUAL-JOINT ARTICULATED ARMS (SHOULDER -> UPPER ARM -> ELBOW JOINT -> FOREARM -> HAND)
+      // 4. ARTICULATED ARMS & HANDS
       // Left Arm
       const leftShoulderJoint = new THREE.Group();
-      leftShoulderJoint.position.set(-0.62, 0.85, 0);
+      leftShoulderJoint.position.set(-0.7, 0.92, 0);
       torsoGroup.add(leftShoulderJoint);
 
-      const leftUpperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.55, 12), suitMat);
-      leftUpperArm.position.y = -0.28;
+      const leftUpperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.12, 0.6, 12), suitMat);
+      leftUpperArm.position.y = -0.3;
       leftUpperArm.castShadow = true;
       leftShoulderJoint.add(leftUpperArm);
 
       const leftElbowJoint = new THREE.Group();
-      leftElbowJoint.position.set(0, -0.55, 0);
+      leftElbowJoint.position.set(0, -0.6, 0);
       leftShoulderJoint.add(leftElbowJoint);
 
-      const leftForearm = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.09, 0.5, 12), suitMat);
-      leftForearm.position.y = -0.25;
+      const leftForearm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.55, 12), suitMat);
+      leftForearm.position.y = -0.28;
       leftForearm.castShadow = true;
       leftElbowJoint.add(leftForearm);
 
-      const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 10), skinMat);
-      leftHand.position.y = -0.55;
+      const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 10), skinMat);
+      leftHand.position.y = -0.6;
       leftElbowJoint.add(leftHand);
 
       // Right Arm
       const rightShoulderJoint = new THREE.Group();
-      rightShoulderJoint.position.set(0.62, 0.85, 0);
+      rightShoulderJoint.position.set(0.7, 0.92, 0);
       torsoGroup.add(rightShoulderJoint);
 
-      const rightUpperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.55, 12), suitMat);
-      rightUpperArm.position.y = -0.28;
+      const rightUpperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.12, 0.6, 12), suitMat);
+      rightUpperArm.position.y = -0.3;
       rightUpperArm.castShadow = true;
       rightShoulderJoint.add(rightUpperArm);
 
       const rightElbowJoint = new THREE.Group();
-      rightElbowJoint.position.set(0, -0.55, 0);
+      rightElbowJoint.position.set(0, -0.6, 0);
       rightShoulderJoint.add(rightElbowJoint);
 
-      const rightForearm = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.09, 0.5, 12), suitMat);
-      rightForearm.position.y = -0.25;
+      const rightForearm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.55, 12), suitMat);
+      rightForearm.position.y = -0.28;
       rightForearm.castShadow = true;
       rightElbowJoint.add(rightForearm);
 
-      const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 10), skinMat);
-      rightHand.position.y = -0.55;
+      const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 10), skinMat);
+      rightHand.position.y = -0.6;
       rightElbowJoint.add(rightHand);
 
-      // 5. HEAD & FACIAL EXPRESSIONS WITH BLINKING EYES
+      // 5. LARGE ADORABLE CHIBI HEAD WITH EXPRESSIVE FACIAL FEATURES
       const headGroup = new THREE.Group();
-      headGroup.position.y = 1.15;
+      headGroup.position.y = 1.25;
       torsoGroup.add(headGroup);
 
-      const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.66, 24, 24), skinMat);
-      headMesh.position.y = 0.55;
-      headMesh.scale.set(1.05, 1.0, 1.0);
+      // Soft Chibi Head Sphere
+      const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.82, 24, 24), skinMat);
+      headMesh.position.y = 0.68;
+      headMesh.scale.set(1.08, 1.0, 1.0);
       headMesh.castShadow = true;
       headGroup.add(headMesh);
 
       // Blinking Eyes Group
       const eyesGroup = new THREE.Group();
-      eyesGroup.position.set(0, 0.58, 0.58);
+      eyesGroup.position.set(0, 0.72, 0.72);
       headGroup.add(eyesGroup);
 
-      [[-0.24, 'left'], [0.24, 'right']].forEach(([ox]) => {
-        const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), eyeWhiteMat);
+      [[-0.3, 'left'], [0.3, 'right']].forEach(([ox]) => {
+        // Eye Base (Large White Oval)
+        const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 14), eyeWhiteMat);
         eyeWhite.position.set(ox, 0, 0);
-        eyeWhite.scale.set(0.9, 1.2, 0.3);
+        eyeWhite.scale.set(0.95, 1.25, 0.3);
         eyesGroup.add(eyeWhite);
 
-        const eyeIris = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), eyeIrisMat);
-        eyeIris.position.set(ox, 0, 0.05);
-        eyeIris.scale.set(0.85, 1.1, 0.2);
+        // Gradient Iris
+        const eyeIris = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 12), eyeIrisMat);
+        eyeIris.position.set(ox, 0, 0.06);
+        eyeIris.scale.set(0.9, 1.15, 0.2);
         eyesGroup.add(eyeIris);
 
-        const eyePupil = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), eyePupilMat);
-        eyePupil.position.set(ox, 0, 0.08);
+        // Pupil
+        const eyePupil = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), eyePupilMat);
+        eyePupil.position.set(ox, 0, 0.1);
         eyesGroup.add(eyePupil);
 
-        const catchlight = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 6), eyeWhiteMat);
-        catchlight.position.set(ox - 0.03, 0.06, 0.09);
-        eyesGroup.add(catchlight);
+        // Catchlight Stars (Double Catchlights)
+        const catchlight1 = new THREE.Mesh(new THREE.SphereGeometry(0.045, 6, 6), eyeWhiteMat);
+        catchlight1.position.set(ox - 0.04, 0.07, 0.12);
+        eyesGroup.add(catchlight1);
 
-        const blush = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), blushMat);
-        blush.position.set(ox, -0.18, -0.02);
-        blush.scale.set(1.2, 0.5, 0.2);
+        const catchlight2 = new THREE.Mesh(new THREE.SphereGeometry(0.025, 6, 6), eyeWhiteMat);
+        catchlight2.position.set(ox + 0.04, -0.04, 0.12);
+        eyesGroup.add(catchlight2);
+
+        // Rosy Blushing Cheeks
+        const blush = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 12), blushMat);
+        blush.position.set(ox, -0.22, -0.03);
+        blush.scale.set(1.3, 0.55, 0.2);
         headGroup.add(blush);
       });
 
-      const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.04, 0.05), new THREE.MeshBasicMaterial({ color: 0xf43f5e }));
-      mouth.position.set(0, 0.38, 0.65);
+      // Cute Smile
+      const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.05, 0.06), new THREE.MeshBasicMaterial({ color: 0xf43f5e }));
+      mouth.position.set(0, 0.46, 0.8);
       headGroup.add(mouth);
 
-      // 6. 3D STYLIZED K-POP HAIR
+      // 6. VOLUMINOUS 3D STYLIZED K-POP / CHIBI HAIR
       const hairGroup = new THREE.Group();
-      hairGroup.position.y = 0.55;
+      hairGroup.position.y = 0.68;
 
-      const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.72, 20, 20, 0, Math.PI * 2, 0, Math.PI / 1.5), hairMat);
-      hairCap.scale.set(1.06, 1.08, 1.08);
+      const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.9, 20, 20, 0, Math.PI * 2, 0, Math.PI / 1.5), hairMat);
+      hairCap.scale.set(1.08, 1.08, 1.08);
       hairGroup.add(hairCap);
 
       if (c.id === 'ty') {
-        const bangsL = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.35, 0.35), hairMat);
-        bangsL.position.set(-0.25, 0.35, 0.52);
+        const bangsL = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.42, 0.45), hairMat);
+        bangsL.position.set(-0.3, 0.42, 0.65);
         bangsL.rotation.z = 0.25;
         hairGroup.add(bangsL);
+
+        const bangsR = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.42, 0.45), hairMat);
+        bangsR.position.set(0.3, 0.45, 0.63);
+        bangsR.rotation.z = -0.25;
+        hairGroup.add(bangsR);
       } else if (c.id === 'eliie') {
-        [[-0.75, 0.2, 0.4], [0.75, 0.2, -0.4]].forEach(([tx, ty, rz]) => {
-          const tail = new THREE.Mesh(new THREE.ConeGeometry(0.28, 1.6, 12), hairMat);
-          tail.position.set(tx, ty - 0.3, -0.2);
+        [[-0.92, 0.2, 0.4], [0.92, 0.2, -0.4]].forEach(([tx, ty, rz]) => {
+          const tail = new THREE.Mesh(new THREE.ConeGeometry(0.35, 1.9, 12), hairMat);
+          tail.position.set(tx, ty - 0.4, -0.2);
           tail.rotation.z = rz;
           hairGroup.add(tail);
         });
 
-        [[-0.7, 0, -0.4], [0.7, 0, 0.4]].forEach(([ex, ey, rz]) => {
-          const ear = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.5, 8), skinMat);
+        // Elf Ears
+        [[-0.85, 0, -0.4], [0.85, 0, 0.4]].forEach(([ex, ey, rz]) => {
+          const ear = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.6, 8), skinMat);
           ear.position.set(ex, ey, 0);
           ear.rotation.z = rz;
           hairGroup.add(ear);
         });
 
-        const tiara = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.05, 8, 16, Math.PI), goldMat);
-        tiara.position.set(0, 0.6, 0.2);
+        // Golden Tiara
+        const tiara = new THREE.Mesh(new THREE.TorusGeometry(0.48, 0.06, 8, 16, Math.PI), goldMat);
+        tiara.position.set(0, 0.75, 0.25);
         tiara.rotation.x = -Math.PI / 3;
         hairGroup.add(tiara);
       } else if (c.hasHeadphones) {
-        const hp = new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.07, 8, 20, Math.PI), new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.8 }));
-        hp.position.set(0, 0.1, 0);
+        const hp = new THREE.Mesh(new THREE.TorusGeometry(0.95, 0.08, 8, 20, Math.PI), new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.8 }));
+        hp.position.set(0, 0.12, 0);
         hp.rotation.z = Math.PI / 2;
         hairGroup.add(hp);
       } else if (c.hasBeret) {
-        const beret = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.7, 0.25, 16), new THREE.MeshStandardMaterial({ color: 0x6d28d9 }));
-        beret.position.set(0.15, 0.65, 0);
+        const beret = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.85, 0.3, 16), new THREE.MeshStandardMaterial({ color: 0x6d28d9 }));
+        beret.position.set(0.18, 0.8, 0);
         beret.rotation.z = -0.2;
         hairGroup.add(beret);
       } else if (c.hasTwinTails) {
-        [[-0.75, 0.2, 0.4], [0.75, 0.2, -0.4]].forEach(([tx, ty, rz]) => {
-          const tail = new THREE.Mesh(new THREE.ConeGeometry(0.28, 1.4, 12), hairMat);
-          tail.position.set(tx, ty - 0.2, -0.2);
+        [[-0.92, 0.2, 0.4], [0.92, 0.2, -0.4]].forEach(([tx, ty, rz]) => {
+          const tail = new THREE.Mesh(new THREE.ConeGeometry(0.35, 1.6, 12), hairMat);
+          tail.position.set(tx, ty - 0.3, -0.2);
           tail.rotation.z = rz;
           hairGroup.add(tail);
         });
@@ -1716,11 +1734,11 @@
 
       headGroup.add(hairGroup);
 
-      // 7. ICONIC THE SIMS PLUMBOB (SPINNING DIAMOND CRYSTAL)
+      // 7. ICONIC THE SIMS PLUMBOB CRYSTAL
       const plumbobGroup = new THREE.Group();
-      plumbobGroup.position.y = 1.6;
+      plumbobGroup.position.y = 1.95;
 
-      const plumbobGeo = new THREE.OctahedronGeometry(0.28, 0);
+      const plumbobGeo = new THREE.OctahedronGeometry(0.32, 0);
       plumbobGeo.scale(0.8, 1.6, 0.8);
       const plumbob = new THREE.Mesh(plumbobGeo, plumbobMat);
       plumbobGroup.add(plumbob);
