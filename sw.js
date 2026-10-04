@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v21-open-top-architecture';
+const CACHE_NAME = 'eliie-office-v22-realistic-furniture-architecture';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
