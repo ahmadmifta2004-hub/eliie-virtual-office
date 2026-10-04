@@ -80,6 +80,14 @@
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2">
+        <button onclick="toggleTimeOfDay()" id="btnTimeOfDay" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-[11px] rounded-lg border border-slate-700 shadow flex items-center gap-1.5 active:scale-95 transition-all">
+          <span id="timeOfDayIcon">☀️</span>
+          <span id="timeOfDayLabel">Day Mode</span>
+        </button>
+        <button onclick="toggleAudioAmbience()" id="btnAudio" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-[11px] rounded-lg border border-slate-700 shadow flex items-center gap-1 active:scale-95 transition-all">
+          <i id="audioIcon" class="fa-solid fa-volume-xmark text-slate-400"></i>
+          <span class="hidden sm:inline">Sound</span>
+        </button>
         <button onclick="forceCleanReload()" id="btnUpdateData" class="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-extrabold text-[11px] rounded-lg shadow-lg shadow-amber-500/20 flex items-center gap-1.5 active:scale-95 transition-all border border-amber-300">
           <i id="updateIcon" class="fa-solid fa-arrows-rotate"></i>
           <span>Update Data</span>
@@ -312,7 +320,7 @@
       }, 2500);
     }
 
-    // LIGHTING: DAYLIGHT & SUNLIGHT AT HIGH ALTITUDE
+    // LIGHTING SYSTEM (DAYLIGHT, GOLDEN SUNSET, CYBERPUNK NIGHT)
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambientLight);
 
@@ -323,6 +331,94 @@
     sunLight.shadow.mapSize.height = 2048;
     sunLight.shadow.bias = -0.0003;
     scene.add(sunLight);
+
+    // Neon Accent Lights for Night Mode
+    const neonVipLight = new THREE.PointLight(0xf43f5e, 0, 30);
+    neonVipLight.position.set(-24, 6, -15);
+    scene.add(neonVipLight);
+
+    const neonTechLight = new THREE.PointLight(0x06b6d4, 0, 30);
+    neonTechLight.position.set(24, 6, -15);
+    scene.add(neonTechLight);
+
+    let currentTimeMode = 0; // 0: Day, 1: Sunset, 2: Cyberpunk Night
+    const timeModes = [
+      { name: 'Day Mode', icon: '☀️', sky: 0x38bdf8, fog: 0x93c5fd, amb: 0xffffff, ambInt: 0.9, sun: 0xfffaed, sunInt: 1.3, neonInt: 0 },
+      { name: 'Sunset Gold', icon: '🌅', sky: 0xf97316, fog: 0xfdba74, amb: 0xffedd5, ambInt: 0.7, sun: 0xfb923c, sunInt: 1.4, neonInt: 0.8 },
+      { name: 'Cyberpunk Night', icon: '🌙', sky: 0x090d16, fog: 0x0f172a, amb: 0x1e293b, ambInt: 0.3, sun: 0x3b82f6, sunInt: 0.5, neonInt: 2.2 }
+    ];
+
+    function toggleTimeOfDay() {
+      currentTimeMode = (currentTimeMode + 1) % timeModes.length;
+      const tm = timeModes[currentTimeMode];
+
+      document.getElementById('timeOfDayLabel').innerText = tm.name;
+      document.getElementById('timeOfDayIcon').innerText = tm.icon;
+
+      gsap.to(scene.background, { r: ((tm.sky >> 16) & 255) / 255, g: ((tm.sky >> 8) & 255) / 255, b: (tm.sky & 255) / 255, duration: 1.0 });
+      gsap.to(scene.fog.color, { r: ((tm.fog >> 16) & 255) / 255, g: ((tm.fog >> 8) & 255) / 255, b: (tm.fog & 255) / 255, duration: 1.0 });
+      gsap.to(ambientLight, { intensity: tm.ambInt, duration: 1.0 });
+      gsap.to(sunLight, { intensity: tm.sunInt, duration: 1.0 });
+      gsap.to(neonVipLight, { intensity: tm.neonInt, duration: 1.0 });
+      gsap.to(neonTechLight, { intensity: tm.neonInt, duration: 1.0 });
+
+      playChimeSound(600 + currentTimeMode * 150);
+      showToast(`🌆 Berpindah ke ${tm.name}!`);
+    }
+
+    // WEB AUDIO API SOUND SYSTEM (ZERO DEPENDENCIES)
+    let audioCtx = null;
+    let audioEnabled = false;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function toggleAudioAmbience() {
+      initAudio();
+      audioEnabled = !audioEnabled;
+      const icon = document.getElementById('audioIcon');
+      if (audioEnabled) {
+        icon.className = 'fa-solid fa-volume-high text-emerald-400';
+        playChimeSound(880);
+        showToast('🔊 Efek Suara Kantor Aktif!');
+      } else {
+        icon.className = 'fa-solid fa-volume-xmark text-slate-400';
+        showToast('🔇 Suara Dinonaktifkan.');
+      }
+    }
+
+    function playChimeSound(freq = 523.25) {
+      if (!audioEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.65);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    function playSuccessChime() {
+      if (!audioEnabled || !audioCtx) return;
+      [523.25, 659.25, 783.99, 1046.50].forEach((f, idx) => {
+        setTimeout(() => playChimeSound(f), idx * 120);
+      });
+    }
 
     // MATERIALS
     const marbleFloorMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.15, metalness: 0.1 });
@@ -1587,6 +1683,7 @@
     // ACTIONS WORKFLOW
     function triggerMeetingBriefing() {
       navRoom('meeting');
+      playChimeSound(660);
       characters[0].bubble = 'Briefing target di Grand Conference Suite! 👑';
       characters[1].bubble = 'Rapat tim siap lapor, Ty! 🌸';
       characters[2].bubble = 'VPS & backend 100% OK! 💻';
@@ -1616,6 +1713,7 @@
     function triggerApprovalDeploy() {
       triggerMeetingBriefing();
       setTimeout(() => {
+        playSuccessChime();
         characters[0].bubble = '🚀 APPROVAL UNTUK DEPLOY DITERBITKAN!';
         characters[1].bubble = '👑 Eksekusi deploy seluruh sistem!';
         characters[2].bubble = '⚡ Deploying code... 100% OK!';
