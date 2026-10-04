@@ -329,9 +329,10 @@
     const woodParquetMat = new THREE.MeshStandardMaterial({ color: 0xa66a38, roughness: 0.35, metalness: 0.05 });
     const woodDarkMat = new THREE.MeshStandardMaterial({ color: 0x5c3317, roughness: 0.5, metalness: 0.1 });
     const wallPartitionMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.6, metalness: 0.05 }); // Off-white drywall partition
-    const glassWallMat = new THREE.MeshPhysicalMaterial({ color: 0x93c5fd, transparent: true, opacity: 0.25, roughness: 0.05, transmission: 0.95 });
-    const interiorGlassMat = new THREE.MeshPhysicalMaterial({ color: 0xcfd8dc, transparent: true, opacity: 0.45, roughness: 0.1, transmission: 0.85 });
-    const blackSteelMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.8 });
+    const glassWallMat = new THREE.MeshPhysicalMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.3, roughness: 0.02, transmission: 0.98, thickness: 0.4 }); // Crystal clear panorama glass
+    const interiorGlassMat = new THREE.MeshPhysicalMaterial({ color: 0xcfd8dc, transparent: true, opacity: 0.4, roughness: 0.05, transmission: 0.9 });
+    const blackSteelMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3, metalness: 0.85 });
+    const windowFrameMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.4, metalness: 0.8 }); // Black aluminum window frames
     const doorWoodMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.4, metalness: 0.1 });
     const metalHandleMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 });
     const buildingMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.6 });
@@ -413,12 +414,12 @@
 
     penthouse.add(ceilingGroup);
 
-    // C. FULL PANORAMIC GLASS CURTAIN WINDOWS (OUTER PERIMETER)
+    // C. CRYSTAL CLEAR PANORAMIC GLASS CURTAIN WINDOWS (ALL 4 EXTERIOR SIDES)
     const glassPerimeter = [
-      { w: 46, h: 8.5, d: 0.3, x: 0, y: 4.25, z: -19 }, // Back Window Wall
-      { w: 46, h: 8.5, d: 0.3, x: 0, y: 4.25, z: 19 },  // Front Window Wall
-      { w: 0.3, h: 8.5, d: 38, x: -23, y: 4.25, z: 0 }, // Left Window Wall
-      { w: 0.3, h: 8.5, d: 38, x: 23, y: 4.25, z: 0 }   // Right Window Wall
+      { w: 46, h: 8.5, d: 0.2, x: 0, y: 4.25, z: -19 }, // Sisi Belakang
+      { w: 46, h: 8.5, d: 0.2, x: 0, y: 4.25, z: 19 },  // Sisi Depan
+      { w: 0.2, h: 8.5, d: 38, x: -23, y: 4.25, z: 0 }, // Sisi Kiri
+      { w: 0.2, h: 8.5, d: 38, x: 23, y: 4.25, z: 0 }   // Sisi Kanan
     ];
 
     glassPerimeter.forEach(gp => {
@@ -427,71 +428,104 @@
       penthouse.add(g);
     });
 
-    // Outer Structural Steel Columns
+    // Kisi-Kisi Bingkai Jendela Kaca Luar (Window Mullions on all 4 sides)
+    [-17.25, -11.5, -5.75, 0, 5.75, 11.5, 17.25].forEach(mx => {
+      // Front & Back vertical mullions
+      [-19, 19].forEach(mz => {
+        const mul = new THREE.Mesh(new THREE.BoxGeometry(0.25, 8.5, 0.3), windowFrameMat);
+        mul.position.set(mx, 4.25, mz);
+        penthouse.add(mul);
+      });
+    });
+
+    [-14.25, -9.5, -4.75, 0, 4.75, 9.5, 14.25].forEach(mz => {
+      // Left & Right vertical mullions
+      [-23, 23].forEach(mx => {
+        const mul = new THREE.Mesh(new THREE.BoxGeometry(0.3, 8.5, 0.25), windowFrameMat);
+        mul.position.set(mx, 4.25, mz);
+        penthouse.add(mul);
+      });
+    });
+
+    // Horizontal Window Sills around perimeter at Y = 2.8 and Y = 5.6
+    [2.8, 5.6].forEach(my => {
+      [-19, 19].forEach(mz => {
+        const sill = new THREE.Mesh(new THREE.BoxGeometry(46, 0.2, 0.3), windowFrameMat);
+        sill.position.set(0, my, mz);
+        penthouse.add(sill);
+      });
+      [-23, 23].forEach(mx => {
+        const sill = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.2, 38), windowFrameMat);
+        sill.position.set(mx, my, 0);
+        penthouse.add(sill);
+      });
+    });
+
+    // Outer Structural Steel Columns at corners
     [[-23, -19], [23, -19], [-23, 19], [23, 19], [-23, 0], [23, 0], [0, -19], [0, 19]].forEach(([px, pz]) => {
       const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.8, 8.5, 0.8), blackSteelMat);
       pillar.position.set(px, 4.25, pz);
       penthouse.add(pillar);
     });
 
-    // D. TEMBOK PEMISAH RUANGAN NYAMBUNG UTUH & PRESISI (SEAMLESS ENCLOSED ROOMS)
+    // D. TEMBOK PEMISAH RUANGAN NYAMBUNG LENGKAP SAMPAI ATAP (Y = 8.5M FULL HEIGHT)
     function createPartitionWall(w, h, d, x, y, z) {
       const wallGroup = new THREE.Group();
-      // Main Wall Slab
+      // Main Solid Wall
       const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallPartitionMat);
       wall.position.set(x, y, z);
       wall.castShadow = true;
       wall.receiveShadow = true;
       wallGroup.add(wall);
 
-      // Dark Wood Baseboard & Header Trim
+      // Dark Wood Baseboard & Top Cornice Flush to Ceiling
       const baseboard = new THREE.Mesh(new THREE.BoxGeometry(w * 1.01, 0.3, d * 1.05), woodDarkMat);
       baseboard.position.set(x, 0.15, z);
       wallGroup.add(baseboard);
 
-      const topTrim = new THREE.Mesh(new THREE.BoxGeometry(w * 1.01, 0.25, d * 1.05), woodDarkMat);
-      topTrim.position.set(x, y + h / 2 - 0.12, z);
+      const topTrim = new THREE.Mesh(new THREE.BoxGeometry(w * 1.01, 0.3, d * 1.05), woodDarkMat);
+      topTrim.position.set(x, y + h / 2 - 0.15, z);
       wallGroup.add(topTrim);
 
       return wallGroup;
     }
 
-    // Tiang Sudut Pertemuan Dinding (Seamless Corner Columns)
+    // Tiang Sudut Pertemuan Dinding Nyambung Sampai Atap (Full Height Corner Pillars)
     function createCornerPillar(x, z) {
-      const col = new THREE.Mesh(new THREE.BoxGeometry(0.6, 6.5, 0.6), woodDarkMat);
-      col.position.set(x, 3.25, z);
+      const col = new THREE.Mesh(new THREE.BoxGeometry(0.6, 8.5, 0.6), woodDarkMat);
+      col.position.set(x, 4.25, z);
       return col;
     }
 
-    // 1. RUANG VIP EXECUTIVE SUITE (KIRI BELAKANG: X -23 to -9.5, Z -19 to -2)
-    penthouse.add(createPartitionWall(0.4, 6.5, 17.4, -9.5, 3.25, -10.5)); // Dinding Timur
-    penthouse.add(createPartitionWall(7.5, 6.5, 0.4, -19.25, 3.25, -2));   // Dinding Selatan Sisi Kiri
-    penthouse.add(createPartitionWall(4.0, 6.5, 0.4, -11.5, 3.25, -2));    // Dinding Selatan Sisi Kanan
-    penthouse.add(createPartitionWall(2.4, 1.5, 0.4, -14.5, 5.75, -2));    // Balok Tembok Atas Pintu (Lintel)
+    // 1. RUANG VIP EXECUTIVE SUITE (KIRI BELAKANG: X -23 to -9.5, Z -19 to -2) - NYAMBUNG ATAP
+    penthouse.add(createPartitionWall(0.4, 8.5, 17.4, -9.5, 4.25, -10.5)); // Dinding Timur
+    penthouse.add(createPartitionWall(7.5, 8.5, 0.4, -19.25, 4.25, -2));   // Dinding Selatan Sisi Kiri
+    penthouse.add(createPartitionWall(4.0, 8.5, 0.4, -11.5, 4.25, -2));    // Dinding Selatan Sisi Kanan
+    penthouse.add(createPartitionWall(2.4, 3.5, 0.4, -14.5, 6.75, -2));    // Tembok Atas Pintu Nyambung ke Plafon (Lintel)
     penthouse.add(createCornerPillar(-9.5, -2));
     penthouse.add(createCornerPillar(-9.5, -19));
 
-    // 2. RUANG WORK OFFICE STAF (KANAN BELAKANG: X 9.5 to 23, Z -19 to -2)
-    penthouse.add(createPartitionWall(0.4, 6.5, 17.4, 9.5, 3.25, -10.5));  // Dinding Barat
-    penthouse.add(createPartitionWall(7.5, 6.5, 0.4, 19.25, 3.25, -2));    // Dinding Selatan Sisi Kanan
-    penthouse.add(createPartitionWall(4.0, 6.5, 0.4, 11.5, 3.25, -2));     // Dinding Selatan Sisi Kiri
-    penthouse.add(createPartitionWall(2.4, 1.5, 0.4, 14.5, 5.75, -2));     // Balok Tembok Atas Pintu (Lintel)
+    // 2. RUANG WORK OFFICE STAF (KANAN BELAKANG: X 9.5 to 23, Z -19 to -2) - NYAMBUNG ATAP
+    penthouse.add(createPartitionWall(0.4, 8.5, 17.4, 9.5, 4.25, -10.5));  // Dinding Barat
+    penthouse.add(createPartitionWall(7.5, 8.5, 0.4, 19.25, 4.25, -2));    // Dinding Selatan Sisi Kanan
+    penthouse.add(createPartitionWall(4.0, 8.5, 0.4, 11.5, 4.25, -2));     // Dinding Selatan Sisi Kiri
+    penthouse.add(createPartitionWall(2.4, 3.5, 0.4, 14.5, 6.75, -2));     // Tembok Atas Pintu Nyambung ke Plafon (Lintel)
     penthouse.add(createCornerPillar(9.5, -2));
     penthouse.add(createCornerPillar(9.5, -19));
 
-    // 3. RUANG PANTRY & SOTO PAK YONO (KIRI DEPAN: X -23 to -9.5, Z 2 to 19)
-    penthouse.add(createPartitionWall(0.4, 6.5, 17.4, -9.5, 3.25, 10.5));  // Dinding Timur
-    penthouse.add(createPartitionWall(7.5, 6.5, 0.4, -19.25, 3.25, 2));    // Dinding Utara Sisi Kiri
-    penthouse.add(createPartitionWall(4.0, 6.5, 0.4, -11.5, 3.25, 2));     // Dinding Utara Sisi Kanan
-    penthouse.add(createPartitionWall(2.4, 1.5, 0.4, -14.5, 5.75, 2));     // Balok Tembok Atas Pintu (Lintel)
+    // 3. RUANG PANTRY & SOTO PAK YONO (KIRI DEPAN: X -23 to -9.5, Z 2 to 19) - NYAMBUNG ATAP
+    penthouse.add(createPartitionWall(0.4, 8.5, 17.4, -9.5, 4.25, 10.5));  // Dinding Timur
+    penthouse.add(createPartitionWall(7.5, 8.5, 0.4, -19.25, 4.25, 2));    // Dinding Utara Sisi Kiri
+    penthouse.add(createPartitionWall(4.0, 8.5, 0.4, -11.5, 4.25, 2));     // Dinding Utara Sisi Kanan
+    penthouse.add(createPartitionWall(2.4, 3.5, 0.4, -14.5, 6.75, 2));     // Tembok Atas Pintu Nyambung ke Plafon (Lintel)
     penthouse.add(createCornerPillar(-9.5, 2));
     penthouse.add(createCornerPillar(-9.5, 19));
 
-    // 4. RUANG PANORAMA LOUNGE TV (KANAN DEPAN: X 9.5 to 23, Z 2 to 19)
-    penthouse.add(createPartitionWall(0.4, 6.5, 17.4, 9.5, 3.25, 10.5));   // Dinding Barat
-    penthouse.add(createPartitionWall(7.5, 6.5, 0.4, 19.25, 3.25, 2));     // Dinding Utara Sisi Kanan
-    penthouse.add(createPartitionWall(4.0, 6.5, 0.4, 11.5, 3.25, 2));      // Dinding Utara Sisi Kiri
-    penthouse.add(createPartitionWall(2.4, 1.5, 0.4, 14.5, 5.75, 2));      // Balok Tembok Atas Pintu (Lintel)
+    // 4. RUANG PANORAMA LOUNGE TV (KANAN DEPAN: X 9.5 to 23, Z 2 to 19) - NYAMBUNG ATAP
+    penthouse.add(createPartitionWall(0.4, 8.5, 17.4, 9.5, 4.25, 10.5));   // Dinding Barat
+    penthouse.add(createPartitionWall(7.5, 8.5, 0.4, 19.25, 4.25, 2));     // Dinding Utara Sisi Kanan
+    penthouse.add(createPartitionWall(4.0, 8.5, 0.4, 11.5, 4.25, 2));      // Dinding Utara Sisi Kiri
+    penthouse.add(createPartitionWall(2.4, 3.5, 0.4, 14.5, 6.75, 2));      // Tembok Atas Pintu Nyambung ke Plafon (Lintel)
     penthouse.add(createCornerPillar(9.5, 2));
     penthouse.add(createCornerPillar(9.5, 19));
 

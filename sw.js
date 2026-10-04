@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v18-seamless-walls';
+const CACHE_NAME = 'eliie-office-v19-full-roof-glass-windows';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
