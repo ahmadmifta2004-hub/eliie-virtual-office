@@ -80,6 +80,9 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <button onclick="forceCleanReload()" class="px-2 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded shadow flex items-center gap-1 active:scale-95">
+          <i class="fa-solid fa-sync fa-spin"></i> Update Data
+        </button>
         <button onclick="resetCamera()" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded text-slate-300 font-medium border border-slate-700">
           <i class="fa-solid fa-arrows-rotate"></i> Reset
         </button>
@@ -209,13 +212,33 @@
     </button>
   </footer>
 
-  <!-- SERVICE WORKER -->
+  <!-- SERVICE WORKER & FORCE RELOAD -->
   <script>
+    function forceCleanReload() {
+      if ('caches' in window) {
+        caches.keys().then((names) => {
+          names.forEach((name) => caches.delete(name));
+        });
+      }
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          registrations.forEach((reg) => reg.unregister());
+        });
+      }
+      showToast('Membersihkan cache & memuat nama tim terbaru...');
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 500);
+    }
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('SW Ready:', reg.scope))
-          .catch(err => console.log('SW Err:', err));
+        navigator.serviceWorker.register('./sw.js?v=14')
+          .then((reg) => {
+            reg.update();
+            console.log('SW Ready:', reg.scope);
+          })
+          .catch((err) => console.log('SW Err:', err));
       });
     }
   </script>
