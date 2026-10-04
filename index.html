@@ -1771,7 +1771,180 @@
       return avatarObj;
     }
 
-    characters.forEach(c => buildSimsAvatar(c));
+
+    // ============ 2D CHIBI SPRITE SYSTEM (wajah selalu menghadap kamera) ============
+    function __hx(n){ return '#'+('00000'+(((n==null)?0:n)>>>0).toString(16)).slice(-6); }
+    function __rr(g,x,y,w,h,r){ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+
+    function drawChibi(c, pose, eyesOpen){
+      const W=220,H=300, cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+      const g=cv.getContext('2d'); const cx=W/2;
+      const skin=__hx(c.skinColor), hairC=__hx(c.hairColor), suit=__hx(c.suitColor),
+            shirt=__hx(c.shirtColor), bottom=__hx(c.bottomColor), shoe=__hx(c.shoeColor),
+            eyeC=__hx(c.eyeColor), tie=(c.tieColor!=null)?__hx(c.tieColor):null;
+      const female=(c.gender==='female');
+      const OUT='rgba(25,25,35,0.85)';
+      function ell(x,y,rx,ry,fill,stroke){ g.beginPath(); g.ellipse(x,y,rx,ry,0,0,Math.PI*2); if(fill){g.fillStyle=fill;g.fill();} if(stroke){g.strokeStyle=OUT;g.lineWidth=3;g.stroke();} }
+      function circ(x,y,r,fill,stroke){ ell(x,y,r,r,fill,stroke); }
+
+      // soft ground shadow
+      g.fillStyle='rgba(0,0,0,0.16)';
+      g.beginPath(); g.ellipse(cx,288,52,10,0,0,Math.PI*2); g.fill();
+
+      if(pose==='sleep'){
+        g.fillStyle=hairC; g.beginPath(); g.arc(58,150,52,0,Math.PI*2); g.fill();
+        g.fillStyle=suit; __rr(g,96,128,92,52,22); g.fill(); g.strokeStyle=OUT; g.lineWidth=3; g.stroke();
+        g.fillStyle='rgba(147,197,253,0.95)'; __rr(g,150,118,62,74,18); g.fill(); g.stroke();
+        ell(216,148,10,14,shoe,true); ell(216,176,10,14,shoe,true);
+        circ(58,150,44,skin,true);
+        g.fillStyle=hairC; g.beginPath(); g.arc(58,142,44,Math.PI*1.05,Math.PI*1.95); g.fill();
+        g.strokeStyle='#3f3f46'; g.lineWidth=4; g.lineCap='round';
+        g.beginPath(); g.arc(44,152,8,0.15*Math.PI,0.85*Math.PI); g.stroke();
+        g.fillStyle='rgba(255,120,150,0.5)'; g.beginPath(); g.ellipse(36,164,8,5,0,0,Math.PI*2); g.fill();
+        g.strokeStyle='#7c2d12'; g.lineWidth=3; g.beginPath(); g.arc(52,166,6,0.1*Math.PI,0.9*Math.PI); g.stroke();
+        g.fillStyle='#64748b'; g.font='bold 26px sans-serif'; g.fillText('z',116,84);
+        g.font='bold 32px sans-serif'; g.fillText('z',140,58);
+        g.font='bold 40px sans-serif'; g.fillText('z',170,30);
+        return cv;
+      }
+
+      const sitting=(pose==='sit');
+      const hy=sitting?100:92, hr=58;
+
+      // ---- back hair ----
+      g.fillStyle=hairC;
+      if(female){ __rr(g,cx-74,hy-74,148,196,62); g.fill(); }
+      else { g.beginPath(); g.arc(cx,hy-6,hr+8,Math.PI*0.95,Math.PI*2.05); g.fill(); }
+
+      // ---- neck + torso ----
+      g.fillStyle=skin; g.fillRect(cx-12,hy+38,24,30);
+      const ty=sitting?164:156;
+      g.fillStyle=suit; __rr(g,cx-32,ty,64,72,18); g.fill(); g.strokeStyle=OUT; g.lineWidth=3; g.stroke();
+      g.fillStyle=shirt; __rr(g,cx-13,ty+4,26,34,6); g.fill();
+      if(tie){ g.fillStyle=tie; g.beginPath(); g.moveTo(cx,ty+8); g.lineTo(cx-7,ty+20); g.lineTo(cx,ty+38); g.lineTo(cx+7,ty+20); g.closePath(); g.fill(); }
+
+      // ---- arms ----
+      const shY=ty+8;
+      g.lineCap='round';
+      if(sitting){
+        g.strokeStyle=suit; g.lineWidth=17;
+        g.beginPath(); g.moveTo(cx-32,shY); g.lineTo(cx-44,shY+44); g.stroke();
+        g.beginPath(); g.moveTo(cx+32,shY); g.lineTo(cx+44,shY+44); g.stroke();
+        circ(cx-44,shY+52,10,skin,true); circ(cx+44,shY+52,10,skin,true);
+      } else {
+        const sw=(pose==='walk1')?-7:((pose==='walk2')?7:0);
+        g.strokeStyle=suit; g.lineWidth=17;
+        g.beginPath(); g.moveTo(cx-32,shY); g.lineTo(cx-38,shY+50); g.stroke();
+        g.beginPath(); g.moveTo(cx+32,shY); g.lineTo(cx+38,shY+50); g.stroke();
+        circ(cx-38+sw,shY+58,10,skin,true); circ(cx+38-sw,shY+58,10,skin,true);
+      }
+
+      // ---- legs ----
+      const hipY=ty+70;
+      if(sitting){
+        g.fillStyle=bottom; __rr(g,cx-30,hipY-6,60,30,13); g.fill(); g.strokeStyle=OUT; g.lineWidth=3; g.stroke();
+        circ(cx-17,hipY+26,11,bottom,true); circ(cx+17,hipY+26,11,bottom,true);
+        g.fillStyle=(c.bottomType==='pants')?bottom:skin;
+        __rr(g,cx-25,hipY+32,16,26,7); g.fill();
+        __rr(g,cx+9,hipY+32,16,26,7); g.fill();
+        ell(cx-17,hipY+58,12,7,shoe,true); ell(cx+17,hipY+58,12,7,shoe,true);
+      } else if(pose==='walk1'||pose==='walk2'){
+        const dir=(pose==='walk1')?1:-1;
+        g.strokeStyle=bottom; g.lineWidth=16;
+        g.beginPath(); g.moveTo(cx-13,hipY); g.lineTo(cx-13-14*dir,hipY+46); g.stroke();
+        g.beginPath(); g.moveTo(cx+13,hipY); g.lineTo(cx+13+14*dir,hipY+46); g.stroke();
+        ell(cx-13-16*dir,hipY+47,13,8,shoe,true); ell(cx+13+16*dir,hipY+47,13,8,shoe,true);
+      } else {
+        g.fillStyle=bottom;
+        __rr(g,cx-22,hipY,17,46,8); g.fill();
+        __rr(g,cx+5,hipY,17,46,8); g.fill();
+        ell(cx-13,hipY+47,13,8,shoe,true); ell(cx+13,hipY+47,13,8,shoe,true);
+      }
+
+      // ---- head ----
+      circ(cx,hy,hr,skin,true);
+      if(c.hasElfEars){
+        g.fillStyle=skin; g.strokeStyle=OUT; g.lineWidth=3;
+        [-1,1].forEach(function(s){
+          g.beginPath(); g.moveTo(cx+s*(hr-2),hy-6); g.lineTo(cx+s*(hr+26),hy-22); g.lineTo(cx+s*(hr-2),hy+16); g.closePath(); g.fill(); g.stroke();
+        });
+      } else { circ(cx-hr,hy+4,9,skin,true); circ(cx+hr,hy+4,9,skin,true); }
+
+      // ---- bangs ----
+      g.fillStyle=hairC;
+      g.beginPath();
+      g.moveTo(cx-hr+2,hy-30);
+      for(let i=0;i<7;i++){
+        const x0=cx-hr+2+i*((hr*2-4)/7), wseg=(hr*2-4)/7;
+        g.quadraticCurveTo(x0+wseg/2,hy-6,x0+wseg,hy-30);
+      }
+      g.lineTo(cx+hr-2,hy-64);
+      g.quadraticCurveTo(cx,hy-86,cx-hr+2,hy-64);
+      g.closePath(); g.fill();
+      g.beginPath(); g.arc(cx,hy-10,hr+2,Math.PI*1.08,Math.PI*1.92); g.fill();
+
+      // ---- crown ----
+      if(c.hasCrown){
+        g.fillStyle='#fbbf24'; g.strokeStyle='#b45309'; g.lineWidth=2.5;
+        const cw=44, cyy=hy-hr-24;
+        g.beginPath();
+        g.moveTo(cx-cw/2,cyy+16); g.lineTo(cx-cw/2,cyy-2); g.lineTo(cx-cw/4,cyy+8);
+        g.lineTo(cx,cyy-8); g.lineTo(cx+cw/4,cyy+8); g.lineTo(cx+cw/2,cyy-2);
+        g.lineTo(cx+cw/2,cyy+16); g.closePath(); g.fill(); g.stroke();
+        circ(cx,cyy-8,4,'#ef4444');
+      }
+
+      // ---- face ----
+      const eyY=hy+8;
+      if(eyesOpen){
+        [-1,1].forEach(function(s){
+          const ex=cx+s*23;
+          ell(ex,eyY,11,14,'#ffffff',true);
+          circ(ex,eyY+1,6.5,eyeC);
+          circ(ex,eyY+1,3,'#111111');
+          circ(ex-2.5,eyY-3.5,2.4,'#ffffff');
+        });
+        g.strokeStyle=hairC; g.lineWidth=4;
+        g.beginPath(); g.moveTo(cx-34,eyY-20); g.quadraticCurveTo(cx-23,eyY-25,cx-12,eyY-20); g.stroke();
+        g.beginPath(); g.moveTo(cx+12,eyY-20); g.quadraticCurveTo(cx+23,eyY-25,cx+34,eyY-20); g.stroke();
+      } else {
+        g.strokeStyle='#3f3f46'; g.lineWidth=4.5;
+        [-1,1].forEach(function(s){
+          const ex=cx+s*23;
+          g.beginPath(); g.arc(ex,eyY-2,9,0.15*Math.PI,0.85*Math.PI); g.stroke();
+        });
+      }
+      g.fillStyle='rgba(255,110,140,0.55)';
+      g.beginPath(); g.ellipse(cx-38,eyY+20,10,6,0,0,Math.PI*2); g.fill();
+      g.beginPath(); g.ellipse(cx+38,eyY+20,10,6,0,0,Math.PI*2); g.fill();
+      g.strokeStyle='#7c2d12'; g.lineWidth=3.5;
+      g.beginPath(); g.arc(cx,eyY+22,9,0.25*Math.PI,0.75*Math.PI); g.stroke();
+      return cv;
+    }
+
+    function buildSpriteAvatar(c){
+      const group=new THREE.Group();
+      const tex={};
+      [['stand',true],['stand_b',false],['sit',true],['sit_b',false],['walk1',true],['walk2',true],['sleep',false]].forEach(function(p){
+        tex[p[0]]=new THREE.CanvasTexture(drawChibi(c,p[0].replace('_b',''),p[1]));
+      });
+      const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex.stand,transparent:true}));
+      sprite.scale.set(2.27,3.1,1);
+      sprite.position.y=1.55;
+      group.add(sprite);
+      // plumbob crystal above head (signature)
+      const pGeo=new THREE.OctahedronGeometry(0.3,0); pGeo.scale(0.8,1.6,0.8);
+      const plumbob=new THREE.Mesh(pGeo,new THREE.MeshStandardMaterial({color:new THREE.Color(c.dotColor||'#22d3ee'),emissive:0x0ea5e9,emissiveIntensity:0.6,roughness:0.2,metalness:0.1}));
+      plumbob.position.y=3.75;
+      group.add(plumbob);
+      group.position.set(c.x,0,c.z);
+      scene.add(group);
+      const avatarObj={data:c,group:group,sprite:sprite,tex:tex,plumbob:plumbob,blinkT:Math.floor(Math.random()*210),curKey:'stand'};
+      characterMeshes.push(avatarObj);
+      return avatarObj;
+    }
+
+    characters.forEach(c => buildSpriteAvatar(c));
 
     // THE SIMS DYNAMIC PATHFINDING & WALKING ANIMATOR
     function startWalk(c, tx, tz, trotY, nextState = 'idle') {
@@ -2075,115 +2248,49 @@
       characterMeshes.forEach((av, idx) => {
         const c = av.data;
 
-        // 1. Plumbob Spinning & Hovering
+        // 1. Plumbob spin & hover (above head)
         if (av.plumbob) {
           av.plumbob.rotation.y += 0.04;
-          av.plumbob.position.y = 1.6 + Math.sin(clock * 3 + idx) * 0.08;
+          av.plumbob.position.y = 3.75 + Math.sin(clock * 3 + idx) * 0.08;
         }
 
-        // 2. Natural Eye Blinking Cycle
-        if (av.eyes) {
-          const blinkPhase = (clock * 1.5 + idx * 1.7) % 4.0;
-          if (blinkPhase < 0.15) {
-            av.eyes.scale.y = 0.1; // Blink closed
-          } else {
-            av.eyes.scale.y = 1.0; // Normal open
-          }
-        }
+        // 2. Blink timer (~every 3.5s)
+        av.blinkT = (av.blinkT || 0) + 1;
+        const blinking = (av.blinkT % 210) < 9;
 
-        // 3. Head Micro-Motion
-        if (av.head) {
-          av.head.rotation.y = Math.sin(clock * 1.2 + idx) * 0.08;
-          av.head.rotation.z = Math.sin(clock * 0.8 + idx) * 0.04;
-        }
-
-        // 4. Movement / Walking State Machine
+        // 3. Movement / walking (sprite frames alternate, body bounces)
         if (c.isWalking) {
           c.walkTime += 0.16;
           const dx = c.targetX - av.group.position.x;
           const dz = c.targetZ - av.group.position.z;
           const dist = Math.sqrt(dx * dx + dz * dz);
-
           if (dist > 0.3) {
-            const angle = Math.atan2(dx, dz);
-            av.group.rotation.y = THREE.MathUtils.lerp(av.group.rotation.y, angle, 0.2);
             av.group.position.x += (dx / dist) * 0.25;
             av.group.position.z += (dz / dist) * 0.25;
-
-            // Dual-Joint Hip & Knee Walk Cycle (The Sims Walking Dynamics)
-            const legSwing = Math.sin(c.walkTime * 8) * 0.65;
-            av.leftHip.rotation.x = legSwing;
-            av.rightHip.rotation.x = -legSwing;
-
-            // Natural Knee Bends on backswing / recovery
-            av.leftKnee.rotation.x = Math.max(0, -legSwing * 1.1);
-            av.rightKnee.rotation.x = Math.max(0, legSwing * 1.1);
-
-            // Dual-Joint Shoulder & Elbow Arm Swing
-            const armSwing = Math.sin(c.walkTime * 8) * 0.55;
-            av.leftShoulder.rotation.x = -armSwing;
-            av.rightShoulder.rotation.x = armSwing;
-            av.leftElbow.rotation.x = 0.3 + Math.sin(c.walkTime * 8) * 0.2;
-            av.rightElbow.rotation.x = 0.3 - Math.sin(c.walkTime * 8) * 0.2;
-
-            // Pelvis Vertical Bounce & Torso Sway
-            av.pelvis.position.y = 1.75 + Math.abs(Math.sin(c.walkTime * 8)) * 0.12;
-            av.torso.rotation.z = Math.sin(c.walkTime * 4) * 0.05;
+            const wk = (Math.floor(c.walkTime * 8) % 2 === 0) ? 'walk1' : 'walk2';
+            if (av.curKey !== wk) { av.sprite.material.map = av.tex[wk]; av.sprite.material.needsUpdate = true; av.curKey = wk; }
+            av.sprite.position.y = 1.55 + Math.abs(Math.sin(c.walkTime * 8)) * 0.14;
           } else {
-            // Arrived at destination
             av.group.position.x = c.targetX;
             av.group.position.z = c.targetZ;
-            av.group.rotation.y = c.targetRotY;
             c.isWalking = false;
             c.state = c.nextState || 'idle';
+            av.curKey = null;
           }
         } else {
-          // Posture & Resting State Machine
-          if (c.state.startsWith('sit')) {
-            // Sitting on Chair / Barstool / Sofa (Turned slightly towards camera + periodic head glance)
-            av.pelvis.position.y = 1.4;
-            av.leftHip.rotation.x = -Math.PI / 2.2;
-            av.rightHip.rotation.x = -Math.PI / 2.2;
-            av.leftKnee.rotation.x = Math.PI / 2.4;
-            av.rightKnee.rotation.x = Math.PI / 2.4;
-
-            // Typing / Discussing hands
-            av.leftShoulder.rotation.x = -Math.PI / 3.8;
-            av.rightShoulder.rotation.x = -Math.PI / 3.8;
-            av.leftElbow.rotation.x = -0.5 + Math.sin(clock * 6 + idx) * 0.1;
-            av.rightElbow.rotation.x = -0.5 - Math.sin(clock * 6 + idx) * 0.1;
-            av.torso.rotation.z = Math.sin(clock * 2 + idx) * 0.04;
-
-            // Periodic glance towards Ty's camera so face is clearly visible!
-            const glanceFactor = Math.sin(clock * 0.6 + idx * 1.2);
-            if (glanceFactor > 0.4) {
-              av.head.rotation.y = THREE.MathUtils.lerp(av.head.rotation.y, (glanceFactor - 0.4) * 0.9, 0.1);
-            }
-          } else if (c.state === 'sleep') {
-            // Sleeping side-by-side in Bed
-            av.pelvis.position.y = 0.9;
-            av.leftHip.rotation.x = 0;
-            av.rightHip.rotation.x = 0;
-            av.leftKnee.rotation.x = 0;
-            av.rightKnee.rotation.x = 0;
-            av.leftShoulder.rotation.x = -0.2;
-            av.rightShoulder.rotation.x = -0.2;
-            av.leftElbow.rotation.x = 0;
-            av.rightElbow.rotation.x = 0;
-            av.torso.rotation.z = 0;
-          } else {
-            // Standing Idle Breathing & Looking around
-            av.pelvis.position.y = 1.75 + Math.sin(clock * 2 + idx) * 0.03;
-            av.leftHip.rotation.x = 0;
-            av.rightHip.rotation.x = 0;
-            av.leftKnee.rotation.x = 0;
-            av.rightKnee.rotation.x = 0;
-            av.leftShoulder.rotation.x = Math.sin(clock * 2 + idx) * 0.05;
-            av.rightShoulder.rotation.x = -Math.sin(clock * 2 + idx) * 0.05;
-            av.leftElbow.rotation.x = 0.1;
-            av.rightElbow.rotation.x = 0.1;
-            av.torso.rotation.z = Math.sin(clock * 1.5 + idx) * 0.03;
-            av.head.rotation.y = Math.sin(clock * 0.8 + idx) * 0.4;
+          // 4. Pose state machine — sprite selalu menghadap kamera
+          let pose = 'stand';
+          if (c.state.indexOf('sit') === 0) pose = 'sit';
+          else if (c.state === 'sleep') pose = 'sleep';
+          const key = (pose === 'sleep') ? 'sleep' : (pose + (blinking ? '_b' : ''));
+          if (av.curKey !== key) { av.sprite.material.map = av.tex[key]; av.sprite.material.needsUpdate = true; av.curKey = key; }
+          const baseY = 1.55;
+          av.sprite.position.y = baseY + Math.sin(clock * 2 + idx) * 0.045;
+          if (pose === 'sleep') {
+            const br = 1 + Math.sin(clock * 1.5 + idx) * 0.02;
+            av.sprite.scale.set(2.27 * br, 3.1 * br, 1);
+          } else if (av.sprite.scale.x !== 2.27) {
+            av.sprite.scale.set(2.27, 3.1, 1);
           }
         }
       });
