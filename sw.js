@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-gather-v9';
+const CACHE_NAME = 'eliie-office-sims3d-v10';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

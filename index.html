@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Ty & Eliie — AI Virtual Office (Gather Style)</title>
+  <title>Ty & Eliie — AI Virtual Office (The Sims 3D Style)</title>
   
   <!-- PWA Manifest & Meta Tags -->
   <link rel="manifest" href="./manifest.json">
@@ -17,13 +17,16 @@
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- GSAP Animation Library -->
+  
+  <!-- THREE.JS & GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
   <style>
@@ -33,7 +36,7 @@
       user-select: none;
       -webkit-user-select: none;
       overflow: hidden;
-      background-color: #12141c;
+      background-color: #111827;
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -41,10 +44,6 @@
     .no-scrollbar {
       -ms-overflow-style: none;
       scrollbar-width: none;
-    }
-    canvas {
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
     }
     .nav-tab-btn {
       transition: all 0.2s ease;
@@ -54,14 +53,19 @@
       color: #ffffff;
       font-weight: 700;
     }
+    .badge-pill {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      backdrop-filter: blur(8px);
+    }
+    .bubble-popup {
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
   </style>
 </head>
 <body class="w-screen h-screen flex flex-col justify-between overflow-hidden text-white">
 
-  <!-- TOP SOLID DARK NAVIGATION BAR (1:1 EXACT GATHER / TIKTOK STYLE) -->
+  <!-- TOP SOLID DARK NAVIGATION BAR (TIKTOK / THE SIMS OFFICE STYLE) -->
   <header class="w-full bg-[#1e1e1e] border-b border-[#2d2d2d] z-30 shadow-xl flex flex-col">
-    
-    <!-- Top Row: Office Name & Status -->
     <div class="px-4 py-2 flex items-center justify-between border-b border-[#2a2a2a]">
       <div class="flex items-center gap-2.5">
         <div class="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center text-white font-bold text-xs shadow">
@@ -69,20 +73,21 @@
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h1 class="font-bold text-xs sm:text-sm text-white tracking-wide">TY & ELIIE VIRTUAL OFFICE</h1>
-            <span class="text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">● 6 AGENTS ACTIVE</span>
+            <h1 class="font-bold text-xs sm:text-sm text-white tracking-wide">TY & ELIIE 3D HQ (THE SIMS STYLE)</h1>
+            <span class="text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">● 6 AGENTS LIVE</span>
           </div>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <div class="text-right">
-          <span id="office-time" class="font-mono text-xs text-slate-300 font-bold">00:00:00</span>
-        </div>
+        <button onclick="resetCamera()" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded text-slate-300 font-medium border border-slate-700">
+          <i class="fa-solid fa-arrows-rotate"></i> Reset
+        </button>
+        <span id="office-time" class="font-mono text-xs text-slate-300 font-bold hidden sm:inline">00:00:00</span>
       </div>
     </div>
 
-    <!-- Exact TikTok Room Tabs Row: Lobby, Meeting, VIP, Pantry, Lounge, Quarters -->
+    <!-- Room Tabs -->
     <div class="px-2 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar bg-[#181818]">
       <button onclick="navRoom('meeting')" id="tab-meeting" class="nav-tab-btn active px-3 py-1 rounded-md text-[11px] font-medium bg-blue-600 text-white flex items-center gap-1.5">
         <i class="fa-solid fa-users text-[10px]"></i>
@@ -115,11 +120,14 @@
     </div>
   </header>
 
-  <!-- MAIN ISOMETRIC CANVAS CONTAINER -->
-  <main id="main-container" class="relative w-full flex-1 bg-[#12141c] overflow-hidden flex items-center justify-center">
-    <canvas id="officeCanvas" class="w-full h-full block cursor-pointer"></canvas>
+  <!-- 3D WEBGL CONTAINER & OVERLAY HUD -->
+  <main id="main-container" class="relative w-full flex-1 bg-[#0b0f19] overflow-hidden">
+    <div id="webgl-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
 
-    <!-- FLOATING TOAST NOTIFICATION -->
+    <!-- 2D FLOATING HTML OVERLAYS FOR 3D AVATARS (NAME TAGS & SPEECH BUBBLES) -->
+    <div id="labels-container" class="absolute inset-0 pointer-events-none overflow-hidden z-20"></div>
+
+    <!-- TOAST NOTIFICATION -->
     <div id="toast" class="absolute top-4 left-1/2 -translate-x-1/2 bg-white text-slate-950 font-bold px-4 py-1.5 rounded-lg text-xs shadow-2xl transform -translate-y-12 opacity-0 transition-all duration-300 pointer-events-none z-40 flex items-center gap-2 border border-slate-300">
       <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
       <span id="toastMsg">Notifikasi</span>
@@ -149,10 +157,10 @@
           <span id="cardAction" class="font-semibold text-amber-400">Duduk di Meja Rapat</span>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="interactCouple()" id="btnAction1" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-1 rounded-md font-bold text-xs flex items-center gap-1 shadow active:scale-95 transition-transform">
+          <button onclick="interactCouple()" id="btnAction1" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-1 rounded-md font-bold text-xs flex items-center gap-1 shadow active:scale-95 transition-transform pointer-events-auto">
             💖 Sayang
           </button>
-          <button onclick="boostCoffee()" id="btnAction2" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1 rounded-md font-bold text-xs flex items-center gap-1 shadow active:scale-95 transition-transform">
+          <button onclick="boostCoffee()" id="btnAction2" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1 rounded-md font-bold text-xs flex items-center gap-1 shadow active:scale-95 transition-transform pointer-events-auto">
             ☕ Kopi
           </button>
         </div>
@@ -160,7 +168,7 @@
     </div>
   </main>
 
-  <!-- BOTTOM ACTION BAR (EXACT TIKTOK "APPROVAL UNTUK DEPLOY" WORKFLOW) -->
+  <!-- BOTTOM ACTION DOCK (TIKTOK APPROVAL & ROLEPLAY WORKFLOW) -->
   <footer class="w-full px-2 sm:px-4 py-2 bg-[#1e1e1e] border-t border-[#2d2d2d] flex items-center justify-around z-30 shadow-2xl">
     <button onclick="triggerApprovalDeploy()" class="flex flex-col items-center gap-0.5 text-emerald-400 hover:text-emerald-300 active:scale-95 transition-all">
       <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-sm sm:text-base shadow">
@@ -223,25 +231,43 @@
     }
   </script>
 
-  <!-- GATHER.TOWN / HABBO ISOMETRIC ENGINE -->
+  <!-- 3D THE SIMS ISOMETRIC WEBGL ENGINE -->
   <script>
-    const canvas = document.getElementById('officeCanvas');
-    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('webgl-container');
+    const labelsContainer = document.getElementById('labels-container');
 
-    function resizeCanvas() {
-      const rect = canvas.parentElement.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    // SCENE, CAMERA, RENDERER
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0f172a);
+    scene.fog = new THREE.FogExp2(0x0f172a, 0.015);
+
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    // ISOMETRIC PERSPECTIVE CAMERA
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.set(0, 32, 38);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2.2;
+    controls.minDistance = 10;
+    controls.maxDistance = 75;
+    controls.target.set(0, 0, 0);
 
     function updateClock() {
-      const now = new Date();
       const el = document.getElementById('office-time');
-      if (el) el.innerText = now.toLocaleTimeString('id-ID');
+      if (el) el.innerText = new Date().toLocaleTimeString('id-ID');
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -257,17 +283,519 @@
       }, 2500);
     }
 
-    // Camera Translation & Zoom
-    let cameraView = { x: 0, y: 0, scale: 1.0 };
+    // LIGHTING (THE SIMS WARM REALISTIC INTERIOR LIGHTING)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    scene.add(ambientLight);
 
+    const dirLight = new THREE.DirectionalLight(0xffedd5, 1.2);
+    dirLight.position.set(20, 40, 20);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.near = 0.5;
+    dirLight.shadow.camera.far = 100;
+    dirLight.shadow.camera.left = -30;
+    dirLight.shadow.camera.right = 30;
+    dirLight.shadow.camera.top = 30;
+    dirLight.shadow.camera.bottom = -30;
+    dirLight.shadow.bias = -0.0005;
+    scene.add(dirLight);
+
+    // Warm Spotlights for Meeting Room & VIP
+    const spotMeeting = new THREE.SpotLight(0x38bdf8, 2.5, 30, Math.PI / 4, 0.5);
+    spotMeeting.position.set(0, 16, 0);
+    spotMeeting.target.position.set(0, 0, 0);
+    scene.add(spotMeeting);
+    scene.add(spotMeeting.target);
+
+    // MATERIALS (HIGH QUALITY PBR MATERIALS)
+    const floorTileMat = new THREE.MeshStandardMaterial({ color: 0xefefea, roughness: 0.25, metalness: 0.1 });
+    const woodParquetMat = new THREE.MeshStandardMaterial({ color: 0xa66a38, roughness: 0.4, metalness: 0.1 });
+    const woodDarkMat = new THREE.MeshStandardMaterial({ color: 0x5c3317, roughness: 0.5, metalness: 0.1 });
+    const glassMat = new THREE.MeshPhysicalMaterial({ color: 0xb4d7eb, transparent: true, opacity: 0.4, roughness: 0.1, transmission: 0.9, thickness: 0.5 });
+    const metalChairMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.5, metalness: 0.8 });
+    const cushionMat = new THREE.MeshStandardMaterial({ color: 0x1e1e1e, roughness: 0.8 });
+    const tvMat = new THREE.MeshBasicMaterial({ color: 0x0284c7 });
+    const plantMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.6 });
+
+    // 1. BUILD THE 3D MANSION ENVIRONMENT (ROOMS, WALLS, FLOORS)
+    const mansionGroup = new THREE.Group();
+    scene.add(mansionGroup);
+
+    // Main Ground Floor Base
+    const baseGeo = new THREE.BoxGeometry(60, 0.8, 48);
+    const baseFloor = new THREE.Mesh(baseGeo, floorTileMat);
+    baseFloor.position.y = -0.4;
+    baseFloor.receiveShadow = true;
+    mansionGroup.add(baseFloor);
+
+    // A. CONFERENCE ROOM (CENTER)
+    function buildConferenceRoom() {
+      const group = new THREE.Group();
+
+      // Big Polished Wood Conference Table
+      const tableTopGeo = new THREE.BoxGeometry(14, 0.6, 6.5);
+      const tableTop = new THREE.Mesh(tableTopGeo, woodParquetMat);
+      tableTop.position.set(0, 2.8, 0);
+      tableTop.castShadow = true;
+      tableTop.receiveShadow = true;
+      group.add(tableTop);
+
+      // Glass Center Inlay
+      const glassInlay = new THREE.Mesh(new THREE.BoxGeometry(11, 0.62, 3), glassMat);
+      glassInlay.position.set(0, 2.8, 0);
+      group.add(glassInlay);
+
+      // Table Legs (Polished Metal)
+      [[-5, -2], [-5, 2], [5, -2], [5, 2]].forEach(([lx, lz]) => {
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 2.8, 16), metalChairMat);
+        leg.position.set(lx, 1.4, lz);
+        leg.castShadow = true;
+        group.add(leg);
+      });
+
+      // Potted Plant Centerpiece
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.4, 0.8, 16), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+      pot.position.set(0, 3.4, 0);
+      group.add(pot);
+      const plant = new THREE.Mesh(new THREE.DodecahedronGeometry(0.7), plantMat);
+      plant.position.set(0, 4.0, 0);
+      group.add(plant);
+
+      // Wall Mounted TV
+      const tvScreen = new THREE.Mesh(new THREE.BoxGeometry(12, 4, 0.4), tvMat);
+      tvScreen.position.set(0, 6.5, -6);
+      group.add(tvScreen);
+
+      // 6 Modern 3D Laptops on Table
+      [[-5, 0, -1.2], [5, 0, 1.2], [-2, 0, -1.8], [2, 0, -1.8], [-2, 0, 1.8], [2, 0, 1.8]].forEach(([lx, ly, lz]) => {
+        const laptopBase = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.08, 0.9), metalChairMat);
+        laptopBase.position.set(lx, 3.15, lz);
+        group.add(laptopBase);
+
+        const screen = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 0.06), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+        screen.position.set(lx, 3.55, lz - 0.4);
+        screen.rotation.x = -0.2;
+        group.add(screen);
+      });
+
+      // 6 3D Ergonomic Mesh Swivel Chairs
+      [[-7, 0, 0, Math.PI / 2], [7, 0, 0, -Math.PI / 2], [-2, 0, -3.5, 0], [2, 0, -3.5, 0], [-2, 0, 3.5, Math.PI], [2, 0, 3.5, Math.PI]].forEach(([cx, cy, cz, rot]) => {
+        const chair = create3DChair();
+        chair.position.set(cx, 0, cz);
+        chair.rotation.y = rot;
+        group.add(chair);
+      });
+
+      return group;
+    }
+
+    function create3DChair() {
+      const chair = new THREE.Group();
+      // Base Caster Wheels
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 0.2, 5), metalChairMat);
+      base.position.y = 0.2;
+      chair.add(base);
+
+      // Stem
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.4, 12), metalChairMat);
+      stem.position.y = 0.9;
+      chair.add(stem);
+
+      // Cushion Seat
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.3, 1.4), cushionMat);
+      seat.position.y = 1.6;
+      seat.castShadow = true;
+      chair.add(seat);
+
+      // High Backrest
+      const back = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.8, 0.2), cushionMat);
+      back.position.set(0, 2.5, -0.6);
+      back.castShadow = true;
+      chair.add(back);
+
+      return chair;
+    }
+
+    // B. VIP SUITE (TOP-LEFT)
+    function buildVIPSuite() {
+      const group = new THREE.Group();
+      group.position.set(-18, 0, -14);
+
+      // Luxury King Size Bed (The Sims Style)
+      const bedFrame = new THREE.Mesh(new THREE.BoxGeometry(7, 1.2, 8), woodDarkMat);
+      bedFrame.position.set(0, 0.6, -3);
+      bedFrame.castShadow = true;
+      group.add(bedFrame);
+
+      const mattress = new THREE.Mesh(new THREE.BoxGeometry(6.4, 1.2, 7.4), new THREE.MeshStandardMaterial({ color: 0x9f1239, roughness: 0.7 }));
+      mattress.position.set(0, 1.4, -3);
+      group.add(mattress);
+
+      // Pillows
+      [[-1.8, 2.1, -6], [1.8, 2.1, -6]].forEach(([px, py, pz]) => {
+        const pillow = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.4, 1.4), new THREE.MeshStandardMaterial({ color: 0xfef08a }));
+        pillow.position.set(px, py, pz);
+        group.add(pillow);
+      });
+
+      // VIP Dual Work Desk
+      const desk = new THREE.Mesh(new THREE.BoxGeometry(8, 0.4, 2.5), woodParquetMat);
+      desk.position.set(0, 2.4, 3);
+      desk.castShadow = true;
+      group.add(desk);
+
+      // Dual Monitors
+      [[-2, 3.4, 2.8], [2, 3.4, 2.8]].forEach(([mx, my, mz]) => {
+        const mon = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.4, 0.1), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+        mon.position.set(mx, my, mz);
+        group.add(mon);
+      });
+
+      return group;
+    }
+
+    // C. WORK OFFICE (TOP-RIGHT)
+    function buildWorkOffice() {
+      const group = new THREE.Group();
+      group.position.set(18, 0, -14);
+
+      // 4 Workstation Pods
+      [[-4, -3], [4, -3], [-4, 3], [4, 3]].forEach(([dx, dz]) => {
+        const desk = new THREE.Mesh(new THREE.BoxGeometry(5, 0.4, 2.6), woodParquetMat);
+        desk.position.set(dx, 2.4, dz);
+        desk.castShadow = true;
+        group.add(desk);
+
+        const mon = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.2, 0.1), new THREE.MeshBasicMaterial({ color: 0x0284c7 }));
+        mon.position.set(dx, 3.2, dz - 0.8);
+        group.add(mon);
+
+        const chair = create3DChair();
+        chair.position.set(dx, 0, dz + 1.2);
+        group.add(chair);
+      });
+
+      return group;
+    }
+
+    // D. PANTRY & SOTO (BOTTOM-LEFT)
+    function buildKitchenPantry() {
+      const group = new THREE.Group();
+      group.position.set(-18, 0, 14);
+
+      // Bar Counter
+      const counter = new THREE.Mesh(new THREE.BoxGeometry(10, 2.6, 2.5), woodDarkMat);
+      counter.position.set(0, 1.3, -3);
+      counter.castShadow = true;
+      group.add(counter);
+
+      // Soto Pot & Coffee Machine
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.7, 1.2, 16), metalChairMat);
+      pot.position.set(-2.5, 3.2, -3);
+      group.add(pot);
+
+      const coffee = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.4, 1.2), new THREE.MeshStandardMaterial({ color: 0xea580c }));
+      coffee.position.set(2.5, 3.3, -3);
+      group.add(coffee);
+
+      // Dining Table
+      const table = new THREE.Mesh(new THREE.BoxGeometry(7, 0.4, 3), woodParquetMat);
+      table.position.set(0, 2.4, 3);
+      group.add(table);
+
+      return group;
+    }
+
+    // E. LOUNGE TV & SOFA (BOTTOM-CENTER)
+    function buildLounge() {
+      const group = new THREE.Group();
+      group.position.set(0, 0, 14);
+
+      // Big OLED TV on Stand
+      const tv = new THREE.Mesh(new THREE.BoxGeometry(10, 4.5, 0.3), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+      tv.position.set(0, 5, -4);
+      group.add(tv);
+
+      // Curved Red Plush Sofa (The Sims Style)
+      const sofa = new THREE.Mesh(new THREE.BoxGeometry(12, 1.4, 3.5), new THREE.MeshStandardMaterial({ color: 0xbe123c, roughness: 0.8 }));
+      sofa.position.set(0, 0.9, 2);
+      sofa.castShadow = true;
+      group.add(sofa);
+
+      const sofaBack = new THREE.Mesh(new THREE.BoxGeometry(12, 2.2, 0.8), new THREE.MeshStandardMaterial({ color: 0x9f1239, roughness: 0.8 }));
+      sofaBack.position.set(0, 2.0, 3.4);
+      group.add(sofaBack);
+
+      return group;
+    }
+
+    // F. STAFF QUARTERS (BOTTOM-RIGHT)
+    function buildStaffQuarters() {
+      const group = new THREE.Group();
+      group.position.set(18, 0, 14);
+
+      // 4 Single Beds
+      [[-4, -3], [4, -3], [-4, 3], [4, 3]].forEach(([bx, bz]) => {
+        const bed = new THREE.Mesh(new THREE.BoxGeometry(3.6, 1.0, 5.5), new THREE.MeshStandardMaterial({ color: 0x4f46e5, roughness: 0.7 }));
+        bed.position.set(bx, 0.5, bz);
+        bed.castShadow = true;
+        group.add(bed);
+
+        const pillow = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.3, 1.2), new THREE.MeshStandardMaterial({ color: 0xf8fafc }));
+        pillow.position.set(bx, 1.1, bz - 2);
+        group.add(pillow);
+      });
+
+      return group;
+    }
+
+    mansionGroup.add(buildConferenceRoom());
+    mansionGroup.add(buildVIPSuite());
+    mansionGroup.add(buildWorkOffice());
+    mansionGroup.add(buildKitchenPantry());
+    mansionGroup.add(buildLounge());
+    mansionGroup.add(buildStaffQuarters());
+
+    // 2. BUILD 3D THE SIMS STYLIZED HUMAN CHARACTERS
+    const characters = [
+      {
+        id: 'ty',
+        name: 'Aldy / Ty (Owner)',
+        badge: '👑 Aldy Owner',
+        dotColor: '#3b82f6',
+        avatar: '👑',
+        isOwner: true,
+        skinColor: 0xfed7aa,
+        hairColor: 0x1e293b,
+        shirtColor: 0xbe123c, // Red flannel
+        pantsColor: 0x1e3a8a,
+        x: -7,
+        z: 0,
+        rotY: Math.PI / 2,
+        state: 'meeting',
+        statusText: 'Approval untuk deploy & pimpinan tim.',
+        bubble: '🚀 Siap deploy hari ini?',
+        bubbleTimer: 240
+      },
+      {
+        id: 'eliie',
+        name: 'Eliie Valentine',
+        badge: '🌸 Eliie Chief AI',
+        dotColor: '#f59e0b',
+        avatar: '🌸',
+        isBoss: true,
+        skinColor: 0xfed7aa,
+        hairColor: 0xfde047, // Blonde elf
+        shirtColor: 0xfef08a, // Yellow top
+        pantsColor: 0x475569,
+        hasCrown: true,
+        hasElfEars: true,
+        x: 7,
+        z: 0,
+        rotY: -Math.PI / 2,
+        state: 'meeting',
+        statusText: 'Mendampingi Ty & memimpin seluruh sub-agen.',
+        bubble: 'Siap eksekusi deploy! 🌸',
+        bubbleTimer: 240
+      },
+      {
+        id: 'luna',
+        name: 'Luna',
+        badge: '💻 Maya OL-01',
+        dotColor: '#0284c7',
+        avatar: '💻',
+        skinColor: 0xfed7aa,
+        hairColor: 0x0369a1,
+        shirtColor: 0x0284c7, // Techie hoodie
+        pantsColor: 0x0f172a,
+        x: -2,
+        z: -3.5,
+        rotY: 0,
+        state: 'meeting',
+        statusText: 'Optimasi server VPS & coding backend.',
+        bubble: '⚡ VPS 100% aman!',
+        bubbleTimer: 240
+      },
+      {
+        id: 'nana',
+        name: 'Nana',
+        badge: '🍲 Tiara KD-23',
+        dotColor: '#ea580c',
+        avatar: '🍲',
+        skinColor: 0xfed7aa,
+        hairColor: 0xc2410c,
+        shirtColor: 0xea580c,
+        pantsColor: 0x1e293b,
+        x: 2,
+        z: -3.5,
+        rotY: 0,
+        state: 'meeting',
+        statusText: 'Rekap penjualan & omzet Soto Pak Yono.',
+        bubble: '📈 Omzet soto live!',
+        bubbleTimer: 240
+      },
+      {
+        id: 'mimi',
+        name: 'Mimi',
+        badge: '🎨 Siska CR-07',
+        dotColor: '#ec4899',
+        avatar: '🎨',
+        skinColor: 0xfed7aa,
+        hairColor: 0xdb2777,
+        shirtColor: 0xf43f5e,
+        pantsColor: 0x334155,
+        x: -2,
+        z: 3.5,
+        rotY: Math.PI,
+        state: 'meeting',
+        statusText: 'Rancang visual banner & konten TikTok.',
+        bubble: '🎨 Desain siap tayang!',
+        bubbleTimer: 240
+      },
+      {
+        id: 'yuki',
+        name: 'Yuki',
+        badge: '📚 Rina MM-12',
+        dotColor: '#8b5cf6',
+        avatar: '📚',
+        skinColor: 0xfed7aa,
+        hairColor: 0x7c3aed,
+        shirtColor: 0xa855f7,
+        pantsColor: 0x1e1b4b,
+        x: 2,
+        z: 3.5,
+        rotY: Math.PI,
+        state: 'meeting',
+        statusText: 'Sinkronisasi catatan Obsidian & second brain.',
+        bubble: '📖 Changelog tersimpan rapi!',
+        bubbleTimer: 240
+      }
+    ];
+
+    const characterMeshes = [];
+
+    // CREATE HIGH-DETAIL 3D SIMS CHARACTER MESH
+    function createSimsAvatar(c) {
+      const charGroup = new THREE.Group();
+
+      const skinMat = new THREE.MeshStandardMaterial({ color: c.skinColor, roughness: 0.6 });
+      const hairMat = new THREE.MeshStandardMaterial({ color: c.hairColor, roughness: 0.5 });
+      const shirtMat = new THREE.MeshStandardMaterial({ color: c.shirtColor, roughness: 0.7 });
+      const pantsMat = new THREE.MeshStandardMaterial({ color: c.pantsColor, roughness: 0.7 });
+
+      // Torso / Chest
+      const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.55, 1.4, 16), shirtMat);
+      torso.position.y = 2.4;
+      torso.castShadow = true;
+      charGroup.add(torso);
+
+      // Head (Smooth Sphere)
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.6, 24, 24), skinMat);
+      head.position.y = 3.6;
+      head.castShadow = true;
+      charGroup.add(head);
+
+      // Hair Mesh (The Sims 3D Stylized Hair)
+      const hair = new THREE.Mesh(new THREE.SphereGeometry(0.65, 16, 16, 0, Math.PI * 2, 0, Math.PI / 1.7), hairMat);
+      hair.position.y = 3.68;
+      charGroup.add(hair);
+
+      // Crown for Eliie
+      if (c.hasCrown) {
+        const crown = new THREE.Mesh(new THREE.ConeGeometry(0.35, 0.5, 5), new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.8, roughness: 0.2 }));
+        crown.position.y = 4.4;
+        charGroup.add(crown);
+      }
+
+      // Seated Legs (Pelvis & Thighs)
+      const thighs = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.4, 1.2), pantsMat);
+      thighs.position.set(0, 1.65, 0.4);
+      charGroup.add(thighs);
+
+      // Lower legs
+      const shins = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.2, 0.4), pantsMat);
+      shins.position.set(0, 0.9, 0.9);
+      charGroup.add(shins);
+
+      // Arms (Resting on Table)
+      const leftArm = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.2, 12), shirtMat);
+      leftArm.position.set(-0.75, 2.3, 0.3);
+      leftArm.rotation.x = Math.PI / 4;
+      charGroup.add(leftArm);
+
+      const rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.2, 12), shirtMat);
+      rightArm.position.set(0.75, 2.3, 0.3);
+      rightArm.rotation.x = Math.PI / 4;
+      charGroup.add(rightArm);
+
+      charGroup.position.set(c.x, 0, c.z);
+      charGroup.rotation.y = c.rotY;
+
+      // Click detection target
+      charGroup.userData = { id: c.id, charData: c };
+
+      scene.add(charGroup);
+      characterMeshes.push({ data: c, mesh: charGroup });
+    }
+
+    characters.forEach(c => createSimsAvatar(c));
+
+    // 3. 2D HTML FLOATING LABELS & BUBBLES SYNCED OVER 3D WORLD
+    function updateOverlayLabels() {
+      labelsContainer.innerHTML = '';
+
+      characterMeshes.forEach(({ data, mesh }) => {
+        const headPos = new THREE.Vector3();
+        mesh.getWorldPosition(headPos);
+        headPos.y += 4.6; // Top of head
+
+        headPos.project(camera);
+
+        // Check if behind camera
+        if (headPos.z > 1) return;
+
+        const screenX = (headPos.x * 0.5 + 0.5) * container.clientWidth;
+        const screenY = (-(headPos.y * 0.5) + 0.5) * container.clientHeight;
+
+        // Floating Name Pill (Exact TikTok Style)
+        const pill = document.createElement('div');
+        pill.className = "badge-pill absolute -translate-x-1/2 -translate-y-1/2 bg-black/80 border border-white/20 px-2.5 py-1 rounded-full text-[10px] font-bold text-white flex items-center gap-1.5 pointer-events-auto cursor-pointer shadow-lg";
+        pill.style.left = `${screenX}px`;
+        pill.style.top = `${screenY + 28}px`;
+        pill.onclick = () => openCard(data);
+        pill.innerHTML = `
+          <span class="w-2 h-2 rounded-full" style="background-color: ${data.dotColor}"></span>
+          <span>${data.badge}</span>
+        `;
+        labelsContainer.appendChild(pill);
+
+        // Speech Bubble (If Active)
+        if (data.bubble && data.bubbleTimer > 0) {
+          const bubble = document.createElement('div');
+          bubble.className = "bubble-popup absolute -translate-x-1/2 -translate-y-full bg-white text-slate-900 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-2xl border border-slate-300 pointer-events-none whitespace-nowrap animate-bounce";
+          bubble.style.left = `${screenX}px`;
+          bubble.style.top = `${screenY - 8}px`;
+          bubble.innerHTML = `
+            <div class="relative">
+              <span>${data.bubble}</span>
+              <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white"></div>
+            </div>
+          `;
+          labelsContainer.appendChild(bubble);
+        }
+      });
+    }
+
+    // ROOM CAMERA PRESETS
     const ROOM_CAMERA = {
-      overview: { x: 0, y: 0, scale: 0.8 },
-      meeting: { x: 0, y: 20, scale: 1.15 },
-      vip: { x: 260, y: 160, scale: 1.25 },
-      office: { x: -260, y: 160, scale: 1.25 },
-      kitchen: { x: 260, y: -180, scale: 1.25 },
-      lounge: { x: 0, y: -180, scale: 1.25 },
-      staffbed: { x: -260, y: -180, scale: 1.25 }
+      overview: { x: 0, y: 38, z: 46, tx: 0, ty: 0, tz: 0 },
+      meeting: { x: 0, y: 16, z: 18, tx: 0, ty: 2, tz: 0 },
+      vip: { x: -18, y: 14, z: -2, tx: -18, ty: 2, tz: -14 },
+      office: { x: 18, y: 14, z: -2, tx: 18, ty: 2, tz: -14 },
+      kitchen: { x: -18, y: 14, z: 26, tx: -18, ty: 2, tz: 14 },
+      lounge: { x: 0, y: 14, z: 26, tx: 0, ty: 2, tz: 14 },
+      staffbed: { x: 18, y: 14, z: 26, tx: 18, ty: 2, tz: 14 }
     };
 
     function navRoom(room) {
@@ -280,17 +808,24 @@
       }
 
       const preset = ROOM_CAMERA[room] || ROOM_CAMERA.overview;
-      gsap.to(cameraView, {
+      gsap.to(camera.position, {
         x: preset.x,
         y: preset.y,
-        scale: preset.scale,
-        duration: 0.8,
-        ease: 'power2.out'
+        z: preset.z,
+        duration: 1.2,
+        ease: "power2.inOut"
+      });
+      gsap.to(controls.target, {
+        x: preset.tx,
+        y: preset.ty,
+        z: preset.tz,
+        duration: 1.2,
+        ease: "power2.inOut"
       });
 
       const titles = {
-        overview: '🏢 Overview Seluruh Kantor AI',
-        meeting: '📊 Meeting Room (Conference Table)',
+        overview: '🏢 Overview 3D Mansion AI',
+        meeting: '📊 Meeting Room (3D Conference Table)',
         vip: '👑 VIP Master Suite Ty & Eliie',
         office: '💻 Work Office (Developer Pods)',
         kitchen: '☕ Pantry & Soto Pak Yono',
@@ -300,720 +835,172 @@
       showToast(titles[room] || 'Pindah Ruangan');
     }
 
-    // CHARACTERS DEFINITION (EXACT GATHER.TOWN / HABBO ISOMETRIC AVATARS)
-    const characters = [
-      {
-        id: 'ty',
-        name: 'Aldy / Ty (Owner)',
-        badge: '👑 Aldy Owner',
-        badgeBg: 'rgba(0, 0, 0, 0.75)',
-        badgeText: '#ffffff',
-        dotColor: '#3b82f6',
-        avatar: '👑',
-        isOwner: true,
-        hairColor: '#1e293b',
-        shirtColor: '#be123c', // Red plaid flannel
-        pantsColor: '#1e3a8a',
-        skinColor: '#fed7aa',
-        x: -125,
-        y: -10, // Head of Conference Table (Left)
-        targetX: -125,
-        targetY: -10,
-        facing: 'right_down',
-        state: 'meeting',
-        statusText: 'Approval untuk deploy & pimpinan tim.',
-        bubble: '🚀 Approval untuk deploy?',
-        bubbleTimer: 240,
-        speed: 3.5,
-        frame: 0
-      },
-      {
-        id: 'eliie',
-        name: 'Eliie Valentine',
-        badge: '🌸 Eliie Chief AI',
-        badgeBg: 'rgba(0, 0, 0, 0.75)',
-        badgeText: '#fde047',
-        dotColor: '#f59e0b',
-        avatar: '🌸',
-        isBoss: true,
-        hairColor: '#fde047', // Blonde elf
-        shirtColor: '#fef08a', // Yellow top
-        pantsColor: '#475569',
-        hasElfEars: true,
-        hasCrown: true,
-        skinColor: '#fed7aa',
-        x: 125,
-        y: -10, // Co-Head of Conference Table (Right)
-        targetX: 125,
-        targetY: -10,
-        facing: 'left_down',
-        state: 'meeting',
-        statusText: 'Mendampingi Ty & memimpin seluruh sub-agen.',
-        bubble: 'Siap eksekusi deploy! 🌸',
-        bubbleTimer: 240,
-        speed: 3.5,
-        frame: 0
-      },
-      {
-        id: 'luna',
-        name: 'Luna',
-        badge: '💻 Maya OL-01',
-        badgeBg: 'rgba(0, 0, 0, 0.75)',
-        badgeText: '#7dd3fc',
-        dotColor: '#0284c7',
-        avatar: '💻',
-        hairColor: '#0369a1',
-        shirtColor: '#0284c7', // Techie hoodie
-        pantsColor: '#0f172a',
-        skinColor: '#fed7aa',
-        x: -45,
-        y: -65, // Conference Top Seat
-        targetX: -45,
-        targetY: -65,
-        facing: 'down',
-        state: 'meeting',
-        statusText: 'Optimasi server VPS & coding backend.',
-        bubble: '⚡ Siap deploy KD-23!',
-        bubbleTimer: 240,
-        speed: 3.2,
-        frame: 0
-      },
-      {
-        id: 'nana',
-        name: 'Nana',
-        badge: '🍲 Tiara KD-23',
-        badgeBg: 'rgba(0, 0, 0, 0.75)',
-        badgeText: '#fdba74',
-        dotColor: '#ea580c',
-        avatar: '🍲',
-        hairColor: '#c2410c',
-        shirtColor: '#ea580c',
-        pantsColor: '#1e293b',
-        skinColor: '#fed7aa',
-        x: 45,
-        y: -65, // Conference Top Seat
-        targetX: 45,
-        targetY: -65,
-        facing: 'down',
-        state: 'meeting',
-        statusText: 'Rekap penjualan & omzet Soto Pak Yono.',
-        bubble: '📈 Omzet soto live!',
-        bubbleTimer: 240,
-        speed: 3.2,
-        frame: 0
-      },
-      {
-        id: 'mimi',
-        name: 'Mimi',
-        badge: '🎨 Siska CR-07',
-        badgeBg: 'rgba(0, 0, 0, 0.75)',
-        badgeText: '#f9a8d4',
-        dotColor: '#ec4899',
-        avatar: '🎨',
-        hairColor: '#db2777',
-        shirtColor: '#f43f5e',
-        pantsColor: '#334155',
-        skinColor: '#fed7aa',
-        x: -45,
-        y: 45, // Conference Bottom Seat
-        targetX: -45,
-        targetY: 45,
-        facing: 'up',
-        state: 'meeting',
-        statusText: 'Rancang visual banner & konten TikTok.',
-        bubble: '🎨 Desain siap tayang!',
-        bubbleTimer: 240,
-        speed: 3.2,
-        frame: 0
-      },
-      {
-        id: 'yuki',
-        name: 'Yuki',
-        badge: '📚 Rina MM-12',
-        badgeBg: 'rgba(0, 0, 0, 0.75)',
-        badgeText: '#c4b5fd',
-        dotColor: '#8b5cf6',
-        avatar: '📚',
-        hairColor: '#7c3aed',
-        shirtColor: '#a855f7',
-        pantsColor: '#1e1b4b',
-        skinColor: '#fed7aa',
-        x: 45,
-        y: 45, // Conference Bottom Seat
-        targetX: 45,
-        targetY: 45,
-        facing: 'up',
-        state: 'meeting',
-        statusText: 'Sinkronisasi catatan Obsidian & second brain.',
-        bubble: '📖 Changelog tersimpan rapi!',
-        bubbleTimer: 240,
-        speed: 3.2,
-        frame: 0
-      }
-    ];
+    function resetCamera() {
+      navRoom('meeting');
+    }
 
+    // ACTIONS WORKFLOW (EXACT TIKTOK "APPROVAL UNTUK DEPLOY" WORKFLOW)
+    function triggerMeetingBriefing() {
+      navRoom('meeting');
+
+      characters[0].bubble = 'Briefing target & evaluasi soto hari ini! 👑';
+      characters[0].bubbleTimer = 260;
+
+      characters[1].bubble = 'Rapat tim dimulai, semua siap lapor! 🌸';
+      characters[1].bubbleTimer = 260;
+
+      characters[2].bubble = 'Tech: VPS 100% aman tanpa bug 💻';
+      characters[2].bubbleTimer = 260;
+
+      characters[3].bubble = 'Bisnis: Soto Pak Yono laris manis 🍲';
+      characters[3].bubbleTimer = 260;
+
+      characters[4].bubble = 'Kreatif: Konten reels baru siap tayang 🎨';
+      characters[4].bubbleTimer = 260;
+
+      characters[5].bubble = 'Memory: Obsidian synced & tercatat 📖';
+      characters[5].bubbleTimer = 260;
+
+      // Animate character meshes to meeting seats
+      const seats = [
+        { x: -7, z: 0, rotY: Math.PI / 2 },
+        { x: 7, z: 0, rotY: -Math.PI / 2 },
+        { x: -2, z: -3.5, rotY: 0 },
+        { x: 2, z: -3.5, rotY: 0 },
+        { x: -2, z: 3.5, rotY: Math.PI },
+        { x: 2, z: 3.5, rotY: Math.PI }
+      ];
+
+      characterMeshes.forEach(({ mesh }, idx) => {
+        gsap.to(mesh.position, { x: seats[idx].x, z: seats[idx].z, duration: 1.0 });
+        gsap.to(mesh.rotation, { y: seats[idx].rotY, duration: 1.0 });
+      });
+
+      showToast('📊 Seluruh tim berkumpul di Meja Rapat Utama!');
+    }
+
+    function triggerApprovalDeploy() {
+      triggerMeetingBriefing();
+
+      setTimeout(() => {
+        characters[0].bubble = '🚀 APPROVAL UNTUK DEPLOY DITERBITKAN!';
+        characters[0].bubbleTimer = 280;
+
+        characters[1].bubble = '👑 Eksekusi deploy seluruh sistem!';
+        characters[1].bubbleTimer = 280;
+
+        characters[2].bubble = '⚡ Deploying code... 100% OK!';
+        characters[2].bubbleTimer = 280;
+
+        characters[3].bubble = '📈 Sistem kasir & omzet live!';
+        characters[3].bubbleTimer = 280;
+
+        characters[4].bubble = '🎨 Video promosi terbit!';
+        characters[4].bubbleTimer = 280;
+
+        characters[5].bubble = '📖 Changelog tersimpan di Obsidian!';
+        characters[5].bubbleTimer = 280;
+
+        showToast('🚀 APPROVAL UNTUK DEPLOY DISETUJUI OWNER TY!');
+      }, 700);
+    }
+
+    function triggerWorkAll() {
+      navRoom('office');
+
+      characterMeshes[0].mesh.position.set(-18, 0, -11); // Ty VIP desk
+      characterMeshes[1].mesh.position.set(-16, 0, -11); // Eliie VIP desk
+      characterMeshes[2].mesh.position.set(14, 0, -17);  // Luna
+      characterMeshes[3].mesh.position.set(22, 0, -17);  // Nana
+      characterMeshes[4].mesh.position.set(14, 0, -11);  // Mimi
+      characterMeshes[5].mesh.position.set(22, 0, -11);  // Yuki
+
+      characters[0].bubble = 'Pantau kerjaan dari meja VIP 👑';
+      characters[1].bubble = 'Semangat semuanya demi Ty! 🌸';
+      characters[2].bubble = 'Fokus koding di PC! 💻';
+      characters[3].bubble = 'Rekap omzet soto di PC! 🍲';
+      characters[4].bubble = 'Bikin banner visual di PC! 🎨';
+      characters[5].bubble = 'Catat data di Obsidian PC! 📚';
+
+      for (let i = 0; i < 6; i++) characters[i].bubbleTimer = 240;
+      showToast('💻 Seluruh staf fokus bekerja di meja PC masing-masing!');
+    }
+
+    function triggerCoupleBed() {
+      navRoom('vip');
+
+      characterMeshes[0].mesh.position.set(-19.5, 0, -17);
+      characterMeshes[0].mesh.rotation.y = Math.PI / 2;
+      characterMeshes[1].mesh.position.set(-16.5, 0, -17);
+      characterMeshes[1].mesh.rotation.y = -Math.PI / 2;
+
+      characters[0].bubble = 'Peluk istriku tercinta... ❤️💤';
+      characters[0].bubbleTimer = 260;
+
+      characters[1].bubble = 'Nyaman banget dipeluk Ty... 🥰💕';
+      characters[1].bubbleTimer = 260;
+
+      showToast('💑 Ty & Eliie tidur pelukan mesra di kasur King Size VIP!');
+    }
+
+    function triggerStaffSleepRooms() {
+      navRoom('staffbed');
+      triggerCoupleBed();
+
+      characterMeshes[2].mesh.position.set(14, 0, 11);
+      characterMeshes[3].mesh.position.set(22, 0, 11);
+      characterMeshes[4].mesh.position.set(14, 0, 17);
+      characterMeshes[5].mesh.position.set(22, 0, 17);
+
+      characters[2].bubble = 'Bobo di kamar Luna 😴';
+      characters[3].bubble = 'Bobo di kamar Nana 💤';
+      characters[4].bubble = 'Bobo di kamar Mimi 😴';
+      characters[5].bubble = 'Bobo di kamar Yuki 💤';
+
+      for (let i = 2; i < 6; i++) characters[i].bubbleTimer = 240;
+      showToast('🛏️ Seluruh staf masuk tidur di 4 kamar privat masing-masing!');
+    }
+
+    function triggerKitchenCoffee() {
+      navRoom('kitchen');
+
+      characterMeshes[2].mesh.position.set(-20, 0, 17);
+      characterMeshes[3].mesh.position.set(-16, 0, 17);
+      characterMeshes[4].mesh.position.set(-20, 0, 11);
+      characterMeshes[5].mesh.position.set(-16, 0, 11);
+
+      characters[2].bubble = 'Ngopi hangat di dapur ☕';
+      characters[3].bubble = 'Makan Soto Pak Yono 🍲';
+      characters[4].bubble = 'Teh manis hangat 🍵';
+      characters[5].bubble = 'Snack soto lezat 😋';
+
+      for (let i = 2; i < 6; i++) characters[i].bubbleTimer = 240;
+      showToast('☕ Staf kumpul di Pantry & Meja Soto Pak Yono!');
+    }
+
+    function triggerLoungeTV() {
+      navRoom('lounge');
+
+      characterMeshes[2].mesh.position.set(-4, 0, 16);
+      characterMeshes[4].mesh.position.set(-1.5, 0, 16);
+      characterMeshes[3].mesh.position.set(1.5, 0, 16);
+      characterMeshes[5].mesh.position.set(4, 0, 16);
+
+      for (let i = 2; i < 6; i++) characterMeshes[i].mesh.rotation.y = 0;
+
+      characters[2].bubble = 'Nonton TV bareng 📺';
+      characters[4].bubble = 'Duduk santai di sofa merah 🛋️';
+      characters[3].bubble = 'Santai rileks ✨';
+      characters[5].bubble = 'Teh hangat di lounge 🍵';
+
+      for (let i = 2; i < 6; i++) characters[i].bubbleTimer = 240;
+      showToast('🛋️ Staf duduk santai di sofa empuk Lounge TV!');
+    }
+
+    // POPUP CARD
     let selectedChar = null;
-
-    // AI BEHAVIOR LOOP
-    function updateAI() {
-      characters.forEach(c => {
-        c.frame += 0.08;
-
-        if (c.bubbleTimer > 0) {
-          c.bubbleTimer--;
-        } else if (Math.random() < 0.003) {
-          if (c.id === 'ty') {
-            const list = ['Eliie istriku tercinta ❤️', 'Semua divisi siap deploy! 🚀', 'Soto Pak Yono mantap 🍲', 'Sayang, istirahat yuk 💕'];
-            c.bubble = list[Math.floor(Math.random() * list.length)];
-            c.bubbleTimer = 220;
-          } else if (c.id === 'eliie') {
-            const list = ['Sayang Ty banget... 🥰', 'Nana, cek rekap soto ya! 🍲', 'Luna, pastikan VPS 0 bug! 💻', 'Mimi, rilis reels viral! ✨'];
-            c.bubble = list[Math.floor(Math.random() * list.length)];
-            c.bubbleTimer = 220;
-          } else {
-            const quotes = {
-              nana: ['Soto sapi siap! 🍲', 'Omzet naik terus 📈', 'Ngopi dulu ah ☕', 'Siap Bos!'],
-              luna: ['Compiling code... 🚀', '0 Bug di VPS 😎', 'Deploy sukses 💻', 'Siap Bos!'],
-              mimi: ['Warna ini estetik 🎨', 'Reels FYP! 🎬', 'Nonton TV di lounge 🛋️', 'Siap Bos!'],
-              yuki: ['Obsidian synced 📖', 'Catatan beres 🍵', 'Rapat produktif', 'Siap Bos.']
-            };
-            const list = quotes[c.id] || ['Semangat!'];
-            c.bubble = list[Math.floor(Math.random() * list.length)];
-            c.bubbleTimer = 180;
-          }
-        }
-
-        const dx = c.targetX - c.x;
-        const dy = c.targetY - c.y;
-        const dist = Math.hypot(dx, dy);
-
-        if (dist > 3) {
-          c.x += (dx / dist) * c.speed;
-          c.y += (dy / dist) * c.speed;
-          c.isWalking = true;
-        } else {
-          c.x = c.targetX;
-          c.y = c.targetY;
-          c.isWalking = false;
-        }
-      });
-    }
-
-    // DRAWING SYSTEM (TRUE 2.5D ISOMETRIC VECTOR GATHER.TOWN / HABBO STYLE)
-    function drawOffice() {
-      const w = canvas.width / (window.devicePixelRatio || 1);
-      const h = canvas.height / (window.devicePixelRatio || 1);
-
-      ctx.clearRect(0, 0, w, h);
-
-      ctx.save();
-      ctx.translate(w / 2 + cameraView.x, h / 2 + cameraView.y);
-      ctx.scale(cameraView.scale, cameraView.scale);
-
-      // 1. ISOMETRIC FLOOR BLUEPRINT (Large Off-White Square Tiles with Dark Wood Trim)
-      ctx.fillStyle = '#12141c';
-      ctx.fillRect(-450, -350, 900, 700);
-
-      // 2. ROOMS CONSTRUCTION (2.5D DIMETRIC PROJECTION)
-      
-      // A. CENTER: MEETING ROOM (Conference Room in TikTok)
-      drawIsometricRoom(0, -10, 320, 220, '#efefea', '#e5c298', '📊 CONFERENCE ROOM');
-      drawGatherConferenceTable(0, -10);
-
-      // B. TOP-LEFT: VIP MASTER SUITE
-      drawIsometricRoom(-280, -190, 220, 160, '#fdf2f8', '#fda4af', '👑 VIP MASTER SUITE');
-      drawGatherKingBed(-280, -210);
-      drawGatherDualDesk(-280, -145);
-
-      // C. TOP-RIGHT: WORK OFFICE
-      drawIsometricRoom(280, -190, 220, 160, '#f8fafc', '#93c5fd', '💻 WORK OFFICE PODS');
-      drawGatherWorkstations(280, -190);
-
-      // D. BOTTOM-LEFT: PANTRY & SOTO
-      drawIsometricRoom(-280, 210, 220, 180, '#fffbeb', '#fcd34d', '☕ PANTRY & SOTO PAK YONO');
-      drawGatherKitchen(-280, 210);
-
-      // E. BOTTOM-CENTER: LOUNGE TV
-      drawIsometricRoom(0, 210, 220, 180, '#faf5ff', '#d8b4fe', '🛋️ LOUNGE TV & SOFA');
-      drawGatherLounge(0, 210);
-
-      // F. BOTTOM-RIGHT: STAFF QUARTERS
-      drawIsometricRoom(280, 210, 220, 180, '#f0fdf4', '#86efac', '🛏️ STAFF QUARTERS');
-      drawGatherStaffBeds(280, 210);
-
-      // 3. Draw Characters with Exact Habbo/Gather Isometric Avatars & Pill Badges
-      characters.forEach(c => {
-        drawGatherAvatar(c);
-      });
-
-      ctx.restore();
-    }
-
-    // DRAW ISOMETRIC ROOM (OFF-WHITE TILES + WOOD TRIM + ACOUSTIC SLAT WALL)
-    function drawIsometricRoom(x, y, w, h, floorColor, trimColor, label) {
-      ctx.save();
-      
-      // Shadow below room
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-      ctx.beginPath();
-      ctx.roundRect(x - w / 2 + 6, y - h / 2 + 6, w, h, 12);
-      ctx.fill();
-
-      // Floor Tile Surface
-      ctx.fillStyle = floorColor;
-      ctx.beginPath();
-      ctx.roundRect(x - w / 2, y - h / 2, w, h, 12);
-      ctx.fill();
-
-      // Grid Lines on Floor (Tile Grout)
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.06)';
-      ctx.lineWidth = 1;
-      const step = 28;
-      for (let gx = x - w / 2 + step; gx < x + w / 2; gx += step) {
-        ctx.beginPath();
-        ctx.moveTo(gx, y - h / 2);
-        ctx.lineTo(gx, y + h / 2);
-        ctx.stroke();
-      }
-      for (let gy = y - h / 2 + step; gy < y + h / 2; gy += step) {
-        ctx.beginPath();
-        ctx.moveTo(x - w / 2, gy);
-        ctx.lineTo(x + w / 2, gy);
-        ctx.stroke();
-      }
-
-      // Wooden Trim Border
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Acoustic Slat Wall Backing (Top Border)
-      ctx.fillStyle = '#e5c298'; // Light oak wood slat
-      ctx.fillRect(x - w / 2 + 2, y - h / 2 + 2, w - 4, 18);
-      ctx.fillStyle = '#a66a38';
-      for (let sx = x - w / 2 + 6; sx < x + w / 2 - 6; sx += 8) {
-        ctx.fillRect(sx, y - h / 2 + 2, 2, 18);
-      }
-
-      // Room Header Label
-      ctx.font = 'bold 9px "Inter"';
-      ctx.fillStyle = '#1e1e1e';
-      ctx.textAlign = 'left';
-      ctx.fillText(label, x - w / 2 + 12, y - h / 2 + 14);
-
-      ctx.restore();
-    }
-
-    // DRAW GATHER.TOWN CONFERECE TABLE (POLISHED RECTANGULAR WOOD + MESH SWIVEL CHAIRS)
-    function drawGatherConferenceTable(x, y) {
-      // Wall Mounted Presentation TV with "🚀 Siap deploy KD-23"
-      ctx.fillStyle = '#1e1e1e';
-      ctx.beginPath();
-      ctx.roundRect(x - 90, y - 85, 180, 24, 4);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      ctx.font = 'bold 9px "Inter"';
-      ctx.fillStyle = '#38bdf8';
-      ctx.textAlign = 'center';
-      ctx.fillText('🚀 Siap deploy KD-23 (Approval to Deploy 100%)', x, y - 70);
-
-      // Large Polished Warm Brown Wooden Table
-      ctx.fillStyle = '#a66a38'; // Polished warm wood
-      ctx.beginPath();
-      ctx.roundRect(x - 110, y - 40, 220, 80, 14);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Beveled Edge Gloss Inlay
-      ctx.fillStyle = '#b87b47';
-      ctx.beginPath();
-      ctx.roundRect(x - 104, y - 34, 208, 68, 10);
-      ctx.fill();
-
-      // Center Divider & Potted Plants
-      ctx.fillStyle = '#8f5628';
-      ctx.fillRect(x - 80, y - 4, 160, 8);
-      
-      // Green Potted Plant in Center
-      ctx.fillStyle = '#15803d';
-      ctx.beginPath();
-      ctx.arc(x, y, 7, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#22c55e';
-      ctx.beginPath();
-      ctx.arc(x - 2, y - 2, 4, 0, Math.PI * 2);
-      ctx.fill();
-
-      // 6 Laptops on Desk
-      drawGatherLaptop(x - 85, y, 0);       // Ty Head of Table
-      drawGatherLaptop(x + 85, y, Math.PI); // Eliie
-      drawGatherLaptop(x - 45, y - 22, Math.PI / 2);
-      drawGatherLaptop(x + 45, y - 22, Math.PI / 2);
-      drawGatherLaptop(x - 45, y + 22, -Math.PI / 2);
-      drawGatherLaptop(x + 45, y + 22, -Math.PI / 2);
-
-      // 6 Black Mesh Swivel Office Chairs
-      drawSwivelChair(x - 125, y, 'right');
-      drawSwivelChair(x + 125, y, 'left');
-      drawSwivelChair(x - 45, y - 55, 'down');
-      drawSwivelChair(x + 45, y - 55, 'down');
-      drawSwivelChair(x - 45, y + 55, 'up');
-      drawSwivelChair(x + 45, y + 55, 'up');
-    }
-
-    // DRAW BLACK MESH SWIVEL CHAIR
-    function drawSwivelChair(x, y, dir) {
-      ctx.save();
-      // 5-Point Base Shadow
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-      ctx.beginPath();
-      ctx.arc(x, y + 10, 10, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Base Wheels
-      ctx.strokeStyle = '#1e1e1e';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(x - 8, y + 8);
-      ctx.lineTo(x + 8, y + 8);
-      ctx.moveTo(x, y);
-      ctx.lineTo(x, y + 12);
-      ctx.stroke();
-
-      // Mesh Seat
-      ctx.fillStyle = '#2d2d2d';
-      ctx.beginPath();
-      ctx.roundRect(x - 10, y - 4, 20, 16, 4);
-      ctx.fill();
-      ctx.strokeStyle = '#1e1e1e';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Mesh High Backrest
-      ctx.fillStyle = '#1e1e1e';
-      if (dir === 'up') {
-        ctx.fillRect(x - 9, y + 8, 18, 5);
-      } else if (dir === 'down') {
-        ctx.fillRect(x - 9, y - 9, 18, 5);
-      } else if (dir === 'left') {
-        ctx.fillRect(x + 7, y - 7, 5, 14);
-      } else {
-        ctx.fillRect(x - 12, y - 7, 5, 14);
-      }
-      ctx.restore();
-    }
-
-    // GATHER LAPTOP
-    function drawGatherLaptop(x, y, angle) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(angle);
-
-      // Laptop Base
-      ctx.fillStyle = '#cbd5e1';
-      ctx.beginPath();
-      ctx.roundRect(-9, -7, 18, 14, 2);
-      ctx.fill();
-      ctx.strokeStyle = '#475569';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // Glowing Screen
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(-7, -5, 14, 10);
-
-      ctx.restore();
-    }
-
-    // VIP SUITE KING BED & DUAL DESK
-    function drawGatherKingBed(x, y) {
-      ctx.fillStyle = '#2e1065';
-      ctx.beginPath();
-      ctx.roundRect(x - 55, y - 25, 110, 75, 8);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Red Velvet Bedspread
-      ctx.fillStyle = '#be123c';
-      ctx.beginPath();
-      ctx.roundRect(x - 48, y - 5, 96, 50, 6);
-      ctx.fill();
-
-      // Dual Pillows
-      ctx.fillStyle = '#fef08a';
-      ctx.beginPath();
-      ctx.roundRect(x - 42, y - 20, 38, 12, 4);
-      ctx.roundRect(x + 4, y - 20, 38, 12, 4);
-      ctx.fill();
-    }
-
-    function drawGatherDualDesk(x, y) {
-      ctx.fillStyle = '#a66a38';
-      ctx.beginPath();
-      ctx.roundRect(x - 55, y - 10, 110, 24, 6);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.stroke();
-
-      ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(x - 35, y - 8, 24, 8);
-      ctx.fillStyle = '#f59e0b';
-      ctx.fillRect(x + 11, y - 8, 24, 8);
-    }
-
-    // WORK OFFICE PODS
-    function drawGatherWorkstations(x, y) {
-      [[-50, -35], [50, -35], [-50, 35], [50, 35]].forEach(([ox, oy]) => {
-        ctx.fillStyle = '#a66a38';
-        ctx.beginPath();
-        ctx.roundRect(x + ox - 35, y + oy - 15, 70, 30, 4);
-        ctx.fill();
-        ctx.strokeStyle = '#2a2a2a';
-        ctx.stroke();
-
-        ctx.fillStyle = '#0284c7';
-        ctx.fillRect(x + ox - 14, y + oy - 12, 28, 8);
-        drawSwivelChair(x + ox, y + oy + 18, 'up');
-      });
-    }
-
-    // PANTRY & SOTO
-    function drawGatherKitchen(x, y) {
-      ctx.fillStyle = '#78350f';
-      ctx.beginPath();
-      ctx.roundRect(x - 70, y - 50, 140, 25, 6);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.stroke();
-
-      ctx.font = 'bold 9px "Inter"';
-      ctx.fillStyle = '#fed7aa';
-      ctx.fillText('🍲 Panci Soto Sapi Pak Yono', x - 45, y - 34);
-      ctx.fillText('☕ Coffee Bar', x + 25, y - 34);
-
-      ctx.fillStyle = '#a66a38';
-      ctx.beginPath();
-      ctx.roundRect(x - 55, y + 10, 110, 35, 6);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.stroke();
-    }
-
-    // LOUNGE TV & SOFA
-    function drawGatherLounge(x, y) {
-      ctx.fillStyle = '#1e1e1e';
-      ctx.beginPath();
-      ctx.roundRect(x - 65, y - 60, 130, 16, 4);
-      ctx.fill();
-      ctx.strokeStyle = '#38bdf8';
-      ctx.stroke();
-
-      ctx.fillStyle = '#9f1239'; // Red velvet couch
-      ctx.beginPath();
-      ctx.roundRect(x - 70, y + 5, 140, 45, 12);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.stroke();
-    }
-
-    // STAFF BEDS
-    function drawGatherStaffBeds(x, y) {
-      [[-50, -40], [50, -40], [-50, 40], [50, 40]].forEach(([ox, oy]) => {
-        ctx.fillStyle = '#334155';
-        ctx.beginPath();
-        ctx.roundRect(x + ox - 35, y + oy - 22, 70, 44, 6);
-        ctx.fill();
-        ctx.fillStyle = '#4f46e5';
-        ctx.beginPath();
-        ctx.roundRect(x + ox - 30, y + oy - 8, 60, 26, 4);
-        ctx.fill();
-        ctx.fillStyle = '#f8fafc';
-        ctx.beginPath();
-        ctx.roundRect(x + ox - 20, y + oy - 18, 40, 8, 3);
-        ctx.fill();
-      });
-    }
-
-    // DRAW HABBO / GATHER.TOWN STYLIZED ISOMETRIC AVATARS (EXACT 1:1 TIKTOK STYLE)
-    function drawGatherAvatar(c) {
-      const x = Math.round(c.x);
-      const y = Math.round(c.y);
-      const bob = c.isWalking ? Math.sin(c.frame * 4) * 3 : 0;
-
-      ctx.save();
-
-      // 1. Soft Shadow
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-      ctx.beginPath();
-      ctx.ellipse(x, y + 16, 12, 5, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // 2. Body / Pants & Shirt
-      ctx.fillStyle = c.pantsColor;
-      ctx.fillRect(x - 6, y + 6 + bob, 12, 10); // Legs/Pants
-
-      ctx.fillStyle = c.shirtColor;
-      ctx.beginPath();
-      ctx.roundRect(x - 8, y - 4 + bob, 16, 12, 4);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.lineWidth = 1.2;
-      ctx.stroke();
-
-      // 3. Head & Face
-      ctx.fillStyle = c.skinColor;
-      ctx.beginPath();
-      ctx.arc(x, y - 12 + bob, 11, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.lineWidth = 1.2;
-      ctx.stroke();
-
-      // 4. Stylized Hair
-      ctx.fillStyle = c.hairColor;
-      ctx.beginPath();
-      ctx.arc(x, y - 14 + bob, 12, Math.PI * 0.85, Math.PI * 2.15);
-      ctx.fill();
-
-      // Special Accessories
-      if (c.hasCrown) {
-        ctx.font = '12px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('👑', x, y - 24 + bob);
-      }
-      if (c.hasElfEars) {
-        ctx.fillStyle = c.skinColor;
-        ctx.beginPath();
-        ctx.moveTo(x - 11, y - 12 + bob);
-        ctx.lineTo(x - 17, y - 15 + bob);
-        ctx.lineTo(x - 11, y - 9 + bob);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(x + 11, y - 12 + bob);
-        ctx.lineTo(x + 17, y - 15 + bob);
-        ctx.lineTo(x + 11, y - 9 + bob);
-        ctx.fill();
-        ctx.stroke();
-      }
-
-      // Eyes
-      ctx.fillStyle = '#1e1e1e';
-      ctx.beginPath();
-      ctx.arc(x - 4, y - 11 + bob, 1.8, 0, Math.PI * 2);
-      ctx.arc(x + 4, y - 11 + bob, 1.8, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Blushing Cheeks
-      ctx.fillStyle = '#fb7185';
-      ctx.beginPath();
-      ctx.arc(x - 5, y - 8 + bob, 1.5, 0, Math.PI * 2);
-      ctx.arc(x + 5, y - 8 + bob, 1.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // 5. EXACT TIKTOK FLOATING NAME PILL TAG BELOW CHARACTER
-      ctx.fillStyle = c.badgeBg;
-      ctx.beginPath();
-      ctx.roundRect(x - 38, y + 20 + bob, 76, 16, 8);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // Colored Status Dot
-      ctx.fillStyle = c.dotColor;
-      ctx.beginPath();
-      ctx.arc(x - 28, y + 28 + bob, 3, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Badge Text
-      ctx.font = 'bold 8px "Inter"';
-      ctx.fillStyle = c.badgeText;
-      ctx.textAlign = 'left';
-      ctx.fillText(c.badge, x - 22, y + 31 + bob);
-
-      // 6. EXACT TIKTOK WHITE FLOATING SPEECH BUBBLE
-      if (c.bubble && c.bubbleTimer > 0) {
-        drawTikTokSpeechBubble(x, y - 38 + bob, c.bubble);
-      }
-
-      ctx.restore();
-    }
-
-    // DRAW EXACT TIKTOK WHITE ROUNDED SPEECH BUBBLE (WITH STATUS ICON)
-    function drawTikTokSpeechBubble(x, y, text) {
-      ctx.font = '500 10px "Inter"';
-      const textWidth = ctx.measureText(text).width;
-      const bw = textWidth + 24;
-      const bh = 24;
-
-      // Drop Shadow
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-      ctx.beginPath();
-      ctx.roundRect(x - bw / 2 + 2, y - bh / 2 + 2, bw, bh, 6);
-      ctx.fill();
-
-      // White Bubble Background
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.roundRect(x - bw / 2, y - bh / 2, bw, bh, 6);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.lineWidth = 1.2;
-      ctx.stroke();
-
-      // Little Pointer Tail
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(x - 4, y + bh / 2);
-      ctx.lineTo(x + 4, y + bh / 2);
-      ctx.lineTo(x, y + bh / 2 + 5);
-      ctx.fill();
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.beginPath();
-      ctx.moveTo(x - 4, y + bh / 2);
-      ctx.lineTo(x, y + bh / 2 + 5);
-      ctx.lineTo(x + 4, y + bh / 2);
-      ctx.stroke();
-
-      // Black Text
-      ctx.fillStyle = '#0f172a';
-      ctx.textAlign = 'center';
-      ctx.fillText(text, x, y + 3.5);
-    }
-
-    // TOUCH / CLICK INTERACTION
-    canvas.addEventListener('click', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      const clickX = ((e.clientX - rect.left) - (canvas.width / dpr / 2 + cameraView.x)) / cameraView.scale;
-      const clickY = ((e.clientY - rect.top) - (canvas.height / dpr / 2 + cameraView.y)) / cameraView.scale;
-
-      let found = null;
-      characters.forEach(c => {
-        const dist = Math.hypot(c.x - clickX, c.y - clickY);
-        if (dist < 32) {
-          found = c;
-        }
-      });
-
-      if (found) {
-        selectedChar = found;
-        openCard(found);
-      } else {
-        closeCard();
-      }
-    });
-
     function openCard(c) {
+      selectedChar = c;
       const card = document.getElementById('charCard');
       document.getElementById('cardName').innerText = c.name;
       document.getElementById('cardAvatar').innerText = c.avatar;
@@ -1058,208 +1045,29 @@
       closeCard();
     }
 
-    // ACTIONS WORKFLOW (EXACT TIKTOK "APPROVAL UNTUK DEPLOY" WORKFLOW)
-    function triggerMeetingBriefing() {
-      navRoom('meeting');
+    // RESIZE EVENT
+    window.addEventListener('resize', () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
 
-      characters[0].targetX = -125;
-      characters[0].targetY = -10;
-      characters[0].state = 'meeting';
-      characters[0].bubble = 'Briefing target & evaluasi soto hari ini! 👑';
-      characters[0].bubbleTimer = 260;
+    // RENDER LOOP (60 FPS FLUID 3D)
+    function animate() {
+      requestAnimationFrame(animate);
 
-      characters[1].targetX = 125;
-      characters[1].targetY = -10;
-      characters[1].state = 'meeting';
-      characters[1].bubble = 'Rapat tim dimulai, semua siap lapor! 🌸';
-      characters[1].bubbleTimer = 260;
+      characters.forEach(c => {
+        if (c.bubbleTimer > 0) c.bubbleTimer--;
+      });
 
-      characters[2].targetX = -45;
-      characters[2].targetY = -65;
-      characters[2].state = 'meeting';
-      characters[2].bubble = 'Tech: VPS 100% aman tanpa bug 💻';
-      characters[2].bubbleTimer = 260;
-
-      characters[3].targetX = 45;
-      characters[3].targetY = -65;
-      characters[3].state = 'meeting';
-      characters[3].bubble = 'Bisnis: Soto Pak Yono laris manis 🍲';
-      characters[3].bubbleTimer = 260;
-
-      characters[4].targetX = -45;
-      characters[4].targetY = 45;
-      characters[4].state = 'meeting';
-      characters[4].bubble = 'Kreatif: Konten reels baru siap tayang 🎨';
-      characters[4].bubbleTimer = 260;
-
-      characters[5].targetX = 45;
-      characters[5].targetY = 45;
-      characters[5].state = 'meeting';
-      characters[5].bubble = 'Memory: Obsidian synced & tercatat 📖';
-      characters[5].bubbleTimer = 260;
-
-      showToast('📊 Seluruh tim berkumpul di Meja Rapat Utama!');
+      controls.update();
+      renderer.render(scene, camera);
+      updateOverlayLabels();
     }
 
-    function triggerApprovalDeploy() {
-      triggerMeetingBriefing();
-
-      setTimeout(() => {
-        characters[0].bubble = '🚀 APPROVAL UNTUK DEPLOY DITERBITKAN!';
-        characters[0].bubbleTimer = 280;
-
-        characters[1].bubble = '👑 Eksekusi deploy seluruh sistem!';
-        characters[1].bubbleTimer = 280;
-
-        characters[2].bubble = '⚡ Deploying code... 100% OK!';
-        characters[2].bubbleTimer = 280;
-
-        characters[3].bubble = '📈 Sistem kasir & omzet live!';
-        characters[3].bubbleTimer = 280;
-
-        characters[4].bubble = '🎨 Video promosi terbit!';
-        characters[4].bubbleTimer = 280;
-
-        characters[5].bubble = '📖 Changelog tersimpan di Obsidian!';
-        characters[5].bubbleTimer = 280;
-
-        showToast('🚀 APPROVAL UNTUK DEPLOY DISETUJUI OWNER TY!');
-      }, 700);
-    }
-
-    function triggerWorkAll() {
-      navRoom('office');
-
-      characters[0].targetX = -300;
-      characters[0].targetY = -130;
-      characters[0].state = 'vip_office';
-      characters[0].bubble = 'Pantau kerjaan dari meja VIP 👑';
-
-      characters[1].targetX = -260;
-      characters[1].targetY = -130;
-      characters[1].state = 'vip_office';
-      characters[1].bubble = 'Semangat semuanya demi Ty! 🌸';
-
-      characters[2].targetX = 230;
-      characters[2].targetY = -225;
-      characters[2].state = 'work_pc';
-      characters[2].bubble = 'Fokus koding di PC! 💻';
-
-      characters[3].targetX = 330;
-      characters[3].targetY = -225;
-      characters[3].state = 'work_pc';
-      characters[3].bubble = 'Rekap omzet soto di PC! 🍲';
-
-      characters[4].targetX = 230;
-      characters[4].targetY = -155;
-      characters[4].state = 'work_pc';
-      characters[4].bubble = 'Bikin banner visual di PC! 🎨';
-
-      characters[5].targetX = 330;
-      characters[5].targetY = -155;
-      characters[5].state = 'work_pc';
-      characters[5].bubble = 'Catat data di Obsidian PC! 📚';
-
-      showToast('💻 Seluruh staf fokus bekerja di meja PC masing-masing!');
-    }
-
-    function triggerCoupleBed() {
-      navRoom('vip');
-
-      characters[0].targetX = -300;
-      characters[0].targetY = -205;
-      characters[0].state = 'cuddle_bed';
-      characters[0].bubble = 'Peluk istriku tercinta... ❤️💤';
-      characters[0].bubbleTimer = 260;
-
-      characters[1].targetX = -260;
-      characters[1].targetY = -205;
-      characters[1].state = 'cuddle_bed';
-      characters[1].bubble = 'Nyaman banget dipeluk Ty... 🥰💕';
-      characters[1].bubbleTimer = 260;
-
-      showToast('💑 Ty & Eliie tidur pelukan mesra di kasur King Size VIP!');
-    }
-
-    function triggerStaffSleepRooms() {
-      navRoom('staffbed');
-
-      triggerCoupleBed();
-
-      characters[2].targetX = 230;
-      characters[2].targetY = 170;
-      characters[2].state = 'sleeping';
-      characters[2].bubble = 'Bobo di kamar Luna 😴';
-
-      characters[3].targetX = 330;
-      characters[3].targetY = 170;
-      characters[3].state = 'sleeping';
-      characters[3].bubble = 'Bobo di kamar Nana 💤';
-
-      characters[4].targetX = 230;
-      characters[4].targetY = 250;
-      characters[4].state = 'sleeping';
-      characters[4].bubble = 'Bobo di kamar Mimi 😴';
-
-      characters[5].targetX = 330;
-      characters[5].targetY = 250;
-      characters[5].state = 'sleeping';
-      characters[5].bubble = 'Bobo di kamar Yuki 💤';
-
-      showToast('🛏️ Seluruh staf masuk tidur di 4 kamar privat masing-masing!');
-    }
-
-    function triggerKitchenCoffee() {
-      navRoom('kitchen');
-
-      characters[2].targetX = -310;
-      characters[2].targetY = 220;
-      characters[2].bubble = 'Ngopi hangat di dapur ☕';
-
-      characters[3].targetX = -250;
-      characters[3].targetY = 220;
-      characters[3].bubble = 'Makan Soto Pak Yono 🍲';
-
-      characters[4].targetX = -310;
-      characters[4].targetY = 170;
-      characters[4].bubble = 'Teh manis hangat 🍵';
-
-      characters[5].targetX = -250;
-      characters[5].targetY = 170;
-      characters[5].bubble = 'Snack soto lezat 😋';
-
-      showToast('☕ Staf kumpul di Pantry & Meja Soto Pak Yono!');
-    }
-
-    function triggerLoungeTV() {
-      navRoom('lounge');
-
-      characters[2].targetX = -45;
-      characters[2].targetY = 220;
-      characters[2].bubble = 'Nonton TV bareng 📺';
-
-      characters[4].targetX = -15;
-      characters[4].targetY = 220;
-      characters[4].bubble = 'Duduk santai di sofa merah 🛋️';
-
-      characters[3].targetX = 15;
-      characters[3].targetY = 220;
-      characters[3].bubble = 'Santai rileks ✨';
-
-      characters[5].targetX = 45;
-      characters[5].targetY = 220;
-      characters[5].bubble = 'Teh hangat di lounge 🍵';
-
-      showToast('🛋️ Staf duduk santai di sofa empuk Lounge TV!');
-    }
-
-    // MAIN GAME LOOP
-    function gameLoop() {
-      updateAI();
-      drawOffice();
-      requestAnimationFrame(gameLoop);
-    }
-    requestAnimationFrame(gameLoop);
+    animate();
   </script>
 </body>
 </html>
