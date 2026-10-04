@@ -434,10 +434,10 @@
       penthouse.add(pillar);
     });
 
-    // D. TEMBOK PEMISAH RUANGAN BERATURAN & PRESISI (CLEAN ARCHITECTURAL ROOMS)
+    // D. TEMBOK PEMISAH RUANGAN NYAMBUNG UTUH & PRESISI (SEAMLESS ENCLOSED ROOMS)
     function createPartitionWall(w, h, d, x, y, z) {
       const wallGroup = new THREE.Group();
-      // Main Wall
+      // Main Wall Slab
       const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallPartitionMat);
       wall.position.set(x, y, z);
       wall.castShadow = true;
@@ -456,25 +456,44 @@
       return wallGroup;
     }
 
+    // Tiang Sudut Pertemuan Dinding (Seamless Corner Columns)
+    function createCornerPillar(x, z) {
+      const col = new THREE.Mesh(new THREE.BoxGeometry(0.6, 6.5, 0.6), woodDarkMat);
+      col.position.set(x, 3.25, z);
+      return col;
+    }
+
     // 1. RUANG VIP EXECUTIVE SUITE (KIRI BELAKANG: X -23 to -9.5, Z -19 to -2)
-    penthouse.add(createPartitionWall(0.4, 6.5, 17, -9.5, 3.25, -10.5)); // Dinding Pembatas Timur
-    penthouse.add(createPartitionWall(8.0, 6.5, 0.4, -19.0, 3.25, -2));   // Dinding Pembatas Selatan (Bagian 1)
-    penthouse.add(createPartitionWall(3.5, 6.5, 0.4, -11.25, 3.25, -2));  // Dinding Pembatas Selatan (Bagian 2 - sisakan pintu)
+    penthouse.add(createPartitionWall(0.4, 6.5, 17.4, -9.5, 3.25, -10.5)); // Dinding Timur
+    penthouse.add(createPartitionWall(7.5, 6.5, 0.4, -19.25, 3.25, -2));   // Dinding Selatan Sisi Kiri
+    penthouse.add(createPartitionWall(4.0, 6.5, 0.4, -11.5, 3.25, -2));    // Dinding Selatan Sisi Kanan
+    penthouse.add(createPartitionWall(2.4, 1.5, 0.4, -14.5, 5.75, -2));    // Balok Tembok Atas Pintu (Lintel)
+    penthouse.add(createCornerPillar(-9.5, -2));
+    penthouse.add(createCornerPillar(-9.5, -19));
 
     // 2. RUANG WORK OFFICE STAF (KANAN BELAKANG: X 9.5 to 23, Z -19 to -2)
-    penthouse.add(createPartitionWall(0.4, 6.5, 17, 9.5, 3.25, -10.5));  // Dinding Pembatas Barat
-    penthouse.add(createPartitionWall(8.0, 6.5, 0.4, 19.0, 3.25, -2));    // Dinding Pembatas Selatan (Bagian 1)
-    penthouse.add(createPartitionWall(3.5, 6.5, 0.4, 11.25, 3.25, -2));   // Dinding Pembatas Selatan (Bagian 2 - sisakan pintu)
+    penthouse.add(createPartitionWall(0.4, 6.5, 17.4, 9.5, 3.25, -10.5));  // Dinding Barat
+    penthouse.add(createPartitionWall(7.5, 6.5, 0.4, 19.25, 3.25, -2));    // Dinding Selatan Sisi Kanan
+    penthouse.add(createPartitionWall(4.0, 6.5, 0.4, 11.5, 3.25, -2));     // Dinding Selatan Sisi Kiri
+    penthouse.add(createPartitionWall(2.4, 1.5, 0.4, 14.5, 5.75, -2));     // Balok Tembok Atas Pintu (Lintel)
+    penthouse.add(createCornerPillar(9.5, -2));
+    penthouse.add(createCornerPillar(9.5, -19));
 
     // 3. RUANG PANTRY & SOTO PAK YONO (KIRI DEPAN: X -23 to -9.5, Z 2 to 19)
-    penthouse.add(createPartitionWall(0.4, 6.5, 17, -9.5, 3.25, 10.5));  // Dinding Pembatas Timur
-    penthouse.add(createPartitionWall(8.0, 6.5, 0.4, -19.0, 3.25, 2));    // Dinding Pembatas Utara (Bagian 1)
-    penthouse.add(createPartitionWall(3.5, 6.5, 0.4, -11.25, 3.25, 2));   // Dinding Pembatas Utara (Bagian 2 - sisakan pintu)
+    penthouse.add(createPartitionWall(0.4, 6.5, 17.4, -9.5, 3.25, 10.5));  // Dinding Timur
+    penthouse.add(createPartitionWall(7.5, 6.5, 0.4, -19.25, 3.25, 2));    // Dinding Utara Sisi Kiri
+    penthouse.add(createPartitionWall(4.0, 6.5, 0.4, -11.5, 3.25, 2));     // Dinding Utara Sisi Kanan
+    penthouse.add(createPartitionWall(2.4, 1.5, 0.4, -14.5, 5.75, 2));     // Balok Tembok Atas Pintu (Lintel)
+    penthouse.add(createCornerPillar(-9.5, 2));
+    penthouse.add(createCornerPillar(-9.5, 19));
 
     // 4. RUANG PANORAMA LOUNGE TV (KANAN DEPAN: X 9.5 to 23, Z 2 to 19)
-    penthouse.add(createPartitionWall(0.4, 6.5, 17, 9.5, 3.25, 10.5));   // Dinding Pembatas Barat
-    penthouse.add(createPartitionWall(8.0, 6.5, 0.4, 19.0, 3.25, 2));     // Dinding Pembatas Utara (Bagian 1)
-    penthouse.add(createPartitionWall(3.5, 6.5, 0.4, 11.25, 3.25, 2));    // Dinding Pembatas Utara (Bagian 2 - sisakan pintu)
+    penthouse.add(createPartitionWall(0.4, 6.5, 17.4, 9.5, 3.25, 10.5));   // Dinding Barat
+    penthouse.add(createPartitionWall(7.5, 6.5, 0.4, 19.25, 3.25, 2));     // Dinding Utara Sisi Kanan
+    penthouse.add(createPartitionWall(4.0, 6.5, 0.4, 11.5, 3.25, 2));      // Dinding Utara Sisi Kiri
+    penthouse.add(createPartitionWall(2.4, 1.5, 0.4, 14.5, 5.75, 2));      // Balok Tembok Atas Pintu (Lintel)
+    penthouse.add(createCornerPillar(9.5, 2));
+    penthouse.add(createCornerPillar(9.5, 19));
 
     // E. PINTU MASUK & KELUAR LENGKAP (ENTRANCE, EXIT & INTERIOR ROOM DOORS)
     // 1. PINTU MASUK UTAMA (MAIN LOBBY ENTRANCE - FRONT CENTER Z = 19)

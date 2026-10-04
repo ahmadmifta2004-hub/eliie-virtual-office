@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v17-precision-architecture';
+const CACHE_NAME = 'eliie-office-v18-seamless-walls';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
