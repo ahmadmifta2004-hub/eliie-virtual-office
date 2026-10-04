@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v22-realistic-furniture-architecture';
+const CACHE_NAME = 'eliie-office-v23-chibi-kpop-idols';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

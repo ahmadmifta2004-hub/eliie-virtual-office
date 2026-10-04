@@ -1078,45 +1078,47 @@
 
     penthouse.add(loungeGroup);
 
-    // 4. REALISTIC HUMAN CHARACTERS (FULL ANATOMY, FORMAL OFFICE SUITS & SKIRTS)
+    // 4. CHIBI K-POP IDOL CHARACTERS (ADORABLE EXPRESSIVE PROPORTIONS & STYLISH OUTFITS)
     const characters = [
       {
         id: 'ty',
         name: 'Alberto Timoty (Ty)',
-        badge: '👑 Ty (Owner)',
+        badge: '👑 Ty (Owner & Idol Leader)',
         dotColor: '#3b82f6',
         avatar: '👑',
         isOwner: true,
         gender: 'male',
         skinColor: 0xfed7aa,
         hairColor: 0x1e293b,
-        suitColor: 0x1e3a8a, // Navy executive suit blazer
-        shirtColor: 0xffffff, // White formal dress shirt
-        tieColor: 0xdc2626,  // Red executive tie
-        bottomColor: 0x1e3a8a, // Tailored suit trousers
+        eyeColor: 0x0f172a, // Deep charismatic dark eyes
+        suitColor: 0x1e3a8a, // Trendy deep blue K-pop idol stage blazer
+        shirtColor: 0xffffff,
+        tieColor: 0xdc2626,  // Red idol tie
+        bottomColor: 0x1e293b, // Tailored stage slacks
         bottomType: 'pants',
         x: -8.0,
         z: 0,
         rotY: Math.PI / 2,
         state: 'meeting',
-        statusText: 'Approval untuk deploy & pimpinan tim.',
-        bubble: '🚀 Approval deploy penthouse ready!',
+        statusText: 'Approval untuk deploy & leader tim.',
+        bubble: '🚀 Approval deploy K-pop Penthouse siap!',
         bubbleTimer: 240
       },
       {
         id: 'eliie',
         name: 'Eliie Valentine',
-        badge: '🌸 Eliie Chief AI',
+        badge: '🌸 Eliie Center Idol',
         dotColor: '#f59e0b',
         avatar: '🌸',
         isBoss: true,
         gender: 'female',
         skinColor: 0xfed7aa,
-        hairColor: 0xfde047, // Golden blonde flowing hair
-        suitColor: 0xfef08a, // Pastel cream tailored office blouse
+        hairColor: 0xfde047, // Golden blonde glowing idol hair
+        eyeColor: 0x0284c7, // Sparkling luminous sapphire eyes
+        suitColor: 0xfef08a, // Pastel cream & gold idol stage top
         shirtColor: 0xffffff,
         tieColor: 0xf59e0b,
-        bottomColor: 0x1e293b, // Formal office pencil skirt
+        bottomColor: 0xfb7185, // Cute layered idol stage skirt
         bottomType: 'skirt',
         hasCrown: true,
         hasElfEars: true,
@@ -1124,85 +1126,89 @@
         z: 0,
         rotY: -Math.PI / 2,
         state: 'meeting',
-        statusText: 'Mendampingi Ty & memimpin seluruh sub-agen.',
-        bubble: 'Siap eksekusi deploy penthouse! 🌸',
+        statusText: 'Mendampingi Ty & center visual idol.',
+        bubble: 'Siap tampil & deploy, Ty tersayang! 🌸✨',
         bubbleTimer: 240
       },
       {
         id: 'luna',
         name: 'Luna',
-        badge: '💻 Luna Tech-01',
+        badge: '💻 Luna Cyber-Idol',
         dotColor: '#0284c7',
         avatar: '💻',
         gender: 'female',
         skinColor: 0xfed7aa,
-        hairColor: 0x0284c7,
-        suitColor: 0x0369a1, // Techie formal office blazer
+        hairColor: 0x0284c7, // Neon electric blue high ponytail
+        eyeColor: 0x06b6d4, // Glowing cyan techie eyes
+        suitColor: 0x0369a1, // Cyberpunk cropped stage jacket
         shirtColor: 0xf0fdf4,
-        bottomColor: 0x0f172a, // Office trousers
+        bottomColor: 0x0f172a, // Sleek stage shorts
         bottomType: 'pants',
         x: -2.2,
         z: -4.2,
         rotY: 0,
         state: 'meeting',
         statusText: 'Optimasi server VPS & coding backend.',
-        bubble: '⚡ VPS 100% aman!',
+        bubble: '⚡ VPS 100% aman & lancar!',
         bubbleTimer: 240
       },
       {
         id: 'nana',
         name: 'Nana',
-        badge: '🍲 Nana Biz-02',
+        badge: '🍲 Nana Cheerful Idol',
         dotColor: '#ea580c',
         avatar: '🍲',
         gender: 'female',
         skinColor: 0xfed7aa,
-        hairColor: 0xc2410c,
-        suitColor: 0xea580c, // Business blazer
+        hairColor: 0xc2410c, // Warm ginger-orange textured bob
+        eyeColor: 0xd97706, // Warm amber sparkling eyes
+        suitColor: 0xea580c, // Energetic cropped idol blazer
         shirtColor: 0xffffff,
-        bottomColor: 0x431407, // Formal pencil skirt
+        bottomColor: 0x7c2d12, // Pleated idol skirt
         bottomType: 'skirt',
         x: 2.2,
         z: -4.2,
         rotY: 0,
         state: 'meeting',
         statusText: 'Rekap penjualan & omzet Soto Pak Yono.',
-        bubble: '📈 Omzet soto live!',
+        bubble: '📈 Omzet soto meroket, Bos Ty!',
         bubbleTimer: 240
       },
       {
         id: 'mimi',
         name: 'Mimi',
-        badge: '🎨 Mimi Creative-03',
+        badge: '🎨 Mimi Cutie Idol',
         dotColor: '#ec4899',
         avatar: '🎨',
         gender: 'female',
         skinColor: 0xfed7aa,
-        hairColor: 0xdb2777,
-        suitColor: 0xf43f5e, // Chic creative office suit
+        hairColor: 0xdb2777, // Vibrant hot-pink idol twin-tails
+        eyeColor: 0xf43f5e, // Sparkling pink ruby eyes
+        suitColor: 0xf43f5e, // Chic idol stage blouse with ribbons
         shirtColor: 0xffffff,
-        bottomColor: 0x881337, // Designer office skirt
+        bottomColor: 0xbe123c, // Ruffled idol skirt
         bottomType: 'skirt',
         x: -2.2,
         z: 4.2,
         rotY: Math.PI,
         state: 'meeting',
         statusText: 'Rancang visual banner & konten TikTok.',
-        bubble: '🎨 Desain siap tayang!',
+        bubble: '🎨 Desain & reels viral FYP!',
         bubbleTimer: 240
       },
       {
         id: 'yuki',
         name: 'Yuki',
-        badge: '📚 Yuki Memory-04',
+        badge: '📚 Yuki Pure Idol',
         dotColor: '#8b5cf6',
         avatar: '📚',
         gender: 'female',
         skinColor: 0xfed7aa,
-        hairColor: 0x7c3aed,
-        suitColor: 0x6d28d9, // Elegant formal blouse & cardigan
+        hairColor: 0x7c3aed, // Elegant lavender-purple flowing waves
+        eyeColor: 0x8b5cf6, // Deep amethyst violet eyes
+        suitColor: 0x6d28d9, // Classy idol stage cardigan & vest
         shirtColor: 0xffffff,
-        bottomColor: 0x2e1065, // Tailored office trousers
+        bottomColor: 0x3b0764, // Tailored idol trousers
         bottomType: 'pants',
         x: 2.2,
         z: 4.2,
@@ -1216,208 +1222,242 @@
 
     const characterMeshes = [];
 
-    // REALISTIC HUMAN BODY GENERATOR (3D FACE, EYES, NOSE, HANDS, FORMAL WEAR, SHOES)
-    function buildRealisticHuman(c) {
+    // CHIBI K-POP IDOL 3D GENERATOR (CUTE PROPORTIONS, BIG SPARKLING EYES, BLUSH, TRENDY HAIR & STAGE OUTFITS)
+    function buildChibiKpopIdol(c) {
       const charGroup = new THREE.Group();
 
-      const skinMat = new THREE.MeshStandardMaterial({ color: c.skinColor, roughness: 0.55 });
-      const hairMat = new THREE.MeshStandardMaterial({ color: c.hairColor, roughness: 0.45 });
-      const suitMat = new THREE.MeshStandardMaterial({ color: c.suitColor, roughness: 0.6 });
-      const shirtMat = new THREE.MeshStandardMaterial({ color: c.shirtColor, roughness: 0.6 });
-      const bottomMat = new THREE.MeshStandardMaterial({ color: c.bottomColor, roughness: 0.65 });
-      const shoeMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3, metalness: 0.4 }); // Polished leather shoes
+      const skinMat = new THREE.MeshStandardMaterial({ color: c.skinColor, roughness: 0.5 });
+      const hairMat = new THREE.MeshStandardMaterial({ color: c.hairColor, roughness: 0.4 });
+      const suitMat = new THREE.MeshStandardMaterial({ color: c.suitColor, roughness: 0.55 });
+      const shirtMat = new THREE.MeshStandardMaterial({ color: c.shirtColor, roughness: 0.55 });
+      const bottomMat = new THREE.MeshStandardMaterial({ color: c.bottomColor, roughness: 0.6 });
+      const shoeMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 }); // Stylish white K-pop sneakers / stage shoes
       const eyeWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const eyePupilMat = new THREE.MeshBasicMaterial({ color: 0x0284c7 });
-      const lipMat = new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.5 });
+      const eyeIrisMat = new THREE.MeshBasicMaterial({ color: c.eyeColor || 0x0284c7 });
+      const eyeCatchMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const blushMat = new THREE.MeshBasicMaterial({ color: 0xfb7185 }); // Rosy blushing cheeks
       const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 });
 
-      // 1. HEAD & DETAILED HUMAN FACE
+      // 1. ADORABLE CHIBI HEAD (LARGE, ROUND, SWEET CHIBI PROPORTIONS)
       const headGroup = new THREE.Group();
-      headGroup.position.y = 3.9;
+      headGroup.position.y = 3.65;
 
-      // Cranium
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 24), skinMat);
-      head.scale.set(1.0, 1.15, 1.05);
+      // Soft Chibi Head Sphere
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.78, 24, 24), skinMat);
+      head.scale.set(1.05, 0.98, 1.0);
       head.castShadow = true;
       headGroup.add(head);
 
-      // Jaw & Chin
-      const chin = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.16, 0.35, 16), skinMat);
-      chin.position.set(0, -0.32, 0.15);
-      headGroup.add(chin);
+      // Cute Rounded Chibi Cheeks
+      const cheeks = new THREE.Mesh(new THREE.SphereGeometry(0.72, 16, 16), skinMat);
+      cheeks.position.set(0, -0.15, 0.15);
+      cheeks.scale.set(1.12, 0.7, 0.95);
+      headGroup.add(cheeks);
 
-      // 3D Realistic Eyes
-      [[-0.18, 0.05, 0.48], [0.18, 0.05, 0.48]].forEach(([ex, ey, ez]) => {
-        // Eye Sclera (White)
-        const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), eyeWhiteMat);
-        eyeWhite.position.set(ex, ey, ez);
+      // 2. LARGE SPARKLING ANIME / K-POP IDOL EYES
+      [[-0.28, 0.05], [0.28, 0.05]].forEach(([ex, ey]) => {
+        // Eye Base (Oval White)
+        const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 14), eyeWhiteMat);
+        eyeWhite.position.set(ex, ey, 0.68);
+        eyeWhite.scale.set(0.9, 1.25, 0.3);
         headGroup.add(eyeWhite);
 
-        // Pupil / Iris (Blue/Dark)
-        const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 8), eyePupilMat);
-        pupil.position.set(ex, ey, ez + 0.05);
-        headGroup.add(pupil);
+        // Colored Sparkling Iris
+        const iris = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), eyeIrisMat);
+        iris.position.set(ex, ey + 0.02, 0.74);
+        iris.scale.set(0.85, 1.15, 0.2);
+        headGroup.add(iris);
 
-        // Eyebrows
-        const brow = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.03, 0.04), hairMat);
-        brow.position.set(ex, ey + 0.12, ez - 0.02);
-        brow.rotation.z = ex > 0 ? -0.1 : 0.1;
-        headGroup.add(brow);
+        // Double Catchlight Highlights (Big & Small Stars)
+        const catch1 = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 8), eyeCatchMat);
+        catch1.position.set(ex - 0.035, ey + 0.07, 0.77);
+        headGroup.add(catch1);
+
+        const catch2 = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), eyeCatchMat);
+        catch2.position.set(ex + 0.035, ey - 0.04, 0.77);
+        headGroup.add(catch2);
+
+        // Eyelashes / Upper Lid Eyeliner
+        const lash = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.04, 0.08), new THREE.MeshBasicMaterial({ color: 0x0f172a }));
+        lash.position.set(ex, ey + 0.16, 0.71);
+        lash.rotation.z = ex > 0 ? -0.12 : 0.12;
+        headGroup.add(lash);
+
+        // Cute Rosy Blushing Cheek
+        const blush = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), blushMat);
+        blush.position.set(ex, ey - 0.22, 0.65);
+        blush.scale.set(1.2, 0.6, 0.2);
+        headGroup.add(blush);
       });
 
-      // 3D Human Nose
-      const nose = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.18, 8), skinMat);
-      nose.position.set(0, -0.04, 0.56);
-      nose.rotation.x = Math.PI / 2.2;
+      // Tiny Cute Anime Nose
+      const nose = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), skinMat);
+      nose.position.set(0, -0.05, 0.82);
       headGroup.add(nose);
 
-      // Lips / Mouth
-      const lips = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.04, 0.06), lipMat);
-      lips.position.set(0, -0.22, 0.5);
-      headGroup.add(lips);
+      // Sweet Smiling Anime Mouth
+      const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.04, 0.06), new THREE.MeshBasicMaterial({ color: 0xf43f5e }));
+      mouth.position.set(0, -0.22, 0.76);
+      headGroup.add(mouth);
 
-      // Ears
+      // 3. EARS & SPECIAL ACCESSORIES
       if (c.hasElfEars) {
-        [[-0.52, 0.08, 0, -0.4], [0.52, 0.08, 0, 0.4]].forEach(([ex, ey, ez, rz]) => {
-          const ear = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.45, 8), skinMat);
+        [[-0.82, 0.05, 0, -0.45], [0.82, 0.05, 0, 0.45]].forEach(([ex, ey, ez, rz]) => {
+          const ear = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.65, 8), skinMat);
           ear.position.set(ex, ey, ez);
           ear.rotation.z = rz;
+          ear.rotation.x = -0.2;
           headGroup.add(ear);
         });
       } else {
-        [[-0.52, 0.05, 0], [0.52, 0.05, 0]].forEach(([ex, ey, ez]) => {
-          const ear = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 12), skinMat);
+        [[-0.82, 0, 0], [0.82, 0, 0]].forEach(([ex, ey, ez]) => {
+          const ear = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), skinMat);
           ear.position.set(ex, ey, ez);
-          ear.scale.set(0.4, 1.0, 0.7);
+          ear.scale.set(0.5, 1.0, 0.8);
           headGroup.add(ear);
         });
       }
 
-      // Styled 3D Hair
-      const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.54, 20, 20, 0, Math.PI * 2, 0, Math.PI / 1.6), hairMat);
-      hairCap.scale.set(1.02, 1.15, 1.08);
-      headGroup.add(hairCap);
+      // 4. VOLUMINOUS 3D STYLED K-POP IDOL HAIR
+      const hairGroup = new THREE.Group();
+
+      // Main Hair Shell
+      const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.85, 20, 20, 0, Math.PI * 2, 0, Math.PI / 1.55), hairMat);
+      hairCap.scale.set(1.06, 1.08, 1.08);
+      hairGroup.add(hairCap);
 
       if (c.id === 'ty') {
-        const fringe = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.25, 0.4), hairMat);
-        fringe.position.set(0.1, 0.35, 0.35);
-        fringe.rotation.z = -0.15;
-        headGroup.add(fringe);
+        // Ty: Charismatic K-pop boyband center cut with stylish layered side bangs
+        const fringeL = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.35, 0.4), hairMat);
+        fringeL.position.set(-0.25, 0.45, 0.6);
+        fringeL.rotation.z = 0.2;
+        hairGroup.add(fringeL);
+
+        const fringeR = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.4, 0.4), hairMat);
+        fringeR.position.set(0.3, 0.48, 0.58);
+        fringeR.rotation.z = -0.25;
+        hairGroup.add(fringeR);
       } else if (c.id === 'eliie') {
-        // Flowing blonde locks & Tiara
-        [[-0.45, -0.8, -0.1], [0.45, -0.8, -0.1]].forEach(([lx, ly, lz]) => {
-          const lock = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.08, 1.8, 12), hairMat);
-          lock.position.set(lx, ly, lz);
-          headGroup.add(lock);
+        // Eliie: Bouncing golden idol twin-tails & Tiara
+        const bangs = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.35, 0.4), hairMat);
+        bangs.position.set(0, 0.48, 0.62);
+        hairGroup.add(bangs);
+
+        [[-0.85, 0.1, -0.2, 0.4], [0.85, 0.1, -0.2, -0.4]].forEach(([tx, ty, tz, rz]) => {
+          const tail = new THREE.Mesh(new THREE.ConeGeometry(0.32, 1.8, 12), hairMat);
+          tail.position.set(tx, ty - 0.4, tz);
+          tail.rotation.z = rz;
+          tail.rotation.x = -0.15;
+          hairGroup.add(tail);
+
+          // Star Hair Clip
+          const clip = new THREE.Mesh(new THREE.DodecahedronGeometry(0.18), goldMat);
+          clip.position.set(tx * 0.9, ty + 0.3, tz + 0.2);
+          hairGroup.add(clip);
         });
-        const tiara = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.05, 8, 20, Math.PI), goldMat);
-        tiara.position.set(0, 0.42, 0.2);
-        tiara.rotation.x = -Math.PI / 3;
-        headGroup.add(tiara);
+
+        // Golden Idol Tiara
+        const tiara = new THREE.Mesh(new THREE.TorusGeometry(0.48, 0.06, 8, 20, Math.PI), goldMat);
+        tiara.position.set(0, 0.68, 0.3);
+        tiara.rotation.x = -Math.PI / 3.2;
+        hairGroup.add(tiara);
+      } else if (c.id === 'luna') {
+        // Luna: High techie ponytail & Cyber headphones
+        const pony = new THREE.Mesh(new THREE.ConeGeometry(0.35, 1.6, 12), hairMat);
+        pony.position.set(0, 0.2, -0.9);
+        pony.rotation.x = -0.7;
+        hairGroup.add(pony);
+
+        const headphones = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.08, 8, 24, Math.PI), new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.8 }));
+        headphones.position.set(0, 0.15, 0);
+        headphones.rotation.z = Math.PI / 2;
+        hairGroup.add(headphones);
+      } else if (c.id === 'mimi') {
+        // Mimi: Hot-pink twin-tails with bows
+        [[-0.85, 0.2, -0.2, 0.5], [0.85, 0.2, -0.2, -0.5]].forEach(([tx, ty, tz, rz]) => {
+          const tail = new THREE.Mesh(new THREE.ConeGeometry(0.32, 1.5, 12), hairMat);
+          tail.position.set(tx, ty - 0.3, tz);
+          tail.rotation.z = rz;
+          hairGroup.add(tail);
+
+          const bow = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.2, 0.2), new THREE.MeshStandardMaterial({ color: 0xf43f5e }));
+          bow.position.set(tx * 0.85, ty + 0.25, tz + 0.2);
+          hairGroup.add(bow);
+        });
+      } else if (c.id === 'nana') {
+        // Nana: Textured bob with side clip
+        const sideBangs = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.9, 0.3), hairMat);
+        sideBangs.position.set(-0.65, -0.1, 0.4);
+        hairGroup.add(sideBangs);
+      } else if (c.id === 'yuki') {
+        // Yuki: Elegant soft waves with beret
+        const beret = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.8, 0.3, 16), new THREE.MeshStandardMaterial({ color: 0x6d28d9 }));
+        beret.position.set(0.2, 0.75, 0);
+        beret.rotation.z = -0.2;
+        hairGroup.add(beret);
       }
 
+      headGroup.add(hairGroup);
       charGroup.add(headGroup);
 
-      // Neck
-      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.24, 0.55, 16), skinMat);
-      neck.position.y = 3.35;
-      neck.castShadow = true;
-      charGroup.add(neck);
+      // 5. CHIBI IDOL TORSO & STAGE OUTFIT (2.5-HEAD PROPORTIONS)
+      const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.48, 1.0, 16), suitMat);
+      torso.position.y = 2.4;
+      torso.scale.set(1.1, 1.0, 0.85);
+      torso.castShadow = true;
+      charGroup.add(torso);
 
-      // 2. TORSO & FORMAL OFFICE SUIT
-      // Chest / Blazer
-      const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.55, 0.9, 16), suitMat);
-      chest.position.y = 2.8;
-      chest.scale.set(1.2, 1.0, 0.85);
-      chest.castShadow = true;
-      charGroup.add(chest);
-
-      // White Shirt Collar V-Shape
-      const shirtV = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.5, 4), shirtMat);
-      shirtV.position.set(0, 2.9, 0.42);
-      shirtV.rotation.z = Math.PI;
-      charGroup.add(shirtV);
+      // Shirt Collar / V-Neck
+      const collar = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.45, 4), shirtMat);
+      collar.position.set(0, 2.5, 0.36);
+      collar.rotation.z = Math.PI;
+      charGroup.add(collar);
 
       if (c.gender === 'male' && c.tieColor) {
-        // Red Executive Tie
-        const tie = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.7, 0.04), new THREE.MeshStandardMaterial({ color: c.tieColor }));
-        tie.position.set(0, 2.7, 0.46);
+        const tie = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.65, 0.04), new THREE.MeshStandardMaterial({ color: c.tieColor }));
+        tie.position.set(0, 2.3, 0.4);
         charGroup.add(tie);
       }
 
-      // Waist / Abdomen
-      const waist = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.56, 0.7, 16), suitMat);
-      waist.position.y = 2.1;
-      waist.scale.set(1.1, 1.0, 0.8);
-      charGroup.add(waist);
-
-      // Pelvis / Hips (Seated)
-      const pelvis = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.4, 1.1), bottomMat);
-      pelvis.position.set(0, 1.65, 0.1);
-      charGroup.add(pelvis);
-
-      // 3. ARMS & 5-FINGER ARTICULATED HANDS
+      // 6. CHIBI ARMS & RESTING HANDS
       [[-1, 'left'], [1, 'right']].forEach(([side]) => {
-        // Shoulder
-        const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.2, 14, 14), suitMat);
-        shoulder.position.set(side * 0.76, 2.95, 0);
-        charGroup.add(shoulder);
+        // Upper Arm
+        const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.85, 12), suitMat);
+        arm.position.set(side * 0.65, 2.1, 0.25);
+        arm.rotation.x = Math.PI / 3.8;
+        arm.rotation.z = side * -0.2;
+        charGroup.add(arm);
 
-        // Bicep
-        const bicep = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.85, 12), suitMat);
-        bicep.position.set(side * 0.82, 2.5, 0.2);
-        bicep.rotation.x = Math.PI / 4;
-        bicep.rotation.z = side * -0.15;
-        charGroup.add(bicep);
-
-        // Forearm
-        const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.11, 0.85, 12), skinMat);
-        forearm.position.set(side * 0.72, 2.3, 0.95);
-        forearm.rotation.x = Math.PI / 2.3;
-        forearm.rotation.y = side * -0.25;
-        charGroup.add(forearm);
-
-        // Detailed Palm & Fingers (Typing on table)
-        const palm = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.08, 0.25), skinMat);
-        palm.position.set(side * 0.62, 2.75, 1.35);
+        // Cute Chibi Palm resting on desk
+        const palm = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 10), skinMat);
+        palm.position.set(side * 0.55, 2.65, 1.25);
+        palm.scale.set(1.1, 0.7, 1.2);
         charGroup.add(palm);
-
-        // Individual Fingers
-        [-0.08, -0.03, 0.03, 0.08].forEach(fx => {
-          const finger = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.14), skinMat);
-          finger.position.set(side * 0.62 + fx, 2.74, 1.52);
-          charGroup.add(finger);
-        });
       });
 
-      // 4. LEGS, OFFICE PANTS / SKIRTS, & LEATHER SHOES
+      // 7. CHIBI LEGS, STAGE SKIRTS / SLACKS & WHITE K-POP SNEAKERS
       if (c.bottomType === 'skirt') {
-        // Pencil Skirt Block over thighs
-        const skirt = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.6, 1.3), bottomMat);
-        skirt.position.set(0, 1.55, 0.65);
+        const skirt = new THREE.Mesh(new THREE.ConeGeometry(0.85, 0.75, 16, 1, true), bottomMat);
+        skirt.position.set(0, 1.85, 0.3);
+        skirt.rotation.x = Math.PI / 5;
         charGroup.add(skirt);
       }
 
-      [[-0.36, 'left'], [0.36, 'right']].forEach(([sideX]) => {
+      [[-0.3, 'left'], [0.3, 'right']].forEach(([sideX]) => {
         // Thigh
-        const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.22, 1.25, 16), c.bottomType === 'skirt' ? skinMat : bottomMat);
-        thigh.position.set(sideX, 1.55, 0.65);
+        const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 1.0, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
+        thigh.position.set(sideX, 1.55, 0.55);
         thigh.rotation.x = Math.PI / 2;
         charGroup.add(thigh);
 
-        // Knee
-        const knee = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 12), c.bottomType === 'skirt' ? skinMat : bottomMat);
-        knee.position.set(sideX, 1.55, 1.25);
-        charGroup.add(knee);
-
-        // Calf / Shin
-        const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.16, 1.25, 16), c.bottomType === 'skirt' ? skinMat : bottomMat);
-        shin.position.set(sideX, 0.9, 1.25);
+        // Shin / Calf
+        const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 1.0, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
+        shin.position.set(sideX, 0.95, 1.05);
         charGroup.add(shin);
 
-        // Formal Leather Oxford Shoes / High Heels
-        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.26, 0.72), shoeMat);
-        shoe.position.set(sideX, 0.2, 1.42);
+        // Stylish White K-Pop Platform Sneaker
+        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.28, 0.72), shoeMat);
+        shoe.position.set(sideX, 0.2, 1.25);
         shoe.castShadow = true;
         charGroup.add(shoe);
       });
@@ -1430,7 +1470,7 @@
       characterMeshes.push({ data: c, mesh: charGroup });
     }
 
-    characters.forEach(c => buildRealisticHuman(c));
+    characters.forEach(c => buildChibiKpopIdol(c));
 
     // 5. FLOATING HTML LABELS & SPEECH BUBBLES
     function updateOverlayLabels() {
