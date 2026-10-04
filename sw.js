@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v15-live-sync';
+const CACHE_NAME = 'eliie-office-v16-penthouse-architecture';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

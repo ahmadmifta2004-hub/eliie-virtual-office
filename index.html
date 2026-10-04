@@ -327,10 +327,17 @@
     // MATERIALS
     const marbleFloorMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.15, metalness: 0.1 });
     const woodParquetMat = new THREE.MeshStandardMaterial({ color: 0xa66a38, roughness: 0.35, metalness: 0.05 });
+    const woodDarkMat = new THREE.MeshStandardMaterial({ color: 0x5c3317, roughness: 0.5, metalness: 0.1 });
+    const wallPartitionMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.6, metalness: 0.05 }); // Off-white drywall partition
     const glassWallMat = new THREE.MeshPhysicalMaterial({ color: 0x93c5fd, transparent: true, opacity: 0.25, roughness: 0.05, transmission: 0.95 });
+    const interiorGlassMat = new THREE.MeshPhysicalMaterial({ color: 0xcfd8dc, transparent: true, opacity: 0.45, roughness: 0.1, transmission: 0.85 });
     const blackSteelMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.8 });
+    const doorWoodMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.4, metalness: 0.1 });
+    const metalHandleMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 });
     const buildingMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.6 });
     const buildingWindowMat = new THREE.MeshBasicMaterial({ color: 0xbae6fd });
+    const exitSignMat = new THREE.MeshBasicMaterial({ color: 0x10b981 }); // Green exit sign
+    const ceilingMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 }); // Dark acoustic ceiling
 
     // 1. SKYLINE CITY PANORAMA OUTSIDE (SKYSCRAPERS SURROUNDING THE PENTHOUSE)
     const cityGroup = new THREE.Group();
@@ -354,28 +361,64 @@
       cityGroup.add(win);
     }
 
-    // 2. OPEN-PLAN PENTHOUSE TOP FLOOR (NO PARTITION WALLS, FLOOR-TO-CEILING GLASS)
+    // 2. PENTHOUSE STRUCTURE: FLOORS, CEILING, PARTITION WALLS & DOORS
     const penthouse = new THREE.Group();
     scene.add(penthouse);
 
-    // Luxury Marble Penthouse Floor Base
+    // A. Luxury Marble Penthouse Floor Base
     const floor = new THREE.Mesh(new THREE.BoxGeometry(46, 0.8, 38), marbleFloorMat);
     floor.position.y = -0.4;
     floor.receiveShadow = true;
     penthouse.add(floor);
 
     // Hardwood Inlay for Conference Center
-    const woodCenter = new THREE.Mesh(new THREE.BoxGeometry(18, 0.02, 12), woodParquetMat);
+    const woodCenter = new THREE.Mesh(new THREE.BoxGeometry(17, 0.02, 11), woodParquetMat);
     woodCenter.position.set(0, 0.01, 0);
     woodCenter.receiveShadow = true;
     penthouse.add(woodCenter);
 
-    // Full Panoramic Glass Curtain Windows around perimeter
+    // B. MODERN CEILING & ROOF STRUCTURE (PENTHOUSE ATAP & SKYLIGHT BEAMS)
+    const ceilingGroup = new THREE.Group();
+    ceilingGroup.position.y = 8.5;
+
+    // Perimeter Roof Cornice Slab
+    const roofSlab = new THREE.Mesh(new THREE.BoxGeometry(47, 0.5, 39), ceilingMat);
+    roofSlab.position.y = 0.25;
+    ceilingGroup.add(roofSlab);
+
+    // Major Architectural Steel Roof Beams
+    [-19, -9.5, 0, 9.5, 19].forEach(bx => {
+      const beamX = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.6, 38), blackSteelMat);
+      beamX.position.set(bx, -0.1, 0);
+      ceilingGroup.add(beamX);
+    });
+
+    [-15, -5, 5, 15].forEach(bz => {
+      const beamZ = new THREE.Mesh(new THREE.BoxGeometry(46, 0.6, 0.5), blackSteelMat);
+      beamZ.position.set(0, -0.1, bz);
+      ceilingGroup.add(beamZ);
+    });
+
+    // Glass Skylights Panels in Between Beams
+    const skylight = new THREE.Mesh(new THREE.BoxGeometry(18, 0.1, 12), glassWallMat);
+    skylight.position.set(0, 0.1, 0);
+    ceilingGroup.add(skylight);
+
+    // Recessed Warm LED Downlights on Ceiling
+    [[-4, -2], [4, -2], [-4, 2], [4, 2], [-14, -8], [14, -8], [-14, 10], [14, 10]].forEach(([lx, lz]) => {
+      const spot = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.1, 16), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
+      spot.position.set(lx, -0.15, lz);
+      ceilingGroup.add(spot);
+    });
+
+    penthouse.add(ceilingGroup);
+
+    // C. FULL PANORAMIC GLASS CURTAIN WINDOWS (OUTER PERIMETER)
     const glassPerimeter = [
-      { w: 46, h: 9, d: 0.3, x: 0, y: 4.5, z: -19 }, // Back
-      { w: 46, h: 9, d: 0.3, x: 0, y: 4.5, z: 19 },  // Front
-      { w: 0.3, h: 9, d: 38, x: -23, y: 4.5, z: 0 }, // Left
-      { w: 0.3, h: 9, d: 38, x: 23, y: 4.5, z: 0 }   // Right
+      { w: 46, h: 8.5, d: 0.3, x: 0, y: 4.25, z: -19 }, // Back Window Wall
+      { w: 46, h: 8.5, d: 0.3, x: 0, y: 4.25, z: 19 },  // Front Window Wall
+      { w: 0.3, h: 8.5, d: 38, x: -23, y: 4.25, z: 0 }, // Left Window Wall
+      { w: 0.3, h: 8.5, d: 38, x: 23, y: 4.25, z: 0 }   // Right Window Wall
     ];
 
     glassPerimeter.forEach(gp => {
@@ -384,14 +427,141 @@
       penthouse.add(g);
     });
 
-    // Steel Pillars / Mullions
+    // Outer Structural Steel Columns
     [[-23, -19], [23, -19], [-23, 19], [23, 19], [-23, 0], [23, 0], [0, -19], [0, 19]].forEach(([px, pz]) => {
-      const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.8, 9, 0.8), blackSteelMat);
-      pillar.position.set(px, 4.5, pz);
+      const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.8, 8.5, 0.8), blackSteelMat);
+      pillar.position.set(px, 4.25, pz);
       penthouse.add(pillar);
     });
 
-    // 3. PENTHOUSE INTERIOR ZONES (OPEN-SPACE)
+    // D. TEMBOK PEMISAH RUANGAN (INTERIOR PARTITION WALLS)
+    function createPartitionWall(w, h, d, x, y, z) {
+      const wallGroup = new THREE.Group();
+      // Main Wall Slab
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallPartitionMat);
+      wall.position.set(x, y, z);
+      wall.castShadow = true;
+      wall.receiveShadow = true;
+      wallGroup.add(wall);
+
+      // Wood Baseboard & Top Trim
+      const baseboard = new THREE.Mesh(new THREE.BoxGeometry(w * 1.01, 0.3, d * 1.05), woodDarkMat);
+      baseboard.position.set(x, 0.15, z);
+      wallGroup.add(baseboard);
+
+      const topTrim = new THREE.Mesh(new THREE.BoxGeometry(w * 1.01, 0.25, d * 1.05), woodDarkMat);
+      topTrim.position.set(x, y + h / 2 - 0.12, z);
+      wallGroup.add(topTrim);
+
+      return wallGroup;
+    }
+
+    // 1. Divider Wall: VIP Executive Suite (Left Back)
+    penthouse.add(createPartitionWall(0.4, 6.5, 11, -9.5, 3.25, -12.5)); // Long wall
+    penthouse.add(createPartitionWall(8.5, 6.5, 0.4, -18.75, 3.25, -2)); // Cross wall to perimeter
+
+    // 2. Divider Wall: Workstation Pods (Right Back)
+    penthouse.add(createPartitionWall(0.4, 6.5, 11, 9.5, 3.25, -12.5)); // Long wall
+    penthouse.add(createPartitionWall(8.5, 6.5, 0.4, 18.75, 3.25, -2)); // Cross wall to perimeter
+
+    // 3. Divider Wall: Sky Bar & Soto (Left Front)
+    penthouse.add(createPartitionWall(0.4, 6.5, 10, -9.5, 3.25, 13)); // Long wall
+    penthouse.add(createPartitionWall(8.5, 6.5, 0.4, -18.75, 3.25, 4)); // Cross wall to perimeter
+
+    // 4. Divider Wall: Panorama Lounge (Right Front)
+    penthouse.add(createPartitionWall(0.4, 6.5, 10, 9.5, 3.25, 13)); // Long wall
+    penthouse.add(createPartitionWall(8.5, 6.5, 0.4, 18.75, 3.25, 4)); // Cross wall to perimeter
+
+    // E. PINTU MASUK & PINTU KELUAR (ENTRANCE & EXIT DOORS)
+    // 1. PINTU MASUK UTAMA (MAIN LOBBY ENTRANCE - FRONT CENTER)
+    const entranceGroup = new THREE.Group();
+    entranceGroup.position.set(0, 0, 19);
+
+    // Automatic Sliding Glass Double Doors
+    const doorL = new THREE.Mesh(new THREE.BoxGeometry(2.0, 5.0, 0.15), interiorGlassMat);
+    doorL.position.set(-1.1, 2.5, 0);
+    entranceGroup.add(doorL);
+
+    const doorR = new THREE.Mesh(new THREE.BoxGeometry(2.0, 5.0, 0.15), interiorGlassMat);
+    doorR.position.set(1.1, 2.5, 0);
+    entranceGroup.add(doorR);
+
+    // Door Frames (Black Steel Frame)
+    const doorFrame = new THREE.Mesh(new THREE.BoxGeometry(4.6, 5.4, 0.35), blackSteelMat);
+    doorFrame.position.set(0, 2.7, 0);
+    entranceGroup.add(doorFrame);
+
+    // Sensor Unit on Top of Entrance Door
+    const sensorUnit = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.3, 0.5), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
+    sensorUnit.position.set(0, 5.3, 0);
+    entranceGroup.add(sensorUnit);
+
+    // Gold Vertical Handles
+    [-0.2, 0.2].forEach(hx => {
+      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8, 12), metalHandleMat);
+      handle.position.set(hx, 2.4, 0.15);
+      entranceGroup.add(handle);
+    });
+
+    // Welcome Red/Black Carpet Mat at Entrance
+    const welcomeMat = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.04, 3.5), new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.9 }));
+    welcomeMat.position.set(0, 0.02, -2.2);
+    entranceGroup.add(welcomeMat);
+
+    penthouse.add(entranceGroup);
+
+    // 2. PINTU KELUAR DARURAT / BALKON (EMERGENCY & BALCONY EXIT - BACK CENTER)
+    const exitGroup = new THREE.Group();
+    exitGroup.position.set(0, 0, -19);
+
+    const exitDoor = new THREE.Mesh(new THREE.BoxGeometry(2.6, 5.0, 0.2), interiorGlassMat);
+    exitDoor.position.set(0, 2.5, 0);
+    exitGroup.add(exitDoor);
+
+    const exitFrame = new THREE.Mesh(new THREE.BoxGeometry(3.0, 5.3, 0.3), blackSteelMat);
+    exitFrame.position.set(0, 2.65, 0);
+    exitGroup.add(exitFrame);
+
+    // Illuminated Green EXIT Sign on Top
+    const exitSign = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.45, 0.25), exitSignMat);
+    exitSign.position.set(0, 5.35, 0.2);
+    exitGroup.add(exitSign);
+
+    penthouse.add(exitGroup);
+
+    // 3. PINTU INTERIOR RUANGAN (ROOM DOORS WITH FRAMES)
+    function createRoomDoor(x, z, rotY, doorColor) {
+      const dg = new THREE.Group();
+      dg.position.set(x, 0, z);
+      dg.rotation.y = rotY;
+
+      // Frame
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(2.4, 5.0, 0.35), blackSteelMat);
+      frame.position.set(0, 2.5, 0);
+      dg.add(frame);
+
+      // Door Leaf (Partially Ajar / Open)
+      const leaf = new THREE.Mesh(new THREE.BoxGeometry(1.9, 4.7, 0.1), doorColor);
+      leaf.position.set(0.6, 2.45, 0.4);
+      leaf.rotation.y = -0.45; // Ajar
+      dg.add(leaf);
+
+      // Gold Handle
+      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.35, 8), metalHandleMat);
+      handle.position.set(1.4, 2.3, 0.7);
+      handle.rotation.x = Math.PI / 2;
+      dg.add(handle);
+
+      return dg;
+    }
+
+    // Interior Room Doors: VIP Suite, Workstation, Sky Bar, Lounge
+    penthouse.add(createRoomDoor(-13.5, -2, 0, doorWoodMat));   // VIP Suite Door
+    penthouse.add(createRoomDoor(13.5, -2, 0, doorWoodMat));    // Workstation Door
+    penthouse.add(createRoomDoor(-13.5, 4, 0, doorWoodMat));    // Sky Bar Door
+    penthouse.add(createRoomDoor(13.5, 4, 0, doorWoodMat));     // Lounge Door
+
+    // 3. PENTHOUSE INTERIOR FURNITURE & ZONES
     // A. CENTER: GRAND CONFERENCE SUITE
     const confTable = new THREE.Mesh(new THREE.BoxGeometry(13, 0.5, 6), woodParquetMat);
     confTable.position.set(0, 2.7, 0);
