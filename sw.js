@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v30-proper-chibi-humanoids';
+const CACHE_NAME = 'eliie-office-v31-muse-diagnosis-fix';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
