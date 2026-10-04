@@ -434,17 +434,17 @@
       penthouse.add(pillar);
     });
 
-    // D. TEMBOK PEMISAH RUANGAN (INTERIOR PARTITION WALLS)
+    // D. TEMBOK PEMISAH RUANGAN BERATURAN & PRESISI (CLEAN ARCHITECTURAL ROOMS)
     function createPartitionWall(w, h, d, x, y, z) {
       const wallGroup = new THREE.Group();
-      // Main Wall Slab
+      // Main Wall
       const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallPartitionMat);
       wall.position.set(x, y, z);
       wall.castShadow = true;
       wall.receiveShadow = true;
       wallGroup.add(wall);
 
-      // Wood Baseboard & Top Trim
+      // Dark Wood Baseboard & Header Trim
       const baseboard = new THREE.Mesh(new THREE.BoxGeometry(w * 1.01, 0.3, d * 1.05), woodDarkMat);
       baseboard.position.set(x, 0.15, z);
       wallGroup.add(baseboard);
@@ -456,80 +456,78 @@
       return wallGroup;
     }
 
-    // 1. Divider Wall: VIP Executive Suite (Left Back)
-    penthouse.add(createPartitionWall(0.4, 6.5, 11, -9.5, 3.25, -12.5)); // Long wall
-    penthouse.add(createPartitionWall(8.5, 6.5, 0.4, -18.75, 3.25, -2)); // Cross wall to perimeter
+    // 1. RUANG VIP EXECUTIVE SUITE (KIRI BELAKANG: X -23 to -9.5, Z -19 to -2)
+    penthouse.add(createPartitionWall(0.4, 6.5, 17, -9.5, 3.25, -10.5)); // Dinding Pembatas Timur
+    penthouse.add(createPartitionWall(8.0, 6.5, 0.4, -19.0, 3.25, -2));   // Dinding Pembatas Selatan (Bagian 1)
+    penthouse.add(createPartitionWall(3.5, 6.5, 0.4, -11.25, 3.25, -2));  // Dinding Pembatas Selatan (Bagian 2 - sisakan pintu)
 
-    // 2. Divider Wall: Workstation Pods (Right Back)
-    penthouse.add(createPartitionWall(0.4, 6.5, 11, 9.5, 3.25, -12.5)); // Long wall
-    penthouse.add(createPartitionWall(8.5, 6.5, 0.4, 18.75, 3.25, -2)); // Cross wall to perimeter
+    // 2. RUANG WORK OFFICE STAF (KANAN BELAKANG: X 9.5 to 23, Z -19 to -2)
+    penthouse.add(createPartitionWall(0.4, 6.5, 17, 9.5, 3.25, -10.5));  // Dinding Pembatas Barat
+    penthouse.add(createPartitionWall(8.0, 6.5, 0.4, 19.0, 3.25, -2));    // Dinding Pembatas Selatan (Bagian 1)
+    penthouse.add(createPartitionWall(3.5, 6.5, 0.4, 11.25, 3.25, -2));   // Dinding Pembatas Selatan (Bagian 2 - sisakan pintu)
 
-    // 3. Divider Wall: Sky Bar & Soto (Left Front)
-    penthouse.add(createPartitionWall(0.4, 6.5, 10, -9.5, 3.25, 13)); // Long wall
-    penthouse.add(createPartitionWall(8.5, 6.5, 0.4, -18.75, 3.25, 4)); // Cross wall to perimeter
+    // 3. RUANG PANTRY & SOTO PAK YONO (KIRI DEPAN: X -23 to -9.5, Z 2 to 19)
+    penthouse.add(createPartitionWall(0.4, 6.5, 17, -9.5, 3.25, 10.5));  // Dinding Pembatas Timur
+    penthouse.add(createPartitionWall(8.0, 6.5, 0.4, -19.0, 3.25, 2));    // Dinding Pembatas Utara (Bagian 1)
+    penthouse.add(createPartitionWall(3.5, 6.5, 0.4, -11.25, 3.25, 2));   // Dinding Pembatas Utara (Bagian 2 - sisakan pintu)
 
-    // 4. Divider Wall: Panorama Lounge (Right Front)
-    penthouse.add(createPartitionWall(0.4, 6.5, 10, 9.5, 3.25, 13)); // Long wall
-    penthouse.add(createPartitionWall(8.5, 6.5, 0.4, 18.75, 3.25, 4)); // Cross wall to perimeter
+    // 4. RUANG PANORAMA LOUNGE TV (KANAN DEPAN: X 9.5 to 23, Z 2 to 19)
+    penthouse.add(createPartitionWall(0.4, 6.5, 17, 9.5, 3.25, 10.5));   // Dinding Pembatas Barat
+    penthouse.add(createPartitionWall(8.0, 6.5, 0.4, 19.0, 3.25, 2));     // Dinding Pembatas Utara (Bagian 1)
+    penthouse.add(createPartitionWall(3.5, 6.5, 0.4, 11.25, 3.25, 2));    // Dinding Pembatas Utara (Bagian 2 - sisakan pintu)
 
-    // E. PINTU MASUK & PINTU KELUAR (ENTRANCE & EXIT DOORS)
-    // 1. PINTU MASUK UTAMA (MAIN LOBBY ENTRANCE - FRONT CENTER)
+    // E. PINTU MASUK & KELUAR LENGKAP (ENTRANCE, EXIT & INTERIOR ROOM DOORS)
+    // 1. PINTU MASUK UTAMA (MAIN LOBBY ENTRANCE - FRONT CENTER Z = 19)
     const entranceGroup = new THREE.Group();
     entranceGroup.position.set(0, 0, 19);
 
-    // Automatic Sliding Glass Double Doors
-    const doorL = new THREE.Mesh(new THREE.BoxGeometry(2.0, 5.0, 0.15), interiorGlassMat);
-    doorL.position.set(-1.1, 2.5, 0);
+    const doorL = new THREE.Mesh(new THREE.BoxGeometry(1.8, 5.2, 0.15), interiorGlassMat);
+    doorL.position.set(-1.0, 2.6, 0);
     entranceGroup.add(doorL);
 
-    const doorR = new THREE.Mesh(new THREE.BoxGeometry(2.0, 5.0, 0.15), interiorGlassMat);
-    doorR.position.set(1.1, 2.5, 0);
+    const doorR = new THREE.Mesh(new THREE.BoxGeometry(1.8, 5.2, 0.15), interiorGlassMat);
+    doorR.position.set(1.0, 2.6, 0);
     entranceGroup.add(doorR);
 
-    // Door Frames (Black Steel Frame)
-    const doorFrame = new THREE.Mesh(new THREE.BoxGeometry(4.6, 5.4, 0.35), blackSteelMat);
-    doorFrame.position.set(0, 2.7, 0);
+    const doorFrame = new THREE.Mesh(new THREE.BoxGeometry(4.2, 5.5, 0.35), blackSteelMat);
+    doorFrame.position.set(0, 2.75, 0);
     entranceGroup.add(doorFrame);
 
-    // Sensor Unit on Top of Entrance Door
-    const sensorUnit = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.3, 0.5), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
-    sensorUnit.position.set(0, 5.3, 0);
+    const sensorUnit = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.3, 0.4), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
+    sensorUnit.position.set(0, 5.4, 0);
     entranceGroup.add(sensorUnit);
 
-    // Gold Vertical Handles
     [-0.2, 0.2].forEach(hx => {
       const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8, 12), metalHandleMat);
       handle.position.set(hx, 2.4, 0.15);
       entranceGroup.add(handle);
     });
 
-    // Welcome Red/Black Carpet Mat at Entrance
-    const welcomeMat = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.04, 3.5), new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.9 }));
-    welcomeMat.position.set(0, 0.02, -2.2);
+    const welcomeMat = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.04, 3.0), new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.9 }));
+    welcomeMat.position.set(0, 0.02, -2.0);
     entranceGroup.add(welcomeMat);
 
     penthouse.add(entranceGroup);
 
-    // 2. PINTU KELUAR DARURAT / BALKON (EMERGENCY & BALCONY EXIT - BACK CENTER)
+    // 2. PINTU KELUAR DARURAT / BALKON (EMERGENCY & BALCONY EXIT - BACK CENTER Z = -19)
     const exitGroup = new THREE.Group();
     exitGroup.position.set(0, 0, -19);
 
-    const exitDoor = new THREE.Mesh(new THREE.BoxGeometry(2.6, 5.0, 0.2), interiorGlassMat);
+    const exitDoor = new THREE.Mesh(new THREE.BoxGeometry(2.4, 5.0, 0.2), interiorGlassMat);
     exitDoor.position.set(0, 2.5, 0);
     exitGroup.add(exitDoor);
 
-    const exitFrame = new THREE.Mesh(new THREE.BoxGeometry(3.0, 5.3, 0.3), blackSteelMat);
+    const exitFrame = new THREE.Mesh(new THREE.BoxGeometry(2.8, 5.3, 0.3), blackSteelMat);
     exitFrame.position.set(0, 2.65, 0);
     exitGroup.add(exitFrame);
 
-    // Illuminated Green EXIT Sign on Top
     const exitSign = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.45, 0.25), exitSignMat);
     exitSign.position.set(0, 5.35, 0.2);
     exitGroup.add(exitSign);
 
     penthouse.add(exitGroup);
 
-    // 3. PINTU INTERIOR RUANGAN (ROOM DOORS WITH FRAMES)
+    // 3. PINTU SETIAP RUANGAN (DOORS FOR ALL 4 ROOMS)
     function createRoomDoor(x, z, rotY, doorColor) {
       const dg = new THREE.Group();
       dg.position.set(x, 0, z);
@@ -540,10 +538,10 @@
       frame.position.set(0, 2.5, 0);
       dg.add(frame);
 
-      // Door Leaf (Partially Ajar / Open)
+      // Door Leaf (Ajar 45 degree)
       const leaf = new THREE.Mesh(new THREE.BoxGeometry(1.9, 4.7, 0.1), doorColor);
       leaf.position.set(0.6, 2.45, 0.4);
-      leaf.rotation.y = -0.45; // Ajar
+      leaf.rotation.y = -0.5;
       dg.add(leaf);
 
       // Gold Handle
@@ -555,11 +553,11 @@
       return dg;
     }
 
-    // Interior Room Doors: VIP Suite, Workstation, Sky Bar, Lounge
-    penthouse.add(createRoomDoor(-13.5, -2, 0, doorWoodMat));   // VIP Suite Door
-    penthouse.add(createRoomDoor(13.5, -2, 0, doorWoodMat));    // Workstation Door
-    penthouse.add(createRoomDoor(-13.5, 4, 0, doorWoodMat));    // Sky Bar Door
-    penthouse.add(createRoomDoor(13.5, 4, 0, doorWoodMat));     // Lounge Door
+    // Pasang Pintu di Setiap Ruangan
+    penthouse.add(createRoomDoor(-14.25, -2, 0, doorWoodMat)); // Pintu Masuk VIP Suite
+    penthouse.add(createRoomDoor(14.25, -2, 0, doorWoodMat));  // Pintu Masuk Work Office
+    penthouse.add(createRoomDoor(-14.25, 2, 0, doorWoodMat));  // Pintu Masuk Sky Bar Soto
+    penthouse.add(createRoomDoor(14.25, 2, 0, doorWoodMat));   // Pintu Masuk Lounge TV
 
     // 3. PENTHOUSE INTERIOR FURNITURE & ZONES
     // A. CENTER: GRAND CONFERENCE SUITE
