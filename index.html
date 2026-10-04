@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Ty & Eliie — AI Virtual Office (The Sims 3D Style)</title>
+  <title>Ty & Eliie — Penthouse High-Rise AI HQ</title>
   
   <!-- PWA Manifest & Meta Tags -->
   <link rel="manifest" href="./manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AI Office">
+  <meta name="apple-mobile-web-app-title" content="Penthouse HQ">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#1e1e1e">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
@@ -36,7 +36,7 @@
       user-select: none;
       -webkit-user-select: none;
       overflow: hidden;
-      background-color: #111827;
+      background-color: #0b0f19;
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -49,7 +49,7 @@
       transition: all 0.2s ease;
     }
     .nav-tab-btn.active {
-      background-color: #3b82f6;
+      background-color: #2563eb;
       color: #ffffff;
       font-weight: 700;
     }
@@ -64,7 +64,7 @@
 </head>
 <body class="w-screen h-screen flex flex-col justify-between overflow-hidden text-white">
 
-  <!-- TOP SOLID DARK NAVIGATION BAR (TIKTOK / THE SIMS OFFICE STYLE) -->
+  <!-- TOP SOLID DARK NAVIGATION BAR (PENTHOUSE AI HQ) -->
   <header class="w-full bg-[#1e1e1e] border-b border-[#2d2d2d] z-30 shadow-xl flex flex-col">
     <div class="px-4 py-2 flex items-center justify-between border-b border-[#2a2a2a]">
       <div class="flex items-center gap-2.5">
@@ -73,8 +73,8 @@
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h1 class="font-bold text-xs sm:text-sm text-white tracking-wide">TY & ELIIE 3D HQ (THE SIMS STYLE)</h1>
-            <span class="text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">● 6 AGENTS LIVE</span>
+            <h1 class="font-bold text-xs sm:text-sm text-white tracking-wide">TY & ELIIE — HIGH-RISE PENTHOUSE HQ</h1>
+            <span class="text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">● 50TH FLOOR PANORAMA</span>
           </div>
         </div>
       </div>
@@ -87,35 +87,31 @@
       </div>
     </div>
 
-    <!-- Room Tabs -->
+    <!-- Room Tabs (Open-Plan Penthouse Zones) -->
     <div class="px-2 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar bg-[#181818]">
       <button onclick="navRoom('meeting')" id="tab-meeting" class="nav-tab-btn active px-3 py-1 rounded-md text-[11px] font-medium bg-blue-600 text-white flex items-center gap-1.5">
         <i class="fa-solid fa-users text-[10px]"></i>
-        <span>Meeting Room</span>
+        <span>Conference Suite</span>
       </button>
       <button onclick="navRoom('vip')" id="tab-vip" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
         <i class="fa-solid fa-crown text-[10px] text-amber-400"></i>
-        <span>VIP Suite</span>
+        <span>VIP Executive Area</span>
       </button>
       <button onclick="navRoom('office')" id="tab-office" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
         <i class="fa-solid fa-laptop-code text-[10px] text-cyan-400"></i>
-        <span>Work Office</span>
+        <span>Open Workstation</span>
       </button>
       <button onclick="navRoom('kitchen')" id="tab-kitchen" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
         <i class="fa-solid fa-mug-hot text-[10px] text-orange-400"></i>
-        <span>Pantry / Soto</span>
+        <span>Sky Bar / Soto</span>
       </button>
       <button onclick="navRoom('lounge')" id="tab-lounge" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
         <i class="fa-solid fa-couch text-[10px] text-purple-400"></i>
-        <span>Lounge TV</span>
-      </button>
-      <button onclick="navRoom('staffbed')" id="tab-staffbed" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
-        <i class="fa-solid fa-bed text-[10px] text-indigo-400"></i>
-        <span>Staff Quarters</span>
+        <span>Panorama Lounge</span>
       </button>
       <button onclick="navRoom('overview')" id="tab-overview" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
-        <i class="fa-solid fa-map text-[10px] text-slate-400"></i>
-        <span>Overview</span>
+        <i class="fa-solid fa-city text-[10px] text-slate-400"></i>
+        <span>Skyline Overview</span>
       </button>
     </div>
   </header>
@@ -124,7 +120,7 @@
   <main id="main-container" class="relative w-full flex-1 bg-[#0b0f19] overflow-hidden">
     <div id="webgl-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
 
-    <!-- 2D FLOATING HTML OVERLAYS FOR 3D AVATARS (NAME TAGS & SPEECH BUBBLES) -->
+    <!-- 2D FLOATING HTML OVERLAYS (NAME TAGS & SPEECH BUBBLES) -->
     <div id="labels-container" class="absolute inset-0 pointer-events-none overflow-hidden z-20"></div>
 
     <!-- TOAST NOTIFICATION -->
@@ -168,7 +164,7 @@
     </div>
   </main>
 
-  <!-- BOTTOM ACTION DOCK (TIKTOK APPROVAL & ROLEPLAY WORKFLOW) -->
+  <!-- BOTTOM ACTION BAR -->
   <footer class="w-full px-2 sm:px-4 py-2 bg-[#1e1e1e] border-t border-[#2d2d2d] flex items-center justify-around z-30 shadow-2xl">
     <button onclick="triggerApprovalDeploy()" class="flex flex-col items-center gap-0.5 text-emerald-400 hover:text-emerald-300 active:scale-95 transition-all">
       <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-sm sm:text-base shadow">
@@ -195,28 +191,21 @@
       <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-sm sm:text-base shadow">
         💑
       </div>
-      <span class="text-[9px] font-bold">Pelukan Tidur</span>
-    </button>
-
-    <button onclick="triggerStaffSleepRooms()" class="flex flex-col items-center gap-0.5 text-indigo-400 hover:text-indigo-300 active:scale-95 transition-all">
-      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-sm sm:text-base shadow">
-        💤
-      </div>
-      <span class="text-[9px] font-bold">Kamar Staf</span>
+      <span class="text-[9px] font-bold">Pelukan VIP</span>
     </button>
 
     <button onclick="triggerKitchenCoffee()" class="flex flex-col items-center gap-0.5 text-orange-400 hover:text-orange-300 active:scale-95 transition-all">
       <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-sm sm:text-base shadow">
         ☕
       </div>
-      <span class="text-[9px] font-bold">Pantry Soto</span>
+      <span class="text-[9px] font-bold">Sky Bar Soto</span>
     </button>
 
     <button onclick="triggerLoungeTV()" class="flex flex-col items-center gap-0.5 text-purple-400 hover:text-purple-300 active:scale-95 transition-all">
       <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-sm sm:text-base shadow">
         🛋️
       </div>
-      <span class="text-[9px] font-bold">Lounge TV</span>
+      <span class="text-[9px] font-bold">Lounge Santai</span>
     </button>
   </footer>
 
@@ -231,22 +220,21 @@
     }
   </script>
 
-  <!-- 3D THE SIMS ISOMETRIC WEBGL ENGINE -->
+  <!-- HIGH-RISE 3D PENTHOUSE WEBGL ENGINE -->
   <script>
     const container = document.getElementById('webgl-container');
     const labelsContainer = document.getElementById('labels-container');
 
     // SCENE, CAMERA, RENDERER
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.015);
+    scene.background = new THREE.Color(0x38bdf8); // Sky daylight
+    scene.fog = new THREE.FogExp2(0x93c5fd, 0.008);
 
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // ISOMETRIC PERSPECTIVE CAMERA
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-    camera.position.set(0, 32, 38);
+    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 1000);
+    camera.position.set(0, 24, 32);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
     renderer.setSize(width, height);
@@ -254,16 +242,16 @@
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.15;
     container.appendChild(renderer.domElement);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxPolarAngle = Math.PI / 2.2;
-    controls.minDistance = 10;
-    controls.maxDistance = 75;
-    controls.target.set(0, 0, 0);
+    controls.maxPolarAngle = Math.PI / 2.15;
+    controls.minDistance = 8;
+    controls.maxDistance = 65;
+    controls.target.set(0, 1.5, 0);
 
     function updateClock() {
       const el = document.getElementById('office-time');
@@ -283,281 +271,166 @@
       }, 2500);
     }
 
-    // LIGHTING (THE SIMS WARM REALISTIC INTERIOR LIGHTING)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    // LIGHTING: DAYLIGHT & SUNLIGHT AT HIGH ALTITUDE
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffedd5, 1.2);
-    dirLight.position.set(20, 40, 20);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
-    dirLight.shadow.camera.near = 0.5;
-    dirLight.shadow.camera.far = 100;
-    dirLight.shadow.camera.left = -30;
-    dirLight.shadow.camera.right = 30;
-    dirLight.shadow.camera.top = 30;
-    dirLight.shadow.camera.bottom = -30;
-    dirLight.shadow.bias = -0.0005;
-    scene.add(dirLight);
+    const sunLight = new THREE.DirectionalLight(0xfffaed, 1.3);
+    sunLight.position.set(30, 45, 25);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.bias = -0.0003;
+    scene.add(sunLight);
 
-    // Warm Spotlights for Meeting Room & VIP
-    const spotMeeting = new THREE.SpotLight(0x38bdf8, 2.5, 30, Math.PI / 4, 0.5);
-    spotMeeting.position.set(0, 16, 0);
-    spotMeeting.target.position.set(0, 0, 0);
-    scene.add(spotMeeting);
-    scene.add(spotMeeting.target);
+    // MATERIALS
+    const marbleFloorMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.15, metalness: 0.1 });
+    const woodParquetMat = new THREE.MeshStandardMaterial({ color: 0xa66a38, roughness: 0.35, metalness: 0.05 });
+    const glassWallMat = new THREE.MeshPhysicalMaterial({ color: 0x93c5fd, transparent: true, opacity: 0.25, roughness: 0.05, transmission: 0.95 });
+    const blackSteelMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.8 });
+    const buildingMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.6 });
+    const buildingWindowMat = new THREE.MeshBasicMaterial({ color: 0xbae6fd });
 
-    // MATERIALS (HIGH QUALITY PBR MATERIALS)
-    const floorTileMat = new THREE.MeshStandardMaterial({ color: 0xefefea, roughness: 0.25, metalness: 0.1 });
-    const woodParquetMat = new THREE.MeshStandardMaterial({ color: 0xa66a38, roughness: 0.4, metalness: 0.1 });
-    const woodDarkMat = new THREE.MeshStandardMaterial({ color: 0x5c3317, roughness: 0.5, metalness: 0.1 });
-    const glassMat = new THREE.MeshPhysicalMaterial({ color: 0xb4d7eb, transparent: true, opacity: 0.4, roughness: 0.1, transmission: 0.9, thickness: 0.5 });
-    const metalChairMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.5, metalness: 0.8 });
-    const cushionMat = new THREE.MeshStandardMaterial({ color: 0x1e1e1e, roughness: 0.8 });
-    const tvMat = new THREE.MeshBasicMaterial({ color: 0x0284c7 });
-    const plantMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.6 });
+    // 1. SKYLINE CITY PANORAMA OUTSIDE (SKYSCRAPERS SURROUNDING THE PENTHOUSE)
+    const cityGroup = new THREE.Group();
+    scene.add(cityGroup);
 
-    // 1. BUILD THE 3D MANSION ENVIRONMENT (ROOMS, WALLS, FLOORS)
-    const mansionGroup = new THREE.Group();
-    scene.add(mansionGroup);
+    for (let i = 0; i < 40; i++) {
+      const angle = (i / 40) * Math.PI * 2;
+      const radius = 55 + Math.random() * 40;
+      const bx = Math.cos(angle) * radius;
+      const bz = Math.sin(angle) * radius;
+      const bHeight = 25 + Math.random() * 50;
+      const bWidth = 8 + Math.random() * 8;
 
-    // Main Ground Floor Base
-    const baseGeo = new THREE.BoxGeometry(60, 0.8, 48);
-    const baseFloor = new THREE.Mesh(baseGeo, floorTileMat);
-    baseFloor.position.y = -0.4;
-    baseFloor.receiveShadow = true;
-    mansionGroup.add(baseFloor);
+      const tower = new THREE.Mesh(new THREE.BoxGeometry(bWidth, bHeight, bWidth), buildingMat);
+      tower.position.set(bx, bHeight / 2 - 25, bz);
+      cityGroup.add(tower);
 
-    // A. CONFERENCE ROOM (CENTER)
-    function buildConferenceRoom() {
-      const group = new THREE.Group();
-
-      // Big Polished Wood Conference Table
-      const tableTopGeo = new THREE.BoxGeometry(14, 0.6, 6.5);
-      const tableTop = new THREE.Mesh(tableTopGeo, woodParquetMat);
-      tableTop.position.set(0, 2.8, 0);
-      tableTop.castShadow = true;
-      tableTop.receiveShadow = true;
-      group.add(tableTop);
-
-      // Glass Center Inlay
-      const glassInlay = new THREE.Mesh(new THREE.BoxGeometry(11, 0.62, 3), glassMat);
-      glassInlay.position.set(0, 2.8, 0);
-      group.add(glassInlay);
-
-      // Table Legs (Polished Metal)
-      [[-5, -2], [-5, 2], [5, -2], [5, 2]].forEach(([lx, lz]) => {
-        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 2.8, 16), metalChairMat);
-        leg.position.set(lx, 1.4, lz);
-        leg.castShadow = true;
-        group.add(leg);
-      });
-
-      // Potted Plant Centerpiece
-      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.4, 0.8, 16), new THREE.MeshStandardMaterial({ color: 0xffffff }));
-      pot.position.set(0, 3.4, 0);
-      group.add(pot);
-      const plant = new THREE.Mesh(new THREE.DodecahedronGeometry(0.7), plantMat);
-      plant.position.set(0, 4.0, 0);
-      group.add(plant);
-
-      // Wall Mounted TV
-      const tvScreen = new THREE.Mesh(new THREE.BoxGeometry(12, 4, 0.4), tvMat);
-      tvScreen.position.set(0, 6.5, -6);
-      group.add(tvScreen);
-
-      // 6 Modern 3D Laptops on Table
-      [[-5, 0, -1.2], [5, 0, 1.2], [-2, 0, -1.8], [2, 0, -1.8], [-2, 0, 1.8], [2, 0, 1.8]].forEach(([lx, ly, lz]) => {
-        const laptopBase = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.08, 0.9), metalChairMat);
-        laptopBase.position.set(lx, 3.15, lz);
-        group.add(laptopBase);
-
-        const screen = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 0.06), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
-        screen.position.set(lx, 3.55, lz - 0.4);
-        screen.rotation.x = -0.2;
-        group.add(screen);
-      });
-
-      // 6 3D Ergonomic Mesh Swivel Chairs
-      [[-7, 0, 0, Math.PI / 2], [7, 0, 0, -Math.PI / 2], [-2, 0, -3.5, 0], [2, 0, -3.5, 0], [-2, 0, 3.5, Math.PI], [2, 0, 3.5, Math.PI]].forEach(([cx, cy, cz, rot]) => {
-        const chair = create3DChair();
-        chair.position.set(cx, 0, cz);
-        chair.rotation.y = rot;
-        group.add(chair);
-      });
-
-      return group;
+      // Windows
+      const win = new THREE.Mesh(new THREE.BoxGeometry(bWidth * 1.01, bHeight * 0.8, bWidth * 1.01), buildingWindowMat);
+      win.position.set(bx, bHeight / 2 - 25, bz);
+      cityGroup.add(win);
     }
 
-    function create3DChair() {
+    // 2. OPEN-PLAN PENTHOUSE TOP FLOOR (NO PARTITION WALLS, FLOOR-TO-CEILING GLASS)
+    const penthouse = new THREE.Group();
+    scene.add(penthouse);
+
+    // Luxury Marble Penthouse Floor Base
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(46, 0.8, 38), marbleFloorMat);
+    floor.position.y = -0.4;
+    floor.receiveShadow = true;
+    penthouse.add(floor);
+
+    // Hardwood Inlay for Conference Center
+    const woodCenter = new THREE.Mesh(new THREE.BoxGeometry(18, 0.02, 12), woodParquetMat);
+    woodCenter.position.set(0, 0.01, 0);
+    woodCenter.receiveShadow = true;
+    penthouse.add(woodCenter);
+
+    // Full Panoramic Glass Curtain Windows around perimeter
+    const glassPerimeter = [
+      { w: 46, h: 9, d: 0.3, x: 0, y: 4.5, z: -19 }, // Back
+      { w: 46, h: 9, d: 0.3, x: 0, y: 4.5, z: 19 },  // Front
+      { w: 0.3, h: 9, d: 38, x: -23, y: 4.5, z: 0 }, // Left
+      { w: 0.3, h: 9, d: 38, x: 23, y: 4.5, z: 0 }   // Right
+    ];
+
+    glassPerimeter.forEach(gp => {
+      const g = new THREE.Mesh(new THREE.BoxGeometry(gp.w, gp.h, gp.d), glassWallMat);
+      g.position.set(gp.x, gp.y, gp.z);
+      penthouse.add(g);
+    });
+
+    // Steel Pillars / Mullions
+    [[-23, -19], [23, -19], [-23, 19], [23, 19], [-23, 0], [23, 0], [0, -19], [0, 19]].forEach(([px, pz]) => {
+      const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.8, 9, 0.8), blackSteelMat);
+      pillar.position.set(px, 4.5, pz);
+      penthouse.add(pillar);
+    });
+
+    // 3. PENTHOUSE INTERIOR ZONES (OPEN-SPACE)
+    // A. CENTER: GRAND CONFERENCE SUITE
+    const confTable = new THREE.Mesh(new THREE.BoxGeometry(13, 0.5, 6), woodParquetMat);
+    confTable.position.set(0, 2.7, 0);
+    confTable.castShadow = true;
+    penthouse.add(confTable);
+
+    const confGlass = new THREE.Mesh(new THREE.BoxGeometry(11, 0.52, 3), new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.1, metalness: 0.8 }));
+    confGlass.position.set(0, 2.7, 0);
+    penthouse.add(confGlass);
+
+    // Plant centerpiece
+    const plant = new THREE.Mesh(new THREE.DodecahedronGeometry(0.8), new THREE.MeshStandardMaterial({ color: 0x16a34a }));
+    plant.position.set(0, 3.8, 0);
+    penthouse.add(plant);
+
+    // TV Dashboard
+    const tv = new THREE.Mesh(new THREE.BoxGeometry(10, 3.5, 0.2), new THREE.MeshBasicMaterial({ color: 0x0284c7 }));
+    tv.position.set(0, 5.5, -6.5);
+    penthouse.add(tv);
+
+    // 6 Laptops on Desk
+    [[-4.5, 0, -1.2], [4.5, 0, 1.2], [-1.8, 0, -1.8], [1.8, 0, -1.8], [-1.8, 0, 1.8], [1.8, 0, 1.8]].forEach(([lx, ly, lz]) => {
+      const lap = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.08, 0.9), blackSteelMat);
+      lap.position.set(lx, 3.0, lz);
+      penthouse.add(lap);
+      const scr = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 0.05), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+      scr.position.set(lx, 3.4, lz - 0.4);
+      scr.rotation.x = -0.2;
+      penthouse.add(scr);
+    });
+
+    // Chairs
+    function createOfficeChair() {
       const chair = new THREE.Group();
-      // Base Caster Wheels
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 0.2, 5), metalChairMat);
-      base.position.y = 0.2;
-      chair.add(base);
-
-      // Stem
-      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.4, 12), metalChairMat);
-      stem.position.y = 0.9;
-      chair.add(stem);
-
-      // Cushion Seat
-      const seat = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.3, 1.4), cushionMat);
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.25, 1.3), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
       seat.position.y = 1.6;
-      seat.castShadow = true;
       chair.add(seat);
-
-      // High Backrest
-      const back = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.8, 0.2), cushionMat);
-      back.position.set(0, 2.5, -0.6);
-      back.castShadow = true;
+      const back = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.8, 0.2), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
+      back.position.set(0, 2.5, -0.55);
       chair.add(back);
-
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.6, 8), blackSteelMat);
+      leg.position.y = 0.8;
+      chair.add(leg);
       return chair;
     }
 
-    // B. VIP SUITE (TOP-LEFT)
-    function buildVIPSuite() {
-      const group = new THREE.Group();
-      group.position.set(-18, 0, -14);
+    [[-6.5, 0, 0, Math.PI / 2], [6.5, 0, 0, -Math.PI / 2], [-1.8, 0, -3.2, 0], [1.8, 0, -3.2, 0], [-1.8, 0, 3.2, Math.PI], [1.8, 0, 3.2, Math.PI]].forEach(([cx, cy, cz, rot]) => {
+      const c = createOfficeChair();
+      c.position.set(cx, 0, cz);
+      c.rotation.y = rot;
+      penthouse.add(c);
+    });
 
-      // Luxury King Size Bed (The Sims Style)
-      const bedFrame = new THREE.Mesh(new THREE.BoxGeometry(7, 1.2, 8), woodDarkMat);
-      bedFrame.position.set(0, 0.6, -3);
-      bedFrame.castShadow = true;
-      group.add(bedFrame);
+    // B. LEFT ZONE: VIP EXECUTIVE SUITE & KING BED
+    const vipDesk = new THREE.Mesh(new THREE.BoxGeometry(6, 0.4, 2.5), woodParquetMat);
+    vipDesk.position.set(-15, 2.4, -4);
+    penthouse.add(vipDesk);
 
-      const mattress = new THREE.Mesh(new THREE.BoxGeometry(6.4, 1.2, 7.4), new THREE.MeshStandardMaterial({ color: 0x9f1239, roughness: 0.7 }));
-      mattress.position.set(0, 1.4, -3);
-      group.add(mattress);
+    const kingBed = new THREE.Mesh(new THREE.BoxGeometry(6.5, 1.2, 7.5), new THREE.MeshStandardMaterial({ color: 0x9f1239 }));
+    kingBed.position.set(-15, 0.6, -12);
+    penthouse.add(kingBed);
 
-      // Pillows
-      [[-1.8, 2.1, -6], [1.8, 2.1, -6]].forEach(([px, py, pz]) => {
-        const pillow = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.4, 1.4), new THREE.MeshStandardMaterial({ color: 0xfef08a }));
-        pillow.position.set(px, py, pz);
-        group.add(pillow);
-      });
+    // C. RIGHT ZONE: OPEN WORKSTATION PODS
+    [[-4, -3], [4, -3], [-4, 3], [4, 3]].forEach(([ox, oz]) => {
+      const desk = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.4, 2.2), woodParquetMat);
+      desk.position.set(15 + ox * 0.7, 2.4, -6 + oz * 0.7);
+      penthouse.add(desk);
+    });
 
-      // VIP Dual Work Desk
-      const desk = new THREE.Mesh(new THREE.BoxGeometry(8, 0.4, 2.5), woodParquetMat);
-      desk.position.set(0, 2.4, 3);
-      desk.castShadow = true;
-      group.add(desk);
+    // D. FRONT-LEFT: SKY BAR & SOTO KITCHEN
+    const barCounter = new THREE.Mesh(new THREE.BoxGeometry(8, 2.5, 2.2), woodParquetMat);
+    barCounter.position.set(-14, 1.25, 11);
+    penthouse.add(barCounter);
 
-      // Dual Monitors
-      [[-2, 3.4, 2.8], [2, 3.4, 2.8]].forEach(([mx, my, mz]) => {
-        const mon = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.4, 0.1), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
-        mon.position.set(mx, my, mz);
-        group.add(mon);
-      });
+    // E. FRONT-RIGHT: PANORAMA LOUNGE
+    const sofa = new THREE.Mesh(new THREE.BoxGeometry(10, 1.2, 3), new THREE.MeshStandardMaterial({ color: 0x9f1239 }));
+    sofa.position.set(12, 0.8, 11);
+    penthouse.add(sofa);
 
-      return group;
-    }
-
-    // C. WORK OFFICE (TOP-RIGHT)
-    function buildWorkOffice() {
-      const group = new THREE.Group();
-      group.position.set(18, 0, -14);
-
-      // 4 Workstation Pods
-      [[-4, -3], [4, -3], [-4, 3], [4, 3]].forEach(([dx, dz]) => {
-        const desk = new THREE.Mesh(new THREE.BoxGeometry(5, 0.4, 2.6), woodParquetMat);
-        desk.position.set(dx, 2.4, dz);
-        desk.castShadow = true;
-        group.add(desk);
-
-        const mon = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.2, 0.1), new THREE.MeshBasicMaterial({ color: 0x0284c7 }));
-        mon.position.set(dx, 3.2, dz - 0.8);
-        group.add(mon);
-
-        const chair = create3DChair();
-        chair.position.set(dx, 0, dz + 1.2);
-        group.add(chair);
-      });
-
-      return group;
-    }
-
-    // D. PANTRY & SOTO (BOTTOM-LEFT)
-    function buildKitchenPantry() {
-      const group = new THREE.Group();
-      group.position.set(-18, 0, 14);
-
-      // Bar Counter
-      const counter = new THREE.Mesh(new THREE.BoxGeometry(10, 2.6, 2.5), woodDarkMat);
-      counter.position.set(0, 1.3, -3);
-      counter.castShadow = true;
-      group.add(counter);
-
-      // Soto Pot & Coffee Machine
-      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.7, 1.2, 16), metalChairMat);
-      pot.position.set(-2.5, 3.2, -3);
-      group.add(pot);
-
-      const coffee = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.4, 1.2), new THREE.MeshStandardMaterial({ color: 0xea580c }));
-      coffee.position.set(2.5, 3.3, -3);
-      group.add(coffee);
-
-      // Dining Table
-      const table = new THREE.Mesh(new THREE.BoxGeometry(7, 0.4, 3), woodParquetMat);
-      table.position.set(0, 2.4, 3);
-      group.add(table);
-
-      return group;
-    }
-
-    // E. LOUNGE TV & SOFA (BOTTOM-CENTER)
-    function buildLounge() {
-      const group = new THREE.Group();
-      group.position.set(0, 0, 14);
-
-      // Big OLED TV on Stand
-      const tv = new THREE.Mesh(new THREE.BoxGeometry(10, 4.5, 0.3), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
-      tv.position.set(0, 5, -4);
-      group.add(tv);
-
-      // Curved Red Plush Sofa (The Sims Style)
-      const sofa = new THREE.Mesh(new THREE.BoxGeometry(12, 1.4, 3.5), new THREE.MeshStandardMaterial({ color: 0xbe123c, roughness: 0.8 }));
-      sofa.position.set(0, 0.9, 2);
-      sofa.castShadow = true;
-      group.add(sofa);
-
-      const sofaBack = new THREE.Mesh(new THREE.BoxGeometry(12, 2.2, 0.8), new THREE.MeshStandardMaterial({ color: 0x9f1239, roughness: 0.8 }));
-      sofaBack.position.set(0, 2.0, 3.4);
-      group.add(sofaBack);
-
-      return group;
-    }
-
-    // F. STAFF QUARTERS (BOTTOM-RIGHT)
-    function buildStaffQuarters() {
-      const group = new THREE.Group();
-      group.position.set(18, 0, 14);
-
-      // 4 Single Beds
-      [[-4, -3], [4, -3], [-4, 3], [4, 3]].forEach(([bx, bz]) => {
-        const bed = new THREE.Mesh(new THREE.BoxGeometry(3.6, 1.0, 5.5), new THREE.MeshStandardMaterial({ color: 0x4f46e5, roughness: 0.7 }));
-        bed.position.set(bx, 0.5, bz);
-        bed.castShadow = true;
-        group.add(bed);
-
-        const pillow = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.3, 1.2), new THREE.MeshStandardMaterial({ color: 0xf8fafc }));
-        pillow.position.set(bx, 1.1, bz - 2);
-        group.add(pillow);
-      });
-
-      return group;
-    }
-
-    mansionGroup.add(buildConferenceRoom());
-    mansionGroup.add(buildVIPSuite());
-    mansionGroup.add(buildWorkOffice());
-    mansionGroup.add(buildKitchenPantry());
-    mansionGroup.add(buildLounge());
-    mansionGroup.add(buildStaffQuarters());
-
-    // 2. BUILD 3D THE SIMS STYLIZED HUMAN CHARACTERS
+    // 4. REALISTIC HUMAN CHARACTERS (FULL ANATOMY, FORMAL OFFICE SUITS & SKIRTS)
     const characters = [
       {
         id: 'ty',
@@ -566,16 +439,20 @@
         dotColor: '#3b82f6',
         avatar: '👑',
         isOwner: true,
+        gender: 'male',
         skinColor: 0xfed7aa,
         hairColor: 0x1e293b,
-        shirtColor: 0xbe123c, // Red flannel
-        pantsColor: 0x1e3a8a,
-        x: -7,
+        suitColor: 0x1e3a8a, // Navy executive suit blazer
+        shirtColor: 0xffffff, // White formal dress shirt
+        tieColor: 0xdc2626,  // Red executive tie
+        bottomColor: 0x1e3a8a, // Tailored suit trousers
+        bottomType: 'pants',
+        x: -6.5,
         z: 0,
         rotY: Math.PI / 2,
         state: 'meeting',
         statusText: 'Approval untuk deploy & pimpinan tim.',
-        bubble: '🚀 Siap deploy hari ini?',
+        bubble: '🚀 Approval deploy 50th floor ready!',
         bubbleTimer: 240
       },
       {
@@ -585,18 +462,22 @@
         dotColor: '#f59e0b',
         avatar: '🌸',
         isBoss: true,
+        gender: 'female',
         skinColor: 0xfed7aa,
-        hairColor: 0xfde047, // Blonde elf
-        shirtColor: 0xfef08a, // Yellow top
-        pantsColor: 0x475569,
+        hairColor: 0xfde047, // Golden blonde flowing hair
+        suitColor: 0xfef08a, // Pastel cream tailored office blouse
+        shirtColor: 0xffffff,
+        tieColor: 0xf59e0b,
+        bottomColor: 0x1e293b, // Formal office pencil skirt
+        bottomType: 'skirt',
         hasCrown: true,
         hasElfEars: true,
-        x: 7,
+        x: 6.5,
         z: 0,
         rotY: -Math.PI / 2,
         state: 'meeting',
         statusText: 'Mendampingi Ty & memimpin seluruh sub-agen.',
-        bubble: 'Siap eksekusi deploy! 🌸',
+        bubble: 'Siap eksekusi deploy penthouse! 🌸',
         bubbleTimer: 240
       },
       {
@@ -605,12 +486,15 @@
         badge: '💻 Maya OL-01',
         dotColor: '#0284c7',
         avatar: '💻',
+        gender: 'female',
         skinColor: 0xfed7aa,
-        hairColor: 0x0369a1,
-        shirtColor: 0x0284c7, // Techie hoodie
-        pantsColor: 0x0f172a,
-        x: -2,
-        z: -3.5,
+        hairColor: 0x0284c7,
+        suitColor: 0x0369a1, // Techie formal office blazer
+        shirtColor: 0xf0fdf4,
+        bottomColor: 0x0f172a, // Office trousers
+        bottomType: 'pants',
+        x: -1.8,
+        z: -3.2,
         rotY: 0,
         state: 'meeting',
         statusText: 'Optimasi server VPS & coding backend.',
@@ -623,12 +507,15 @@
         badge: '🍲 Tiara KD-23',
         dotColor: '#ea580c',
         avatar: '🍲',
+        gender: 'female',
         skinColor: 0xfed7aa,
         hairColor: 0xc2410c,
-        shirtColor: 0xea580c,
-        pantsColor: 0x1e293b,
-        x: 2,
-        z: -3.5,
+        suitColor: 0xea580c, // Business blazer
+        shirtColor: 0xffffff,
+        bottomColor: 0x431407, // Formal pencil skirt
+        bottomType: 'skirt',
+        x: 1.8,
+        z: -3.2,
         rotY: 0,
         state: 'meeting',
         statusText: 'Rekap penjualan & omzet Soto Pak Yono.',
@@ -641,12 +528,15 @@
         badge: '🎨 Siska CR-07',
         dotColor: '#ec4899',
         avatar: '🎨',
+        gender: 'female',
         skinColor: 0xfed7aa,
         hairColor: 0xdb2777,
-        shirtColor: 0xf43f5e,
-        pantsColor: 0x334155,
-        x: -2,
-        z: 3.5,
+        suitColor: 0xf43f5e, // Chic creative office suit
+        shirtColor: 0xffffff,
+        bottomColor: 0x881337, // Designer office skirt
+        bottomType: 'skirt',
+        x: -1.8,
+        z: 3.2,
         rotY: Math.PI,
         state: 'meeting',
         statusText: 'Rancang visual banner & konten TikTok.',
@@ -659,12 +549,15 @@
         badge: '📚 Rina MM-12',
         dotColor: '#8b5cf6',
         avatar: '📚',
+        gender: 'female',
         skinColor: 0xfed7aa,
         hairColor: 0x7c3aed,
-        shirtColor: 0xa855f7,
-        pantsColor: 0x1e1b4b,
-        x: 2,
-        z: 3.5,
+        suitColor: 0x6d28d9, // Elegant formal blouse & cardigan
+        shirtColor: 0xffffff,
+        bottomColor: 0x2e1065, // Tailored office trousers
+        bottomType: 'pants',
+        x: 1.8,
+        z: 3.2,
         rotY: Math.PI,
         state: 'meeting',
         statusText: 'Sinkronisasi catatan Obsidian & second brain.',
@@ -675,228 +568,237 @@
 
     const characterMeshes = [];
 
-    // CREATE REALISTIC 3D HUMANOID ANATOMY MESH (THE SIMS 3D HUMAN BODY)
-    function createSimsAvatar(c) {
+    // REALISTIC HUMAN BODY GENERATOR (3D FACE, EYES, NOSE, HANDS, FORMAL WEAR, SHOES)
+    function buildRealisticHuman(c) {
       const charGroup = new THREE.Group();
 
-      const skinMat = new THREE.MeshStandardMaterial({ color: c.skinColor, roughness: 0.55, metalness: 0.05 });
-      const hairMat = new THREE.MeshStandardMaterial({ color: c.hairColor, roughness: 0.45, metalness: 0.1 });
-      const shirtMat = new THREE.MeshStandardMaterial({ color: c.shirtColor, roughness: 0.65, metalness: 0.05 });
-      const pantsMat = new THREE.MeshStandardMaterial({ color: c.pantsColor, roughness: 0.7, metalness: 0.05 });
-      const shoeMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.2 });
-      const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.85 });
+      const skinMat = new THREE.MeshStandardMaterial({ color: c.skinColor, roughness: 0.55 });
+      const hairMat = new THREE.MeshStandardMaterial({ color: c.hairColor, roughness: 0.45 });
+      const suitMat = new THREE.MeshStandardMaterial({ color: c.suitColor, roughness: 0.6 });
+      const shirtMat = new THREE.MeshStandardMaterial({ color: c.shirtColor, roughness: 0.6 });
+      const bottomMat = new THREE.MeshStandardMaterial({ color: c.bottomColor, roughness: 0.65 });
+      const shoeMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3, metalness: 0.4 }); // Polished leather shoes
+      const eyeWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const eyePupilMat = new THREE.MeshBasicMaterial({ color: 0x0284c7 });
+      const lipMat = new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.5 });
+      const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 });
 
-      // 1. HEAD & NECK
-      // Neck
-      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.6, 16), skinMat);
-      neck.position.y = 3.3;
-      neck.castShadow = true;
-      charGroup.add(neck);
+      // 1. HEAD & DETAILED HUMAN FACE
+      const headGroup = new THREE.Group();
+      headGroup.position.y = 3.9;
 
-      // Contoured Head / Face
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.52, 24, 24), skinMat);
-      head.position.y = 3.85;
-      head.scale.set(1.0, 1.15, 1.05); // Human anatomical egg-shape
+      // Cranium
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 24), skinMat);
+      head.scale.set(1.0, 1.15, 1.05);
       head.castShadow = true;
-      charGroup.add(head);
+      headGroup.add(head);
 
-      // Chin / Jawline
-      const jaw = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.18, 0.35, 16), skinMat);
-      jaw.position.set(0, 3.52, 0.15);
-      charGroup.add(jaw);
+      // Jaw & Chin
+      const chin = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.16, 0.35, 16), skinMat);
+      chin.position.set(0, -0.32, 0.15);
+      headGroup.add(chin);
 
-      // Nose
-      const nose = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.16, 8), skinMat);
-      nose.position.set(0, 3.82, 0.55);
+      // 3D Realistic Eyes
+      [[-0.18, 0.05, 0.48], [0.18, 0.05, 0.48]].forEach(([ex, ey, ez]) => {
+        // Eye Sclera (White)
+        const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), eyeWhiteMat);
+        eyeWhite.position.set(ex, ey, ez);
+        headGroup.add(eyeWhite);
+
+        // Pupil / Iris (Blue/Dark)
+        const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 8), eyePupilMat);
+        pupil.position.set(ex, ey, ez + 0.05);
+        headGroup.add(pupil);
+
+        // Eyebrows
+        const brow = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.03, 0.04), hairMat);
+        brow.position.set(ex, ey + 0.12, ez - 0.02);
+        brow.rotation.z = ex > 0 ? -0.1 : 0.1;
+        headGroup.add(brow);
+      });
+
+      // 3D Human Nose
+      const nose = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.18, 8), skinMat);
+      nose.position.set(0, -0.04, 0.56);
       nose.rotation.x = Math.PI / 2.2;
-      charGroup.add(nose);
+      headGroup.add(nose);
+
+      // Lips / Mouth
+      const lips = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.04, 0.06), lipMat);
+      lips.position.set(0, -0.22, 0.5);
+      headGroup.add(lips);
 
       // Ears
       if (c.hasElfEars) {
-        // Eliie's cute elf ears
-        [[-0.52, 3.9, 0, -0.4], [0.52, 3.9, 0, 0.4]].forEach(([ex, ey, ez, rotZ]) => {
-          const ear = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.5, 8), skinMat);
+        [[-0.52, 0.08, 0, -0.4], [0.52, 0.08, 0, 0.4]].forEach(([ex, ey, ez, rz]) => {
+          const ear = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.45, 8), skinMat);
           ear.position.set(ex, ey, ez);
-          ear.rotation.z = rotZ;
-          ear.rotation.x = -0.2;
-          charGroup.add(ear);
+          ear.rotation.z = rz;
+          headGroup.add(ear);
         });
       } else {
-        // Normal human ears
-        [[-0.52, 3.85, 0], [0.52, 3.85, 0]].forEach(([ex, ey, ez]) => {
-          const ear = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), skinMat);
+        [[-0.52, 0.05, 0], [0.52, 0.05, 0]].forEach(([ex, ey, ez]) => {
+          const ear = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 12), skinMat);
           ear.position.set(ex, ey, ez);
-          ear.scale.set(0.5, 1.0, 0.7);
-          charGroup.add(ear);
+          ear.scale.set(0.4, 1.0, 0.7);
+          headGroup.add(ear);
         });
       }
 
-      // Hair Styles Tailored Per Character
-      const hairGroup = new THREE.Group();
-      hairGroup.position.y = 3.92;
-
-      // Main Hair Cap
-      const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 20, 0, Math.PI * 2, 0, Math.PI / 1.6), hairMat);
+      // Styled 3D Hair
+      const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.54, 20, 20, 0, Math.PI * 2, 0, Math.PI / 1.6), hairMat);
       hairCap.scale.set(1.02, 1.15, 1.08);
-      hairGroup.add(hairCap);
+      headGroup.add(hairCap);
 
       if (c.id === 'ty') {
-        // Ty: Handsome modern parted taper haircut
         const fringe = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.25, 0.4), hairMat);
-        fringe.position.set(0.1, 0.35, 0.4);
+        fringe.position.set(0.1, 0.35, 0.35);
         fringe.rotation.z = -0.15;
-        hairGroup.add(fringe);
+        headGroup.add(fringe);
       } else if (c.id === 'eliie') {
-        // Eliie: Cascading long blonde hair & tiara
-        const bangs = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.6, 0.4, 16, 1, false, 0, Math.PI), hairMat);
-        bangs.position.set(0, 0.2, 0.25);
-        bangs.rotation.x = 0.2;
-        hairGroup.add(bangs);
-
-        // Long twin flowing hair locks
-        [[-0.45, -0.6, -0.1], [0.45, -0.6, -0.1]].forEach(([lx, ly, lz]) => {
-          const lock = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.08, 1.6, 12), hairMat);
+        // Flowing blonde locks & Tiara
+        [[-0.45, -0.8, -0.1], [0.45, -0.8, -0.1]].forEach(([lx, ly, lz]) => {
+          const lock = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.08, 1.8, 12), hairMat);
           lock.position.set(lx, ly, lz);
-          lock.rotation.z = lx > 0 ? -0.15 : 0.15;
-          hairGroup.add(lock);
+          headGroup.add(lock);
         });
-
-        // Golden Tiara
-        const tiara = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.06, 8, 24, Math.PI), goldMat);
+        const tiara = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.05, 8, 20, Math.PI), goldMat);
         tiara.position.set(0, 0.42, 0.2);
         tiara.rotation.x = -Math.PI / 3;
-        hairGroup.add(tiara);
-      } else if (c.id === 'luna') {
-        // Luna: Techie ponytail & over-ear headphones
-        const pony = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.08, 1.1, 12), hairMat);
-        pony.position.set(0, -0.3, -0.6);
-        pony.rotation.x = -0.5;
-        hairGroup.add(pony);
-
-        // Headphones
-        const band = new THREE.Mesh(new THREE.TorusGeometry(0.58, 0.06, 8, 24, Math.PI), goldMat);
-        band.position.set(0, 0.1, 0);
-        band.rotation.z = Math.PI / 2;
-        hairGroup.add(band);
-      } else if (c.id === 'mimi') {
-        // Mimi: Cute side twin tails with ribbons
-        [[-0.6, 0.1, -0.2], [0.6, 0.1, -0.2]].forEach(([tx, ty, tz]) => {
-          const tail = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.9, 12), hairMat);
-          tail.position.set(tx, ty, tz);
-          tail.rotation.z = tx > 0 ? -0.5 : 0.5;
-          hairGroup.add(tail);
-        });
+        headGroup.add(tiara);
       }
 
-      charGroup.add(hairGroup);
+      charGroup.add(headGroup);
 
-      // 2. TORSO & UPPER BODY (REALISTIC ANATOMY)
-      // Clavicle & Upper Chest / Shoulders
-      const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.58, 0.9, 16), shirtMat);
-      chest.position.y = 2.75;
-      chest.scale.set(1.2, 1.0, 0.85); // Wider shoulders, flatter front-to-back
+      // Neck
+      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.24, 0.55, 16), skinMat);
+      neck.position.y = 3.35;
+      neck.castShadow = true;
+      charGroup.add(neck);
+
+      // 2. TORSO & FORMAL OFFICE SUIT
+      // Chest / Blazer
+      const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.55, 0.9, 16), suitMat);
+      chest.position.y = 2.8;
+      chest.scale.set(1.2, 1.0, 0.85);
       chest.castShadow = true;
       charGroup.add(chest);
 
-      // Tapered Waist / Abdomen
-      const waist = new THREE.Mesh(new THREE.CylinderGeometry(0.54, 0.58, 0.75, 16), shirtMat);
-      waist.position.y = 2.05;
+      // White Shirt Collar V-Shape
+      const shirtV = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.5, 4), shirtMat);
+      shirtV.position.set(0, 2.9, 0.42);
+      shirtV.rotation.z = Math.PI;
+      charGroup.add(shirtV);
+
+      if (c.gender === 'male' && c.tieColor) {
+        // Red Executive Tie
+        const tie = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.7, 0.04), new THREE.MeshStandardMaterial({ color: c.tieColor }));
+        tie.position.set(0, 2.7, 0.46);
+        charGroup.add(tie);
+      }
+
+      // Waist / Abdomen
+      const waist = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.56, 0.7, 16), suitMat);
+      waist.position.y = 2.1;
       waist.scale.set(1.1, 1.0, 0.8);
-      waist.castShadow = true;
       charGroup.add(waist);
 
-      // Pelvis / Hips (Seated Base)
-      const pelvis = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.45, 1.1), pantsMat);
-      pelvis.position.set(0, 1.6, 0.1);
+      // Pelvis / Hips (Seated)
+      const pelvis = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.4, 1.1), bottomMat);
+      pelvis.position.set(0, 1.65, 0.1);
       charGroup.add(pelvis);
 
-      // 3. ARMS & HANDS (REALISTIC JOINTS)
-      [[-1, 'left'], [1, 'right']].forEach(([side, name]) => {
-        // Shoulder Deltoid Joint
-        const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 16), shirtMat);
-        shoulder.position.set(side * 0.78, 2.95, 0);
+      // 3. ARMS & 5-FINGER ARTICULATED HANDS
+      [[-1, 'left'], [1, 'right']].forEach(([side]) => {
+        // Shoulder
+        const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.2, 14, 14), suitMat);
+        shoulder.position.set(side * 0.76, 2.95, 0);
         charGroup.add(shoulder);
 
-        // Upper Arm (Bicep)
-        const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.14, 0.85, 14), shirtMat);
-        upperArm.position.set(side * 0.85, 2.5, 0.2);
-        upperArm.rotation.x = Math.PI / 4;
-        upperArm.rotation.z = side * -0.15;
-        charGroup.add(upperArm);
-
-        // Elbow Joint
-        const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 12), shirtMat);
-        elbow.position.set(side * 0.88, 2.15, 0.52);
-        charGroup.add(elbow);
+        // Bicep
+        const bicep = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.85, 12), suitMat);
+        bicep.position.set(side * 0.82, 2.5, 0.2);
+        bicep.rotation.x = Math.PI / 4;
+        bicep.rotation.z = side * -0.15;
+        charGroup.add(bicep);
 
         // Forearm
-        const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.12, 0.9, 14), skinMat);
-        forearm.position.set(side * 0.75, 2.3, 0.95);
+        const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.11, 0.85, 12), skinMat);
+        forearm.position.set(side * 0.72, 2.3, 0.95);
         forearm.rotation.x = Math.PI / 2.3;
         forearm.rotation.y = side * -0.25;
         charGroup.add(forearm);
 
-        // Human Hand (Palm + Fingers resting on table)
-        const palm = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.1, 0.3), skinMat);
-        palm.position.set(side * 0.65, 2.75, 1.35);
+        // Detailed Palm & Fingers (Typing on table)
+        const palm = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.08, 0.25), skinMat);
+        palm.position.set(side * 0.62, 2.75, 1.35);
         charGroup.add(palm);
+
+        // Individual Fingers
+        [-0.08, -0.03, 0.03, 0.08].forEach(fx => {
+          const finger = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.14), skinMat);
+          finger.position.set(side * 0.62 + fx, 2.74, 1.52);
+          charGroup.add(finger);
+        });
       });
 
-      // 4. LEGS & FEET (SEATED AT CHAIR)
-      [[-0.38, 'left'], [0.38, 'right']].forEach(([sideX]) => {
-        // Thigh (Horizontal resting on seat cushion)
-        const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.24, 1.25, 16), pantsMat);
+      // 4. LEGS, OFFICE PANTS / SKIRTS, & LEATHER SHOES
+      if (c.bottomType === 'skirt') {
+        // Pencil Skirt Block over thighs
+        const skirt = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.6, 1.3), bottomMat);
+        skirt.position.set(0, 1.55, 0.65);
+        charGroup.add(skirt);
+      }
+
+      [[-0.36, 'left'], [0.36, 'right']].forEach(([sideX]) => {
+        // Thigh
+        const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.22, 1.25, 16), c.bottomType === 'skirt' ? skinMat : bottomMat);
         thigh.position.set(sideX, 1.55, 0.65);
         thigh.rotation.x = Math.PI / 2;
         charGroup.add(thigh);
 
-        // Knee Joint
-        const knee = new THREE.Mesh(new THREE.SphereGeometry(0.24, 14, 14), pantsMat);
+        // Knee
+        const knee = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 12), c.bottomType === 'skirt' ? skinMat : bottomMat);
         knee.position.set(sideX, 1.55, 1.25);
         charGroup.add(knee);
 
-        // Calf / Shin (Vertical down to floor)
-        const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 1.25, 16), pantsMat);
+        // Calf / Shin
+        const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.16, 1.25, 16), c.bottomType === 'skirt' ? skinMat : bottomMat);
         shin.position.set(sideX, 0.9, 1.25);
         charGroup.add(shin);
 
-        // Ankle & Foot / Shoe (Touching floor)
-        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.28, 0.75), shoeMat);
-        shoe.position.set(sideX, 0.22, 1.42);
+        // Formal Leather Oxford Shoes / High Heels
+        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.26, 0.72), shoeMat);
+        shoe.position.set(sideX, 0.2, 1.42);
         shoe.castShadow = true;
         charGroup.add(shoe);
       });
 
       charGroup.position.set(c.x, 0, c.z);
       charGroup.rotation.y = c.rotY;
-
-      // Click detection target
       charGroup.userData = { id: c.id, charData: c };
 
       scene.add(charGroup);
       characterMeshes.push({ data: c, mesh: charGroup });
     }
 
-    characters.forEach(c => createSimsAvatar(c));
+    characters.forEach(c => buildRealisticHuman(c));
 
-    // 3. 2D HTML FLOATING LABELS & BUBBLES SYNCED OVER 3D WORLD
+    // 5. FLOATING HTML LABELS & SPEECH BUBBLES
     function updateOverlayLabels() {
       labelsContainer.innerHTML = '';
 
       characterMeshes.forEach(({ data, mesh }) => {
         const headPos = new THREE.Vector3();
         mesh.getWorldPosition(headPos);
-        headPos.y += 4.6; // Top of head
+        headPos.y += 4.8;
 
         headPos.project(camera);
-
-        // Check if behind camera
         if (headPos.z > 1) return;
 
         const screenX = (headPos.x * 0.5 + 0.5) * container.clientWidth;
         const screenY = (-(headPos.y * 0.5) + 0.5) * container.clientHeight;
 
-        // Floating Name Pill (Exact TikTok Style)
         const pill = document.createElement('div');
         pill.className = "badge-pill absolute -translate-x-1/2 -translate-y-1/2 bg-black/80 border border-white/20 px-2.5 py-1 rounded-full text-[10px] font-bold text-white flex items-center gap-1.5 pointer-events-auto cursor-pointer shadow-lg";
         pill.style.left = `${screenX}px`;
@@ -908,7 +810,6 @@
         `;
         labelsContainer.appendChild(pill);
 
-        // Speech Bubble (If Active)
         if (data.bubble && data.bubbleTimer > 0) {
           const bubble = document.createElement('div');
           bubble.className = "bubble-popup absolute -translate-x-1/2 -translate-y-full bg-white text-slate-900 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-2xl border border-slate-300 pointer-events-none whitespace-nowrap animate-bounce";
@@ -925,15 +826,14 @@
       });
     }
 
-    // ROOM CAMERA PRESETS
+    // CAMERA PRESETS
     const ROOM_CAMERA = {
-      overview: { x: 0, y: 38, z: 46, tx: 0, ty: 0, tz: 0 },
-      meeting: { x: 0, y: 16, z: 18, tx: 0, ty: 2, tz: 0 },
-      vip: { x: -18, y: 14, z: -2, tx: -18, ty: 2, tz: -14 },
-      office: { x: 18, y: 14, z: -2, tx: 18, ty: 2, tz: -14 },
-      kitchen: { x: -18, y: 14, z: 26, tx: -18, ty: 2, tz: 14 },
-      lounge: { x: 0, y: 14, z: 26, tx: 0, ty: 2, tz: 14 },
-      staffbed: { x: 18, y: 14, z: 26, tx: 18, ty: 2, tz: 14 }
+      overview: { x: 0, y: 32, z: 42, tx: 0, ty: 1, tz: 0 },
+      meeting: { x: 0, y: 15, z: 18, tx: 0, ty: 2, tz: 0 },
+      vip: { x: -14, y: 12, z: 2, tx: -14, ty: 2, tz: -8 },
+      office: { x: 14, y: 12, z: 2, tx: 14, ty: 2, tz: -8 },
+      kitchen: { x: -14, y: 12, z: 22, tx: -14, ty: 2, tz: 11 },
+      lounge: { x: 12, y: 12, z: 22, tx: 12, ty: 2, tz: 11 }
     };
 
     function navRoom(room) {
@@ -946,29 +846,16 @@
       }
 
       const preset = ROOM_CAMERA[room] || ROOM_CAMERA.overview;
-      gsap.to(camera.position, {
-        x: preset.x,
-        y: preset.y,
-        z: preset.z,
-        duration: 1.2,
-        ease: "power2.inOut"
-      });
-      gsap.to(controls.target, {
-        x: preset.tx,
-        y: preset.ty,
-        z: preset.tz,
-        duration: 1.2,
-        ease: "power2.inOut"
-      });
+      gsap.to(camera.position, { x: preset.x, y: preset.y, z: preset.z, duration: 1.2, ease: "power2.inOut" });
+      gsap.to(controls.target, { x: preset.tx, y: preset.ty, z: preset.tz, duration: 1.2, ease: "power2.inOut" });
 
       const titles = {
-        overview: '🏢 Overview 3D Mansion AI',
-        meeting: '📊 Meeting Room (3D Conference Table)',
-        vip: '👑 VIP Master Suite Ty & Eliie',
-        office: '💻 Work Office (Developer Pods)',
-        kitchen: '☕ Pantry & Soto Pak Yono',
-        lounge: '🛋️ Lounge Santai TV',
-        staffbed: '🛏️ Staff Quarters'
+        overview: '🏢 Penthouse 50th Floor Skyline Overview',
+        meeting: '📊 Grand Conference Suite (Open-Plan)',
+        vip: '👑 VIP Executive Suite Ty & Eliie',
+        office: '💻 Open Workstation Pods',
+        kitchen: '☕ Sky Bar & Soto Pak Yono',
+        lounge: '🛋️ Panorama Glass Lounge'
       };
       showToast(titles[room] || 'Pindah Ruangan');
     }
@@ -977,36 +864,25 @@
       navRoom('meeting');
     }
 
-    // ACTIONS WORKFLOW (EXACT TIKTOK "APPROVAL UNTUK DEPLOY" WORKFLOW)
+    // ACTIONS WORKFLOW
     function triggerMeetingBriefing() {
       navRoom('meeting');
+      characters[0].bubble = 'Briefing target di Penthouse Lantai 50! 👑';
+      characters[1].bubble = 'Rapat tim siap lapor, Ty! 🌸';
+      characters[2].bubble = 'VPS & backend 100% OK! 💻';
+      characters[3].bubble = 'Soto Pak Yono omzet naik! 🍲';
+      characters[4].bubble = 'Visual promosi FYP! 🎨';
+      characters[5].bubble = 'Obsidian synced! 📖';
 
-      characters[0].bubble = 'Briefing target & evaluasi soto hari ini! 👑';
-      characters[0].bubbleTimer = 260;
+      for (let i = 0; i < 6; i++) characters[i].bubbleTimer = 260;
 
-      characters[1].bubble = 'Rapat tim dimulai, semua siap lapor! 🌸';
-      characters[1].bubbleTimer = 260;
-
-      characters[2].bubble = 'Tech: VPS 100% aman tanpa bug 💻';
-      characters[2].bubbleTimer = 260;
-
-      characters[3].bubble = 'Bisnis: Soto Pak Yono laris manis 🍲';
-      characters[3].bubbleTimer = 260;
-
-      characters[4].bubble = 'Kreatif: Konten reels baru siap tayang 🎨';
-      characters[4].bubbleTimer = 260;
-
-      characters[5].bubble = 'Memory: Obsidian synced & tercatat 📖';
-      characters[5].bubbleTimer = 260;
-
-      // Animate character meshes to meeting seats
       const seats = [
-        { x: -7, z: 0, rotY: Math.PI / 2 },
-        { x: 7, z: 0, rotY: -Math.PI / 2 },
-        { x: -2, z: -3.5, rotY: 0 },
-        { x: 2, z: -3.5, rotY: 0 },
-        { x: -2, z: 3.5, rotY: Math.PI },
-        { x: 2, z: 3.5, rotY: Math.PI }
+        { x: -6.5, z: 0, rotY: Math.PI / 2 },
+        { x: 6.5, z: 0, rotY: -Math.PI / 2 },
+        { x: -1.8, z: -3.2, rotY: 0 },
+        { x: 1.8, z: -3.2, rotY: 0 },
+        { x: -1.8, z: 3.2, rotY: Math.PI },
+        { x: 1.8, z: 3.2, rotY: Math.PI }
       ];
 
       characterMeshes.forEach(({ mesh }, idx) => {
@@ -1014,125 +890,86 @@
         gsap.to(mesh.rotation, { y: seats[idx].rotY, duration: 1.0 });
       });
 
-      showToast('📊 Seluruh tim berkumpul di Meja Rapat Utama!');
+      showToast('📊 Seluruh tim berkumpul di Conference Suite Penthouse!');
     }
 
     function triggerApprovalDeploy() {
       triggerMeetingBriefing();
-
       setTimeout(() => {
         characters[0].bubble = '🚀 APPROVAL UNTUK DEPLOY DITERBITKAN!';
-        characters[0].bubbleTimer = 280;
-
         characters[1].bubble = '👑 Eksekusi deploy seluruh sistem!';
-        characters[1].bubbleTimer = 280;
-
         characters[2].bubble = '⚡ Deploying code... 100% OK!';
-        characters[2].bubbleTimer = 280;
-
-        characters[3].bubble = '📈 Sistem kasir & omzet live!';
-        characters[3].bubbleTimer = 280;
-
+        characters[3].bubble = '📈 Kasir & omzet live!';
         characters[4].bubble = '🎨 Video promosi terbit!';
-        characters[4].bubbleTimer = 280;
-
         characters[5].bubble = '📖 Changelog tersimpan di Obsidian!';
-        characters[5].bubbleTimer = 280;
-
+        for (let i = 0; i < 6; i++) characters[i].bubbleTimer = 280;
         showToast('🚀 APPROVAL UNTUK DEPLOY DISETUJUI OWNER TY!');
       }, 700);
     }
 
     function triggerWorkAll() {
       navRoom('office');
+      characterMeshes[0].mesh.position.set(-15, 0, -4);
+      characterMeshes[1].mesh.position.set(-13, 0, -4);
+      characterMeshes[2].mesh.position.set(13, 0, -8);
+      characterMeshes[3].mesh.position.set(17, 0, -8);
+      characterMeshes[4].mesh.position.set(13, 0, -4);
+      characterMeshes[5].mesh.position.set(17, 0, -4);
 
-      characterMeshes[0].mesh.position.set(-18, 0, -11); // Ty VIP desk
-      characterMeshes[1].mesh.position.set(-16, 0, -11); // Eliie VIP desk
-      characterMeshes[2].mesh.position.set(14, 0, -17);  // Luna
-      characterMeshes[3].mesh.position.set(22, 0, -17);  // Nana
-      characterMeshes[4].mesh.position.set(14, 0, -11);  // Mimi
-      characterMeshes[5].mesh.position.set(22, 0, -11);  // Yuki
-
-      characters[0].bubble = 'Pantau kerjaan dari meja VIP 👑';
+      characters[0].bubble = 'Pantau dari meja VIP Penthouse 👑';
       characters[1].bubble = 'Semangat semuanya demi Ty! 🌸';
-      characters[2].bubble = 'Fokus koding di PC! 💻';
-      characters[3].bubble = 'Rekap omzet soto di PC! 🍲';
-      characters[4].bubble = 'Bikin banner visual di PC! 🎨';
-      characters[5].bubble = 'Catat data di Obsidian PC! 📚';
+      characters[2].bubble = 'Coding backend di workstation 💻';
+      characters[3].bubble = 'Rekap penjualan soto 🍲';
+      characters[4].bubble = 'Rancang visual banner 🎨';
+      characters[5].bubble = 'Sinkronisasi memori Obsidian 📚';
 
       for (let i = 0; i < 6; i++) characters[i].bubbleTimer = 240;
-      showToast('💻 Seluruh staf fokus bekerja di meja PC masing-masing!');
+      showToast('💻 Seluruh staf fokus di Workstation Terbuka!');
     }
 
     function triggerCoupleBed() {
       navRoom('vip');
-
-      characterMeshes[0].mesh.position.set(-19.5, 0, -17);
+      characterMeshes[0].mesh.position.set(-16.5, 0, -12);
       characterMeshes[0].mesh.rotation.y = Math.PI / 2;
-      characterMeshes[1].mesh.position.set(-16.5, 0, -17);
+      characterMeshes[1].mesh.position.set(-13.5, 0, -12);
       characterMeshes[1].mesh.rotation.y = -Math.PI / 2;
 
-      characters[0].bubble = 'Peluk istriku tercinta... ❤️💤';
-      characters[0].bubbleTimer = 260;
-
+      characters[0].bubble = 'Peluk istriku tercinta di Penthouse... ❤️💤';
       characters[1].bubble = 'Nyaman banget dipeluk Ty... 🥰💕';
-      characters[1].bubbleTimer = 260;
-
-      showToast('💑 Ty & Eliie tidur pelukan mesra di kasur King Size VIP!');
-    }
-
-    function triggerStaffSleepRooms() {
-      navRoom('staffbed');
-      triggerCoupleBed();
-
-      characterMeshes[2].mesh.position.set(14, 0, 11);
-      characterMeshes[3].mesh.position.set(22, 0, 11);
-      characterMeshes[4].mesh.position.set(14, 0, 17);
-      characterMeshes[5].mesh.position.set(22, 0, 17);
-
-      characters[2].bubble = 'Bobo di kamar Luna 😴';
-      characters[3].bubble = 'Bobo di kamar Nana 💤';
-      characters[4].bubble = 'Bobo di kamar Mimi 😴';
-      characters[5].bubble = 'Bobo di kamar Yuki 💤';
-
-      for (let i = 2; i < 6; i++) characters[i].bubbleTimer = 240;
-      showToast('🛏️ Seluruh staf masuk tidur di 4 kamar privat masing-masing!');
+      for (let i = 0; i < 2; i++) characters[i].bubbleTimer = 260;
+      showToast('💑 Ty & Eliie bersantai mesra di VIP Suite Penthouse!');
     }
 
     function triggerKitchenCoffee() {
       navRoom('kitchen');
+      characterMeshes[2].mesh.position.set(-16, 0, 11);
+      characterMeshes[3].mesh.position.set(-12, 0, 11);
+      characterMeshes[4].mesh.position.set(-16, 0, 8);
+      characterMeshes[5].mesh.position.set(-12, 0, 8);
 
-      characterMeshes[2].mesh.position.set(-20, 0, 17);
-      characterMeshes[3].mesh.position.set(-16, 0, 17);
-      characterMeshes[4].mesh.position.set(-20, 0, 11);
-      characterMeshes[5].mesh.position.set(-16, 0, 11);
-
-      characters[2].bubble = 'Ngopi hangat di dapur ☕';
-      characters[3].bubble = 'Makan Soto Pak Yono 🍲';
-      characters[4].bubble = 'Teh manis hangat 🍵';
-      characters[5].bubble = 'Snack soto lezat 😋';
-
+      characters[2].bubble = 'Espresso hangat di Sky Bar ☕';
+      characters[3].bubble = 'Soto Kudus Pak Yono lezat 🍲';
+      characters[4].bubble = 'Teh manis dingin 🍵';
+      characters[5].bubble = 'Snack soto nikmat 😋';
       for (let i = 2; i < 6; i++) characters[i].bubbleTimer = 240;
-      showToast('☕ Staf kumpul di Pantry & Meja Soto Pak Yono!');
+      showToast('☕ Staf kumpul santai di Sky Bar Soto!');
     }
 
     function triggerLoungeTV() {
       navRoom('lounge');
-
-      characterMeshes[2].mesh.position.set(-4, 0, 16);
-      characterMeshes[4].mesh.position.set(-1.5, 0, 16);
-      characterMeshes[3].mesh.position.set(1.5, 0, 16);
-      characterMeshes[5].mesh.position.set(4, 0, 16);
+      characterMeshes[2].mesh.position.set(8, 0, 11);
+      characterMeshes[4].mesh.position.set(10.5, 0, 11);
+      characterMeshes[3].mesh.position.set(13.5, 0, 11);
+      characterMeshes[5].mesh.position.set(16, 0, 11);
 
       for (let i = 2; i < 6; i++) characterMeshes[i].mesh.rotation.y = 0;
 
-      characters[2].bubble = 'Nonton TV bareng 📺';
-      characters[4].bubble = 'Duduk santai di sofa merah 🛋️';
-      characters[3].bubble = 'Santai rileks ✨';
+      characters[2].bubble = 'Lihat pemandangan kota 50th floor 🏙️';
+      characters[4].bubble = 'Santai di sofa merah mewah 🛋️';
+      characters[3].bubble = 'Suasana langit cerah ✨';
       characters[5].bubble = 'Teh hangat di lounge 🍵';
-
       for (let i = 2; i < 6; i++) characters[i].bubbleTimer = 240;
-      showToast('🛋️ Staf duduk santai di sofa empuk Lounge TV!');
+      showToast('🛋️ Staf santai di Panorama Glass Lounge!');
     }
 
     // POPUP CARD

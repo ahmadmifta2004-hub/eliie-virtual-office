@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-humanoid3d-v11';
+const CACHE_NAME = 'eliie-office-penthouse-v12';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
