@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-meeting-v7';
+const CACHE_NAME = 'eliie-office-chibi-v8';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
