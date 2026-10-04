@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v20-mega-expansive-penthouse';
+const CACHE_NAME = 'eliie-office-v21-open-top-architecture';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

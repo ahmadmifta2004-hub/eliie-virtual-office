@@ -378,47 +378,14 @@
     woodCenter.receiveShadow = true;
     penthouse.add(woodCenter);
 
-    // B. EXPANSIVE ROOF & CEILING STRUCTURE (CEILING AT Y = 9.5M)
-    const ceilingGroup = new THREE.Group();
-    ceilingGroup.position.y = 9.5;
-
-    const roofSlab = new THREE.Mesh(new THREE.BoxGeometry(73, 0.5, 59), ceilingMat);
-    roofSlab.position.y = 0.25;
-    ceilingGroup.add(roofSlab);
-
-    // Major Architectural Steel Roof Beams
-    [-28, -13.5, 0, 13.5, 28].forEach(bx => {
-      const beamX = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 58), blackSteelMat);
-      beamX.position.set(bx, -0.15, 0);
-      ceilingGroup.add(beamX);
-    });
-
-    [-22, -8, 8, 22].forEach(bz => {
-      const beamZ = new THREE.Mesh(new THREE.BoxGeometry(72, 0.7, 0.6), blackSteelMat);
-      beamZ.position.set(0, -0.15, bz);
-      ceilingGroup.add(beamZ);
-    });
-
-    // Glass Skylight Panel over Conference Hall
-    const skylight = new THREE.Mesh(new THREE.BoxGeometry(24, 0.1, 18), glassWallMat);
-    skylight.position.set(0, 0.1, 0);
-    ceilingGroup.add(skylight);
-
-    // Recessed LED Downlights
-    [[-6, -4], [6, -4], [-6, 4], [6, 4], [-24, -14], [24, -14], [-24, 14], [24, 14]].forEach(([lx, lz]) => {
-      const spot = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.1, 16), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
-      spot.position.set(lx, -0.2, lz);
-      ceilingGroup.add(spot);
-    });
-
-    penthouse.add(ceilingGroup);
+    // B. OPEN-TOP PENTHOUSE ARCHITECTURE (NO ROOF / OPEN CEILING FOR CLEAR TOP-DOWN 3D VIEW)
 
     // C. CRYSTAL-CLEAR PANORAMIC CURTAIN GLASS WINDOWS (ALL 4 EXTERIOR SIDES)
     const glassPerimeter = [
-      { w: 72, h: 9.5, d: 0.25, x: 0, y: 4.75, z: -29 }, // Sisi Belakang
-      { w: 72, h: 9.5, d: 0.25, x: 0, y: 4.75, z: 29 },  // Sisi Depan
-      { w: 0.25, h: 9.5, d: 58, x: -36, y: 4.75, z: 0 }, // Sisi Kiri
-      { w: 0.25, h: 9.5, d: 58, x: 36, y: 4.75, z: 0 }   // Sisi Kanan
+      { w: 72, h: 6.0, d: 0.25, x: 0, y: 3.0, z: -29 }, // Sisi Belakang
+      { w: 72, h: 6.0, d: 0.25, x: 0, y: 3.0, z: 29 },  // Sisi Depan
+      { w: 0.25, h: 6.0, d: 58, x: -36, y: 3.0, z: 0 }, // Sisi Kiri
+      { w: 0.25, h: 6.0, d: 58, x: 36, y: 3.0, z: 0 }   // Sisi Kanan
     ];
 
     glassPerimeter.forEach(gp => {
@@ -430,22 +397,22 @@
     // Vertical Window Mullions
     [-27, -18, -9, 0, 9, 18, 27].forEach(mx => {
       [-29, 29].forEach(mz => {
-        const mul = new THREE.Mesh(new THREE.BoxGeometry(0.3, 9.5, 0.35), windowFrameMat);
-        mul.position.set(mx, 4.75, mz);
+        const mul = new THREE.Mesh(new THREE.BoxGeometry(0.3, 6.0, 0.35), windowFrameMat);
+        mul.position.set(mx, 3.0, mz);
         penthouse.add(mul);
       });
     });
 
     [-21.75, -14.5, -7.25, 0, 7.25, 14.5, 21.75].forEach(mz => {
       [-36, 36].forEach(mx => {
-        const mul = new THREE.Mesh(new THREE.BoxGeometry(0.35, 9.5, 0.3), windowFrameMat);
-        mul.position.set(mx, 4.75, mz);
+        const mul = new THREE.Mesh(new THREE.BoxGeometry(0.35, 6.0, 0.3), windowFrameMat);
+        mul.position.set(mx, 3.0, mz);
         penthouse.add(mul);
       });
     });
 
-    // Horizontal Window Sills at Y = 3.2 and Y = 6.4
-    [3.2, 6.4].forEach(my => {
+    // Horizontal Window Sills around perimeter
+    [2.4, 4.8].forEach(my => {
       [-29, 29].forEach(mz => {
         const sill = new THREE.Mesh(new THREE.BoxGeometry(72, 0.25, 0.35), windowFrameMat);
         sill.position.set(0, my, mz);
@@ -460,12 +427,12 @@
 
     // Outer Structural Steel Pillars
     [[-36, -29], [36, -29], [-36, 29], [36, 29], [-36, 0], [36, 0], [0, -29], [0, 29]].forEach(([px, pz]) => {
-      const pillar = new THREE.Mesh(new THREE.BoxGeometry(1.0, 9.5, 1.0), blackSteelMat);
-      pillar.position.set(px, 4.75, pz);
+      const pillar = new THREE.Mesh(new THREE.BoxGeometry(1.0, 6.0, 1.0), blackSteelMat);
+      pillar.position.set(px, 3.0, pz);
       penthouse.add(pillar);
     });
 
-    // D. TEMBOK PEMISAH RUANGAN MEGA-LUAS & MENYAMBUNG SAMPAI ATAP (Y = 9.5M)
+    // D. TEMBOK PEMISAH RUANGAN SEAMLESS TERATUR (OPEN TOP VIEW)
     function createPartitionWall(w, h, d, x, y, z) {
       const wallGroup = new THREE.Group();
       const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallPartitionMat);
@@ -486,40 +453,40 @@
     }
 
     function createCornerPillar(x, z) {
-      const col = new THREE.Mesh(new THREE.BoxGeometry(0.7, 9.5, 0.7), woodDarkMat);
-      col.position.set(x, 4.75, z);
+      const col = new THREE.Mesh(new THREE.BoxGeometry(0.7, 6.0, 0.7), woodDarkMat);
+      col.position.set(x, 3.0, z);
       return col;
     }
 
-    // 1. RUANG VIP EXECUTIVE MASTER SUITE (KIRI BELAKANG: X -36 to -13.5, Z -29 to -5) — LEBAR 22.5M X PANJANG 24M
-    penthouse.add(createPartitionWall(0.4, 9.5, 24.0, -13.5, 4.75, -17.0)); // Dinding Timur
-    penthouse.add(createPartitionWall(13.0, 9.5, 0.4, -29.5, 4.75, -5.0));  // Dinding Selatan (Sisi Kiri)
-    penthouse.add(createPartitionWall(6.0, 9.5, 0.4, -16.5, 4.75, -5.0));   // Dinding Selatan (Sisi Kanan)
-    penthouse.add(createPartitionWall(3.5, 4.0, 0.4, -21.25, 7.5, -5.0));   // Tembok Atas Pintu (Lintel)
+    // 1. RUANG VIP EXECUTIVE MASTER SUITE (KIRI BELAKANG)
+    penthouse.add(createPartitionWall(0.4, 6.0, 24.0, -13.5, 3.0, -17.0)); // Dinding Timur
+    penthouse.add(createPartitionWall(13.0, 6.0, 0.4, -29.5, 3.0, -5.0));  // Dinding Selatan (Sisi Kiri)
+    penthouse.add(createPartitionWall(6.0, 6.0, 0.4, -16.5, 3.0, -5.0));   // Dinding Selatan (Sisi Kanan)
+    penthouse.add(createPartitionWall(3.5, 1.5, 0.4, -21.25, 5.25, -5.0));  // Tembok Atas Pintu (Lintel)
     penthouse.add(createCornerPillar(-13.5, -5.0));
     penthouse.add(createCornerPillar(-13.5, -29.0));
 
-    // 2. RUANG WORK OFFICE STAF (KANAN BELAKANG: X 13.5 to 36, Z -29 to -5) — LEBAR 22.5M X PANJANG 24M
-    penthouse.add(createPartitionWall(0.4, 9.5, 24.0, 13.5, 4.75, -17.0));  // Dinding Barat
-    penthouse.add(createPartitionWall(13.0, 9.5, 0.4, 29.5, 4.75, -5.0));   // Dinding Selatan (Sisi Kanan)
-    penthouse.add(createPartitionWall(6.0, 9.5, 0.4, 16.5, 4.75, -5.0));    // Dinding Selatan (Sisi Kiri)
-    penthouse.add(createPartitionWall(3.5, 4.0, 0.4, 21.25, 7.5, -5.0));    // Tembok Atas Pintu (Lintel)
+    // 2. RUANG WORK OFFICE STAF (KANAN BELAKANG)
+    penthouse.add(createPartitionWall(0.4, 6.0, 24.0, 13.5, 3.0, -17.0));  // Dinding Barat
+    penthouse.add(createPartitionWall(13.0, 6.0, 0.4, 29.5, 3.0, -5.0));   // Dinding Selatan (Sisi Kanan)
+    penthouse.add(createPartitionWall(6.0, 6.0, 0.4, 16.5, 3.0, -5.0));    // Dinding Selatan (Sisi Kiri)
+    penthouse.add(createPartitionWall(3.5, 1.5, 0.4, 21.25, 5.25, -5.0));  // Tembok Atas Pintu (Lintel)
     penthouse.add(createCornerPillar(13.5, -5.0));
     penthouse.add(createCornerPillar(13.5, -29.0));
 
-    // 3. RUANG SKY BAR & SOTO PAK YONO (KIRI DEPAN: X -36 to -13.5, Z 5 to 29) — LEBAR 22.5M X PANJANG 24M
-    penthouse.add(createPartitionWall(0.4, 9.5, 24.0, -13.5, 4.75, 17.0));  // Dinding Timur
-    penthouse.add(createPartitionWall(13.0, 9.5, 0.4, -29.5, 4.75, 5.0));   // Dinding Utara (Sisi Kiri)
-    penthouse.add(createPartitionWall(6.0, 9.5, 0.4, -16.5, 4.75, 5.0));    // Dinding Utara (Sisi Kanan)
-    penthouse.add(createPartitionWall(3.5, 4.0, 0.4, -21.25, 7.5, 5.0));    // Tembok Atas Pintu (Lintel)
+    // 3. RUANG SKY BAR & SOTO PAK YONO (KIRI DEPAN)
+    penthouse.add(createPartitionWall(0.4, 6.0, 24.0, -13.5, 3.0, 17.0));  // Dinding Timur
+    penthouse.add(createPartitionWall(13.0, 6.0, 0.4, -29.5, 3.0, 5.0));   // Dinding Utara (Sisi Kiri)
+    penthouse.add(createPartitionWall(6.0, 6.0, 0.4, -16.5, 3.0, 5.0));    // Dinding Utara (Sisi Kanan)
+    penthouse.add(createPartitionWall(3.5, 1.5, 0.4, -21.25, 5.25, 5.0));  // Tembok Atas Pintu (Lintel)
     penthouse.add(createCornerPillar(-13.5, 5.0));
     penthouse.add(createCornerPillar(-13.5, 29.0));
 
-    // 4. RUANG PANORAMA SKY LOUNGE (KANAN DEPAN: X 13.5 to 36, Z 5 to 29) — LEBAR 22.5M X PANJANG 24M
-    penthouse.add(createPartitionWall(0.4, 9.5, 24.0, 13.5, 4.75, 17.0));   // Dinding Barat
-    penthouse.add(createPartitionWall(13.0, 9.5, 0.4, 29.5, 4.75, 5.0));    // Dinding Utara (Sisi Kanan)
-    penthouse.add(createPartitionWall(6.0, 9.5, 0.4, 16.5, 4.75, 5.0));     // Dinding Utara (Sisi Kiri)
-    penthouse.add(createPartitionWall(3.5, 4.0, 0.4, 21.25, 7.5, 5.0));     // Tembok Atas Pintu (Lintel)
+    // 4. RUANG PANORAMA SKY LOUNGE (KANAN DEPAN)
+    penthouse.add(createPartitionWall(0.4, 6.0, 24.0, 13.5, 3.0, 17.0));   // Dinding Barat
+    penthouse.add(createPartitionWall(13.0, 6.0, 0.4, 29.5, 3.0, 5.0));    // Dinding Utara (Sisi Kanan)
+    penthouse.add(createPartitionWall(6.0, 6.0, 0.4, 16.5, 3.0, 5.0));     // Dinding Utara (Sisi Kiri)
+    penthouse.add(createPartitionWall(3.5, 1.5, 0.4, 21.25, 5.25, 5.0));   // Tembok Atas Pintu (Lintel)
     penthouse.add(createCornerPillar(13.5, 5.0));
     penthouse.add(createCornerPillar(13.5, 29.0));
 
@@ -528,25 +495,25 @@
     const entranceGroup = new THREE.Group();
     entranceGroup.position.set(0, 0, 29);
 
-    const doorL = new THREE.Mesh(new THREE.BoxGeometry(2.2, 5.5, 0.15), interiorGlassMat);
-    doorL.position.set(-1.2, 2.75, 0);
+    const doorL = new THREE.Mesh(new THREE.BoxGeometry(2.2, 4.5, 0.15), interiorGlassMat);
+    doorL.position.set(-1.2, 2.25, 0);
     entranceGroup.add(doorL);
 
-    const doorR = new THREE.Mesh(new THREE.BoxGeometry(2.2, 5.5, 0.15), interiorGlassMat);
-    doorR.position.set(1.2, 2.75, 0);
+    const doorR = new THREE.Mesh(new THREE.BoxGeometry(2.2, 4.5, 0.15), interiorGlassMat);
+    doorR.position.set(1.2, 2.25, 0);
     entranceGroup.add(doorR);
 
-    const doorFrame = new THREE.Mesh(new THREE.BoxGeometry(5.0, 5.8, 0.4), blackSteelMat);
-    doorFrame.position.set(0, 2.9, 0);
+    const doorFrame = new THREE.Mesh(new THREE.BoxGeometry(5.0, 4.8, 0.4), blackSteelMat);
+    doorFrame.position.set(0, 2.4, 0);
     entranceGroup.add(doorFrame);
 
     const sensorUnit = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.35, 0.5), new THREE.MeshStandardMaterial({ color: 0x0284c7 }));
-    sensorUnit.position.set(0, 5.7, 0);
+    sensorUnit.position.set(0, 4.7, 0);
     entranceGroup.add(sensorUnit);
 
     [-0.25, 0.25].forEach(hx => {
-      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.0, 12), metalHandleMat);
-      handle.position.set(hx, 2.5, 0.15);
+      const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8, 12), metalHandleMat);
+      handle.position.set(hx, 2.2, 0.15);
       entranceGroup.add(handle);
     });
 
@@ -560,16 +527,16 @@
     const exitGroup = new THREE.Group();
     exitGroup.position.set(0, 0, -29);
 
-    const exitDoor = new THREE.Mesh(new THREE.BoxGeometry(2.6, 5.5, 0.2), interiorGlassMat);
-    exitDoor.position.set(0, 2.75, 0);
+    const exitDoor = new THREE.Mesh(new THREE.BoxGeometry(2.6, 4.5, 0.2), interiorGlassMat);
+    exitDoor.position.set(0, 2.25, 0);
     exitGroup.add(exitDoor);
 
-    const exitFrame = new THREE.Mesh(new THREE.BoxGeometry(3.0, 5.8, 0.35), blackSteelMat);
-    exitFrame.position.set(0, 2.9, 0);
+    const exitFrame = new THREE.Mesh(new THREE.BoxGeometry(3.0, 4.8, 0.35), blackSteelMat);
+    exitFrame.position.set(0, 2.4, 0);
     exitGroup.add(exitFrame);
 
     const exitSign = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.25), exitSignMat);
-    exitSign.position.set(0, 5.7, 0.2);
+    exitSign.position.set(0, 4.7, 0.2);
     exitGroup.add(exitSign);
 
     penthouse.add(exitGroup);
@@ -580,17 +547,17 @@
       dg.position.set(x, 0, z);
       dg.rotation.y = rotY;
 
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(3.0, 5.5, 0.4), blackSteelMat);
-      frame.position.set(0, 2.75, 0);
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(3.0, 4.8, 0.4), blackSteelMat);
+      frame.position.set(0, 2.4, 0);
       dg.add(frame);
 
-      const leaf = new THREE.Mesh(new THREE.BoxGeometry(2.5, 5.2, 0.12), doorColor);
-      leaf.position.set(0.8, 2.7, 0.5);
+      const leaf = new THREE.Mesh(new THREE.BoxGeometry(2.5, 4.5, 0.12), doorColor);
+      leaf.position.set(0.8, 2.25, 0.5);
       leaf.rotation.y = -0.55;
       dg.add(leaf);
 
       const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.4, 8), metalHandleMat);
-      handle.position.set(1.9, 2.5, 0.85);
+      handle.position.set(1.9, 2.2, 0.85);
       handle.rotation.x = Math.PI / 2;
       dg.add(handle);
 
