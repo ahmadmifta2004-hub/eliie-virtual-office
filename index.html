@@ -1358,12 +1358,12 @@
 
     const characterMeshes = [];
 
-    // BUILD THE SIMS 3D ARTICULATED HUMANOID AVATAR (WITH MOVABLE LEGS, ARMS, HEAD & SPINNING PLUMBOB)
+    // BUILD THE SIMS 3D ARTICULATED HUMANOID AVATAR (SMOOTH CAPSULES, DUAL KNEE/ELBOW JOINTS & EYE BLINK)
     function buildSimsAvatar(c) {
       const charGroup = new THREE.Group();
 
-      const skinMat = new THREE.MeshStandardMaterial({ color: c.skinColor, roughness: 0.5 });
-      const hairMat = new THREE.MeshStandardMaterial({ color: c.hairColor, roughness: 0.4 });
+      const skinMat = new THREE.MeshStandardMaterial({ color: c.skinColor, roughness: 0.45 });
+      const hairMat = new THREE.MeshStandardMaterial({ color: c.hairColor, roughness: 0.35 });
       const suitMat = new THREE.MeshStandardMaterial({ color: c.suitColor, roughness: 0.5 });
       const shirtMat = new THREE.MeshStandardMaterial({ color: c.shirtColor, roughness: 0.6 });
       const bottomMat = new THREE.MeshStandardMaterial({ color: c.skirtColor || c.bottomColor, roughness: 0.6 });
@@ -1371,155 +1371,185 @@
       const eyeWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
       const eyeIrisMat = new THREE.MeshBasicMaterial({ color: c.eyeColor || 0x0284c7 });
       const eyePupilMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
-      const blushMat = new THREE.MeshBasicMaterial({ color: 0xfb7185, transparent: true, opacity: 0.8 });
+      const blushMat = new THREE.MeshBasicMaterial({ color: 0xfb7185, transparent: true, opacity: 0.85 });
       const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 });
-      const plumbobMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.1, metalness: 0.2, emissive: 0x15803d, emissiveIntensity: 0.4 });
+      const plumbobMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.1, metalness: 0.3, emissive: 0x16a34a, emissiveIntensity: 0.6 });
 
-      // 1. PELVIS / HIPS (ROOT OF LIMBS)
+      // 1. PELVIS / HIPS
       const pelvis = new THREE.Group();
-      pelvis.position.y = 1.7;
+      pelvis.position.y = 1.75;
       charGroup.add(pelvis);
 
-      const hipMesh = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.4, 0.55), bottomMat);
+      const hipMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.38, 0.45, 16), bottomMat);
       hipMesh.castShadow = true;
       pelvis.add(hipMesh);
 
-      // 2. LEGS (LEFT & RIGHT) WITH INDEPENDENT HIP PIVOTS
-      const leftLegGroup = new THREE.Group();
-      leftLegGroup.position.set(-0.24, -0.15, 0);
-      pelvis.add(leftLegGroup);
+      // 2. DUAL-JOINT ARTICULATED LEGS (HIP -> THIGH -> KNEE JOINT -> SHIN -> FOOT)
+      // Left Leg
+      const leftHipJoint = new THREE.Group();
+      leftHipJoint.position.set(-0.25, -0.15, 0);
+      pelvis.add(leftHipJoint);
 
-      const leftThigh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.75, 12), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      const leftThigh = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.13, 0.7, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
       leftThigh.position.y = -0.35;
       leftThigh.castShadow = true;
-      leftLegGroup.add(leftThigh);
+      leftHipJoint.add(leftThigh);
 
-      const leftShin = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.75, 12), c.bottomType === 'skirt' ? skinMat : bottomMat);
-      leftShin.position.y = -1.0;
+      const leftKneeJoint = new THREE.Group();
+      leftKneeJoint.position.set(0, -0.7, 0);
+      leftHipJoint.add(leftKneeJoint);
+
+      const leftShin = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.11, 0.7, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      leftShin.position.y = -0.35;
       leftShin.castShadow = true;
-      leftLegGroup.add(leftShin);
+      leftKneeJoint.add(leftShin);
 
       const leftShoe = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.2, 0.55), shoeMat);
-      leftShoe.position.set(0, -1.4, 0.1);
+      leftShoe.position.set(0, -0.75, 0.1);
       leftShoe.castShadow = true;
-      leftLegGroup.add(leftShoe);
+      leftKneeJoint.add(leftShoe);
 
-      const rightLegGroup = new THREE.Group();
-      rightLegGroup.position.set(0.24, -0.15, 0);
-      pelvis.add(rightLegGroup);
+      // Right Leg
+      const rightHipJoint = new THREE.Group();
+      rightHipJoint.position.set(0.25, -0.15, 0);
+      pelvis.add(rightHipJoint);
 
-      const rightThigh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.75, 12), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      const rightThigh = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.13, 0.7, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
       rightThigh.position.y = -0.35;
       rightThigh.castShadow = true;
-      rightLegGroup.add(rightThigh);
+      rightHipJoint.add(rightThigh);
 
-      const rightShin = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.75, 12), c.bottomType === 'skirt' ? skinMat : bottomMat);
-      rightShin.position.y = -1.0;
+      const rightKneeJoint = new THREE.Group();
+      rightKneeJoint.position.set(0, -0.7, 0);
+      rightHipJoint.add(rightKneeJoint);
+
+      const rightShin = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.11, 0.7, 14), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      rightShin.position.y = -0.35;
       rightShin.castShadow = true;
-      rightLegGroup.add(rightShin);
+      rightKneeJoint.add(rightShin);
 
       const rightShoe = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.2, 0.55), shoeMat);
-      rightShoe.position.set(0, -1.4, 0.1);
+      rightShoe.position.set(0, -0.75, 0.1);
       rightShoe.castShadow = true;
-      rightLegGroup.add(rightShoe);
+      rightKneeJoint.add(rightShoe);
 
-      // 3. TORSO / UPPER BODY (CHEST, COLLAR, TIE)
+      // 3. TORSO / UPPER BODY
       const torsoGroup = new THREE.Group();
-      torsoGroup.position.y = 0.2;
+      torsoGroup.position.y = 0.22;
       pelvis.add(torsoGroup);
 
-      const chestMesh = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.95, 0.55), suitMat);
-      chestMesh.position.y = 0.45;
+      const chestMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.42, 0.95, 16), suitMat);
+      chestMesh.position.y = 0.48;
+      chestMesh.scale.set(1.15, 1.0, 0.85);
       chestMesh.castShadow = true;
       torsoGroup.add(chestMesh);
 
-      // Collar & Tie
       const collar = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.35, 4), shirtMat);
-      collar.position.set(0, 0.75, 0.28);
+      collar.position.set(0, 0.75, 0.3);
       collar.rotation.z = Math.PI;
       torsoGroup.add(collar);
 
       if (c.gender === 'male' && c.tieColor) {
         const tie = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.55, 0.04), new THREE.MeshStandardMaterial({ color: c.tieColor }));
-        tie.position.set(0, 0.5, 0.31);
+        tie.position.set(0, 0.5, 0.33);
         torsoGroup.add(tie);
       }
 
       if (c.bottomType === 'skirt') {
-        const skirt = new THREE.Mesh(new THREE.ConeGeometry(0.7, 0.55, 16, 1, true), bottomMat);
+        const skirt = new THREE.Mesh(new THREE.ConeGeometry(0.75, 0.65, 18, 1, true), bottomMat);
         skirt.position.set(0, 0.05, 0);
         skirt.rotation.x = 0.08;
         torsoGroup.add(skirt);
       }
 
-      // 4. ARMS (LEFT & RIGHT) WITH INDEPENDENT SHOULDER PIVOTS
-      const leftArmGroup = new THREE.Group();
-      leftArmGroup.position.set(-0.6, 0.85, 0);
-      torsoGroup.add(leftArmGroup);
+      // 4. DUAL-JOINT ARTICULATED ARMS (SHOULDER -> UPPER ARM -> ELBOW JOINT -> FOREARM -> HAND)
+      // Left Arm
+      const leftShoulderJoint = new THREE.Group();
+      leftShoulderJoint.position.set(-0.62, 0.85, 0);
+      torsoGroup.add(leftShoulderJoint);
 
-      const leftArmMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.8, 12), suitMat);
-      leftArmMesh.position.y = -0.4;
-      leftArmMesh.castShadow = true;
-      leftArmGroup.add(leftArmMesh);
+      const leftUpperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.55, 12), suitMat);
+      leftUpperArm.position.y = -0.28;
+      leftUpperArm.castShadow = true;
+      leftShoulderJoint.add(leftUpperArm);
 
-      const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), skinMat);
-      leftHand.position.y = -0.85;
-      leftArmGroup.add(leftHand);
+      const leftElbowJoint = new THREE.Group();
+      leftElbowJoint.position.set(0, -0.55, 0);
+      leftShoulderJoint.add(leftElbowJoint);
 
-      const rightArmGroup = new THREE.Group();
-      rightArmGroup.position.set(0.6, 0.85, 0);
-      torsoGroup.add(rightArmGroup);
+      const leftForearm = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.09, 0.5, 12), suitMat);
+      leftForearm.position.y = -0.25;
+      leftForearm.castShadow = true;
+      leftElbowJoint.add(leftForearm);
 
-      const rightArmMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.8, 12), suitMat);
-      rightArmMesh.position.y = -0.4;
-      rightArmMesh.castShadow = true;
-      rightArmGroup.add(rightArmMesh);
+      const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 10), skinMat);
+      leftHand.position.y = -0.55;
+      leftElbowJoint.add(leftHand);
 
-      const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), skinMat);
-      rightHand.position.y = -0.85;
-      rightArmGroup.add(rightHand);
+      // Right Arm
+      const rightShoulderJoint = new THREE.Group();
+      rightShoulderJoint.position.set(0.62, 0.85, 0);
+      torsoGroup.add(rightShoulderJoint);
 
-      // 5. HEAD & FACIAL FEATURES (CUTE THE SIMS ANIME HEAD)
+      const rightUpperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.55, 12), suitMat);
+      rightUpperArm.position.y = -0.28;
+      rightUpperArm.castShadow = true;
+      rightShoulderJoint.add(rightUpperArm);
+
+      const rightElbowJoint = new THREE.Group();
+      rightElbowJoint.position.set(0, -0.55, 0);
+      rightShoulderJoint.add(rightElbowJoint);
+
+      const rightForearm = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.09, 0.5, 12), suitMat);
+      rightForearm.position.y = -0.25;
+      rightForearm.castShadow = true;
+      rightElbowJoint.add(rightForearm);
+
+      const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 10), skinMat);
+      rightHand.position.y = -0.55;
+      rightElbowJoint.add(rightHand);
+
+      // 5. HEAD & FACIAL EXPRESSIONS WITH BLINKING EYES
       const headGroup = new THREE.Group();
       headGroup.position.y = 1.15;
       torsoGroup.add(headGroup);
 
-      // Head Base
-      const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.65, 24, 24), skinMat);
+      const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.66, 24, 24), skinMat);
       headMesh.position.y = 0.55;
       headMesh.scale.set(1.05, 1.0, 1.0);
       headMesh.castShadow = true;
       headGroup.add(headMesh);
 
-      // Cute Big Expressive Anime Eyes
+      // Blinking Eyes Group
+      const eyesGroup = new THREE.Group();
+      eyesGroup.position.set(0, 0.58, 0.58);
+      headGroup.add(eyesGroup);
+
       [[-0.24, 'left'], [0.24, 'right']].forEach(([ox]) => {
         const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), eyeWhiteMat);
-        eyeWhite.position.set(ox, 0.58, 0.58);
+        eyeWhite.position.set(ox, 0, 0);
         eyeWhite.scale.set(0.9, 1.2, 0.3);
-        headGroup.add(eyeWhite);
+        eyesGroup.add(eyeWhite);
 
         const eyeIris = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), eyeIrisMat);
-        eyeIris.position.set(ox, 0.58, 0.63);
+        eyeIris.position.set(ox, 0, 0.05);
         eyeIris.scale.set(0.85, 1.1, 0.2);
-        headGroup.add(eyeIris);
+        eyesGroup.add(eyeIris);
 
         const eyePupil = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), eyePupilMat);
-        eyePupil.position.set(ox, 0.58, 0.66);
-        headGroup.add(eyePupil);
+        eyePupil.position.set(ox, 0, 0.08);
+        eyesGroup.add(eyePupil);
 
-        // Catchlight Star
         const catchlight = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 6), eyeWhiteMat);
-        catchlight.position.set(ox - 0.03, 0.64, 0.67);
-        headGroup.add(catchlight);
+        catchlight.position.set(ox - 0.03, 0.06, 0.09);
+        eyesGroup.add(catchlight);
 
-        // Rosy Cheek
         const blush = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), blushMat);
-        blush.position.set(ox, 0.4, 0.56);
+        blush.position.set(ox, -0.18, -0.02);
         blush.scale.set(1.2, 0.5, 0.2);
         headGroup.add(blush);
       });
 
-      // Sweet Anime Smile
       const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.04, 0.05), new THREE.MeshBasicMaterial({ color: 0xf43f5e }));
       mouth.position.set(0, 0.38, 0.65);
       headGroup.add(mouth);
@@ -1533,13 +1563,11 @@
       hairGroup.add(hairCap);
 
       if (c.id === 'ty') {
-        // Ty: Charismatic Side Bangs
         const bangsL = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.35, 0.35), hairMat);
         bangsL.position.set(-0.25, 0.35, 0.52);
         bangsL.rotation.z = 0.25;
         hairGroup.add(bangsL);
       } else if (c.id === 'eliie') {
-        // Eliie: Golden Twintails + Tiara + Elf Ears
         [[-0.75, 0.2, 0.4], [0.75, 0.2, -0.4]].forEach(([tx, ty, rz]) => {
           const tail = new THREE.Mesh(new THREE.ConeGeometry(0.28, 1.6, 12), hairMat);
           tail.position.set(tx, ty - 0.3, -0.2);
@@ -1547,7 +1575,6 @@
           hairGroup.add(tail);
         });
 
-        // Elf Ears
         [[-0.7, 0, -0.4], [0.7, 0, 0.4]].forEach(([ex, ey, rz]) => {
           const ear = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.5, 8), skinMat);
           ear.position.set(ex, ey, 0);
@@ -1555,25 +1582,21 @@
           hairGroup.add(ear);
         });
 
-        // Golden Tiara
         const tiara = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.05, 8, 16, Math.PI), goldMat);
         tiara.position.set(0, 0.6, 0.2);
         tiara.rotation.x = -Math.PI / 3;
         hairGroup.add(tiara);
       } else if (c.hasHeadphones) {
-        // Luna: Cyber Headphones
         const hp = new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.07, 8, 20, Math.PI), new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.8 }));
         hp.position.set(0, 0.1, 0);
         hp.rotation.z = Math.PI / 2;
         hairGroup.add(hp);
       } else if (c.hasBeret) {
-        // Yuki: Beret
         const beret = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.7, 0.25, 16), new THREE.MeshStandardMaterial({ color: 0x6d28d9 }));
         beret.position.set(0.15, 0.65, 0);
         beret.rotation.z = -0.2;
         hairGroup.add(beret);
       } else if (c.hasTwinTails) {
-        // Mimi: Pink Twin Tails
         [[-0.75, 0.2, 0.4], [0.75, 0.2, -0.4]].forEach(([tx, ty, rz]) => {
           const tail = new THREE.Mesh(new THREE.ConeGeometry(0.28, 1.4, 12), hairMat);
           tail.position.set(tx, ty - 0.2, -0.2);
@@ -1604,11 +1627,16 @@
         group: charGroup,
         pelvis: pelvis,
         torso: torsoGroup,
-        leftLeg: leftLegGroup,
-        rightLeg: rightLegGroup,
-        leftArm: leftArmGroup,
-        rightArm: rightArmGroup,
+        leftHip: leftHipJoint,
+        rightHip: rightHipJoint,
+        leftKnee: leftKneeJoint,
+        rightKnee: rightKneeJoint,
+        leftShoulder: leftShoulderJoint,
+        rightShoulder: rightShoulderJoint,
+        leftElbow: leftElbowJoint,
+        rightElbow: rightElbowJoint,
         head: headGroup,
+        eyes: eyesGroup,
         plumbob: plumbob
       };
 
@@ -1880,7 +1908,7 @@
       renderer.setSize(w, h);
     });
 
-    // RENDER LOOP (60 FPS FLUID 3D WITH THE SIMS GAIT & IDLE BREATHING)
+    // RENDER LOOP (60 FPS FLUID 3D WITH THE SIMS DUAL-JOINT GAIT, KNEE BEND & EYE BLINK)
     let clock = 0;
     function animate() {
       requestAnimationFrame(animate);
@@ -1890,16 +1918,33 @@
         if (c.bubbleTimer > 0) c.bubbleTimer--;
       });
 
-      // THE SIMS ARTICULATED ANIMATION LOOP (WALKING, BREATHING, SITTING, SLEEPING)
+      // THE SIMS ARTICULATED DUAL-JOINT ANIMATION LOOP (WALKING, BREATHING, SITTING, SLEEPING, BLINKING)
       characterMeshes.forEach((av, idx) => {
         const c = av.data;
 
-        // Plumbob spinning
+        // 1. Plumbob Spinning & Hovering
         if (av.plumbob) {
           av.plumbob.rotation.y += 0.04;
           av.plumbob.position.y = 1.6 + Math.sin(clock * 3 + idx) * 0.08;
         }
 
+        // 2. Natural Eye Blinking Cycle
+        if (av.eyes) {
+          const blinkPhase = (clock * 1.5 + idx * 1.7) % 4.0;
+          if (blinkPhase < 0.15) {
+            av.eyes.scale.y = 0.1; // Blink closed
+          } else {
+            av.eyes.scale.y = 1.0; // Normal open
+          }
+        }
+
+        // 3. Head Micro-Motion
+        if (av.head) {
+          av.head.rotation.y = Math.sin(clock * 1.2 + idx) * 0.08;
+          av.head.rotation.z = Math.sin(clock * 0.8 + idx) * 0.04;
+        }
+
+        // 4. Movement / Walking State Machine
         if (c.isWalking) {
           c.walkTime += 0.16;
           const dx = c.targetX - av.group.position.x;
@@ -1909,20 +1954,30 @@
           if (dist > 0.3) {
             const angle = Math.atan2(dx, dz);
             av.group.rotation.y = THREE.MathUtils.lerp(av.group.rotation.y, angle, 0.2);
-            av.group.position.x += (dx / dist) * 0.24;
-            av.group.position.z += (dz / dist) * 0.24;
+            av.group.position.x += (dx / dist) * 0.25;
+            av.group.position.z += (dz / dist) * 0.25;
 
-            // The Sims Alternating Walk Cycle
-            av.leftLeg.rotation.x = Math.sin(c.walkTime * 8) * 0.65;
-            av.rightLeg.rotation.x = -Math.sin(c.walkTime * 8) * 0.65;
-            av.leftArm.rotation.x = -Math.sin(c.walkTime * 8) * 0.55;
-            av.rightArm.rotation.x = Math.sin(c.walkTime * 8) * 0.55;
+            // Dual-Joint Hip & Knee Walk Cycle (The Sims Walking Dynamics)
+            const legSwing = Math.sin(c.walkTime * 8) * 0.65;
+            av.leftHip.rotation.x = legSwing;
+            av.rightHip.rotation.x = -legSwing;
 
-            // Pelvis bounce
-            av.pelvis.position.y = 1.7 + Math.abs(Math.sin(c.walkTime * 8)) * 0.12;
+            // Natural Knee Bends on backswing / recovery
+            av.leftKnee.rotation.x = Math.max(0, -legSwing * 1.1);
+            av.rightKnee.rotation.x = Math.max(0, legSwing * 1.1);
+
+            // Dual-Joint Shoulder & Elbow Arm Swing
+            const armSwing = Math.sin(c.walkTime * 8) * 0.55;
+            av.leftShoulder.rotation.x = -armSwing;
+            av.rightShoulder.rotation.x = armSwing;
+            av.leftElbow.rotation.x = 0.3 + Math.sin(c.walkTime * 8) * 0.2;
+            av.rightElbow.rotation.x = 0.3 - Math.sin(c.walkTime * 8) * 0.2;
+
+            // Pelvis Vertical Bounce & Torso Sway
+            av.pelvis.position.y = 1.75 + Math.abs(Math.sin(c.walkTime * 8)) * 0.12;
             av.torso.rotation.z = Math.sin(c.walkTime * 4) * 0.05;
           } else {
-            // Arrived
+            // Arrived at destination
             av.group.position.x = c.targetX;
             av.group.position.z = c.targetZ;
             av.group.rotation.y = c.targetRotY;
@@ -1930,30 +1985,44 @@
             c.state = c.nextState || 'idle';
           }
         } else {
-          // Non-walking States
+          // Posture & Resting State Machine
           if (c.state.startsWith('sit')) {
-            // Sitting on chair
-            av.pelvis.position.y = 1.35;
-            av.leftLeg.rotation.x = -Math.PI / 2.2;
-            av.rightLeg.rotation.x = -Math.PI / 2.2;
-            av.leftArm.rotation.x = -Math.PI / 3.5 + Math.sin(clock * 6 + idx) * 0.08;
-            av.rightArm.rotation.x = -Math.PI / 3.5 - Math.sin(clock * 6 + idx) * 0.08;
+            // Sitting on Chair / Barstool / Sofa
+            av.pelvis.position.y = 1.4;
+            av.leftHip.rotation.x = -Math.PI / 2.2;
+            av.rightHip.rotation.x = -Math.PI / 2.2;
+            av.leftKnee.rotation.x = Math.PI / 2.4;
+            av.rightKnee.rotation.x = Math.PI / 2.4;
+
+            // Typing / Discussing hands
+            av.leftShoulder.rotation.x = -Math.PI / 3.8;
+            av.rightShoulder.rotation.x = -Math.PI / 3.8;
+            av.leftElbow.rotation.x = -0.5 + Math.sin(clock * 6 + idx) * 0.1;
+            av.rightElbow.rotation.x = -0.5 - Math.sin(clock * 6 + idx) * 0.1;
             av.torso.rotation.z = 0;
           } else if (c.state === 'sleep') {
-            // Sleeping in bed
+            // Sleeping side-by-side in Bed
             av.pelvis.position.y = 0.9;
-            av.leftLeg.rotation.x = 0;
-            av.rightLeg.rotation.x = 0;
-            av.leftArm.rotation.x = -0.2;
-            av.rightArm.rotation.x = -0.2;
+            av.leftHip.rotation.x = 0;
+            av.rightHip.rotation.x = 0;
+            av.leftKnee.rotation.x = 0;
+            av.rightKnee.rotation.x = 0;
+            av.leftShoulder.rotation.x = -0.2;
+            av.rightShoulder.rotation.x = -0.2;
+            av.leftElbow.rotation.x = 0;
+            av.rightElbow.rotation.x = 0;
             av.torso.rotation.z = 0;
           } else {
-            // Idle standing & breathing
-            av.pelvis.position.y = 1.7 + Math.sin(clock * 2 + idx) * 0.03;
-            av.leftLeg.rotation.x = 0;
-            av.rightLeg.rotation.x = 0;
-            av.leftArm.rotation.x = Math.sin(clock * 2 + idx) * 0.05;
-            av.rightArm.rotation.x = -Math.sin(clock * 2 + idx) * 0.05;
+            // Standing Idle Breathing
+            av.pelvis.position.y = 1.75 + Math.sin(clock * 2 + idx) * 0.03;
+            av.leftHip.rotation.x = 0;
+            av.rightHip.rotation.x = 0;
+            av.leftKnee.rotation.x = 0;
+            av.rightKnee.rotation.x = 0;
+            av.leftShoulder.rotation.x = Math.sin(clock * 2 + idx) * 0.05;
+            av.rightShoulder.rotation.x = -Math.sin(clock * 2 + idx) * 0.05;
+            av.leftElbow.rotation.x = 0.1;
+            av.rightElbow.rotation.x = 0.1;
             av.torso.rotation.z = 0;
           }
         }

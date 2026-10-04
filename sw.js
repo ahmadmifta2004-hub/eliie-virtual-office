@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v26-the-sims-dynamic-walking';
+const CACHE_NAME = 'eliie-office-v27-the-sims-perfection';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
