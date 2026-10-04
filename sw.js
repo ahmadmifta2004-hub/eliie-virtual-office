@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-penthouse-v12';
+const CACHE_NAME = 'eliie-office-penthouse-v13';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
