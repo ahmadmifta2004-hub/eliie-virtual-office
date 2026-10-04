@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v14-fixed-names';
+const CACHE_NAME = 'eliie-office-v15-live-sync';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

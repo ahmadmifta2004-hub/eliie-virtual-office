@@ -79,14 +79,15 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button onclick="forceCleanReload()" class="px-2 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded shadow flex items-center gap-1 active:scale-95">
-          <i class="fa-solid fa-sync fa-spin"></i> Update Data
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <button onclick="forceCleanReload()" id="btnUpdateData" class="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-extrabold text-[11px] rounded-lg shadow-lg shadow-amber-500/20 flex items-center gap-1.5 active:scale-95 transition-all border border-amber-300">
+          <i id="updateIcon" class="fa-solid fa-arrows-rotate"></i>
+          <span>Update Data</span>
         </button>
-        <button onclick="resetCamera()" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded text-slate-300 font-medium border border-slate-700">
-          <i class="fa-solid fa-arrows-rotate"></i> Reset
+        <button onclick="resetCamera()" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-[11px] rounded-lg text-slate-300 font-medium border border-slate-700 active:scale-95 transition-all">
+          <i class="fa-solid fa-camera"></i> Reset
         </button>
-        <span id="office-time" class="font-mono text-xs text-slate-300 font-bold hidden sm:inline">00:00:00</span>
+        <span id="office-time" class="font-mono text-xs text-slate-300 font-bold hidden sm:inline ml-1">00:00:00</span>
       </div>
     </div>
 
@@ -214,26 +215,34 @@
 
   <!-- SERVICE WORKER & FORCE RELOAD -->
   <script>
-    function forceCleanReload() {
-      if ('caches' in window) {
-        caches.keys().then((names) => {
-          names.forEach((name) => caches.delete(name));
-        });
+    async function forceCleanReload() {
+      const icon = document.getElementById('updateIcon');
+      if (icon) icon.classList.add('fa-spin');
+
+      showToast('🔄 Memperbarui seluruh data kantor & membersihkan cache...');
+
+      try {
+        if ('caches' in window) {
+          const names = await caches.keys();
+          await Promise.all(names.map((name) => caches.delete(name)));
+        }
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map((reg) => reg.unregister()));
+        }
+      } catch (err) {
+        console.error('Cache flush error:', err);
       }
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then((registrations) => {
-          registrations.forEach((reg) => reg.unregister());
-        });
-      }
-      showToast('Membersihkan cache & memuat nama tim terbaru...');
+
       setTimeout(() => {
-        window.location.reload(true);
-      }, 500);
+        // Cache-busting reload
+        window.location.href = window.location.pathname + '?v=' + Date.now();
+      }, 400);
     }
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=14')
+        navigator.serviceWorker.register('./sw.js?v=15')
           .then((reg) => {
             reg.update();
             console.log('SW Ready:', reg.scope);
@@ -241,6 +250,15 @@
           .catch((err) => console.log('SW Err:', err));
       });
     }
+
+    // Auto-update checker every 90 seconds
+    setInterval(() => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then((reg) => {
+          if (reg) reg.update();
+        });
+      }
+    }, 90000);
   </script>
 
   <!-- HIGH-RISE 3D PENTHOUSE WEBGL ENGINE -->
