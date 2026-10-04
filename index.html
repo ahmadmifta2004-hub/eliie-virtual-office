@@ -1174,22 +1174,34 @@
 
     penthouse.add(loungeGroup);
 
-    // 4. CHIBI K-POP IDOL CHARACTERS (AUTHENTIC 2.5D ILLUSTRATED CLIPART SPRITES)
+    // 4. THE SIMS 3D HUMANOID AVATARS & DYNAMIC WALKING SYSTEM
     const characters = [
       {
         id: 'ty',
         name: 'Alberto Timoty (Ty)',
-        badge: '👑 Ty (Owner & Boyband Leader)',
+        badge: '👑 Ty (Owner & Leader)',
         dotColor: '#3b82f6',
         avatar: '👑',
         isOwner: true,
         gender: 'male',
-        hairColor: '#1e293b',
-        outfitColor: '#1e3a8a',
-        eyeColor: '#0f172a',
+        skinColor: 0xfed7aa,
+        hairColor: 0x1e293b,
+        eyeColor: 0x0f172a,
+        suitColor: 0x1e3a8a, // Navy boyband blazer
+        shirtColor: 0xffffff,
+        tieColor: 0xdc2626,
+        bottomColor: 0x1e293b,
+        bottomType: 'pants',
+        shoeColor: 0xffffff,
         x: -8.0,
         z: 0,
-        state: 'meeting',
+        targetX: -8.0,
+        targetZ: 0,
+        rotY: Math.PI / 2,
+        targetRotY: Math.PI / 2,
+        isWalking: false,
+        walkTime: 0,
+        state: 'sit_meeting',
         statusText: 'Approval untuk deploy & leader tim.',
         bubble: '🚀 Approval deploy K-pop Penthouse siap!',
         bubbleTimer: 240
@@ -1204,13 +1216,23 @@
         gender: 'female',
         hasElfEars: true,
         hasCrown: true,
-        hairColor: '#fde047',
-        outfitColor: '#fef08a',
-        skirtColor: '#fb7185',
-        eyeColor: '#0284c7',
+        skinColor: 0xfed7aa,
+        hairColor: 0xfde047, // Golden blonde glowing hair
+        eyeColor: 0x0284c7, // Sapphire eyes
+        suitColor: 0xfef08a, // Pastel stage top
+        shirtColor: 0xffffff,
+        skirtColor: 0xfb7185, // Pink pleated skirt
+        bottomType: 'skirt',
+        shoeColor: 0xffffff,
         x: 8.0,
         z: 0,
-        state: 'meeting',
+        targetX: 8.0,
+        targetZ: 0,
+        rotY: -Math.PI / 2,
+        targetRotY: -Math.PI / 2,
+        isWalking: false,
+        walkTime: 0,
+        state: 'sit_meeting',
         statusText: 'Mendampingi Ty & center visual idol.',
         bubble: 'Siap tampil & deploy, Ty tersayang! 🌸✨',
         bubbleTimer: 240
@@ -1222,13 +1244,24 @@
         dotColor: '#0284c7',
         avatar: '💻',
         gender: 'female',
-        hairColor: '#0284c7',
-        outfitColor: '#0369a1',
-        eyeColor: '#06b6d4',
+        skinColor: 0xfed7aa,
+        hairColor: 0x0284c7, // Neon blue hair
+        eyeColor: 0x06b6d4,
+        suitColor: 0x0369a1,
+        shirtColor: 0xf0fdf4,
+        bottomColor: 0x0f172a,
+        bottomType: 'pants',
+        shoeColor: 0x0284c7,
         hasHeadphones: true,
         x: -2.2,
         z: -4.2,
-        state: 'meeting',
+        targetX: -2.2,
+        targetZ: -4.2,
+        rotY: 0,
+        targetRotY: 0,
+        isWalking: false,
+        walkTime: 0,
+        state: 'sit_meeting',
         statusText: 'Optimasi server VPS & coding backend.',
         bubble: '⚡ VPS 100% aman & lancar!',
         bubbleTimer: 240
@@ -1240,13 +1273,24 @@
         dotColor: '#ea580c',
         avatar: '🍲',
         gender: 'female',
-        hairColor: '#ea580c',
-        outfitColor: '#f97316',
-        eyeColor: '#d97706',
+        skinColor: 0xfed7aa,
+        hairColor: 0xea580c, // Ginger orange bob
+        eyeColor: 0xd97706,
+        suitColor: 0xf97316,
+        shirtColor: 0xffffff,
+        skirtColor: 0x9a3412,
+        bottomType: 'skirt',
+        shoeColor: 0xffffff,
         hasSotoBowl: true,
         x: 2.2,
         z: -4.2,
-        state: 'meeting',
+        targetX: 2.2,
+        targetZ: -4.2,
+        rotY: 0,
+        targetRotY: 0,
+        isWalking: false,
+        walkTime: 0,
+        state: 'sit_meeting',
         statusText: 'Rekap penjualan & omzet Soto Pak Yono.',
         bubble: '📈 Omzet soto meroket, Bos Ty!',
         bubbleTimer: 240
@@ -1258,14 +1302,25 @@
         dotColor: '#ec4899',
         avatar: '🎨',
         gender: 'female',
-        hairColor: '#ec4899',
-        outfitColor: '#f43f5e',
-        eyeColor: '#f43f5e',
+        skinColor: 0xfed7aa,
+        hairColor: 0xec4899, // Pink twintails
+        eyeColor: 0xf43f5e,
+        suitColor: 0xf43f5e,
+        shirtColor: 0xffffff,
+        skirtColor: 0xbe123c,
+        bottomType: 'skirt',
+        shoeColor: 0xffffff,
         hasTwinTails: true,
         hasFingerHeart: true,
         x: -2.2,
         z: 4.2,
-        state: 'meeting',
+        targetX: -2.2,
+        targetZ: 4.2,
+        rotY: Math.PI,
+        targetRotY: Math.PI,
+        isWalking: false,
+        walkTime: 0,
+        state: 'sit_meeting',
         statusText: 'Rancang visual banner & konten TikTok.',
         bubble: '🎨 Desain & reels viral FYP!',
         bubbleTimer: 240
@@ -1277,13 +1332,24 @@
         dotColor: '#8b5cf6',
         avatar: '📚',
         gender: 'female',
-        hairColor: '#a855f7',
-        outfitColor: '#7c3aed',
-        eyeColor: '#8b5cf6',
+        skinColor: 0xfed7aa,
+        hairColor: 0xa855f7, // Lavender waves
+        eyeColor: 0x8b5cf6,
+        suitColor: 0x7c3aed,
+        shirtColor: 0xffffff,
+        bottomColor: 0x4c1d95,
+        bottomType: 'pants',
+        shoeColor: 0xffffff,
         hasBeret: true,
         x: 2.2,
         z: 4.2,
-        state: 'meeting',
+        targetX: 2.2,
+        targetZ: 4.2,
+        rotY: Math.PI,
+        targetRotY: Math.PI,
+        isWalking: false,
+        walkTime: 0,
+        state: 'sit_meeting',
         statusText: 'Sinkronisasi catatan Obsidian & second brain.',
         bubble: '📖 Changelog tersimpan rapi!',
         bubbleTimer: 240
@@ -1292,322 +1358,283 @@
 
     const characterMeshes = [];
 
-    // GENERATE 512X512 VECTOR ILLUSTRATED CHIBI K-POP IDOL SPRITE (100% EXACT MATCH TO CLIPART BUNDLE)
-    function generateChibiIdolTexture(c) {
-      const cv = document.createElement('canvas');
-      cv.width = 512;
-      cv.height = 512;
-      const ctx2 = cv.getContext('2d');
-
-      const cx = 256;
-      const cy = 250;
-
-      // 1. SOFT AMBIENT DROP SHADOW
-      ctx2.fillStyle = 'rgba(0, 0, 0, 0.25)';
-      ctx2.beginPath();
-      ctx2.ellipse(cx, 470, 90, 26, 0, 0, Math.PI * 2);
-      ctx2.fill();
-
-      // 2. CHIBI BODY & STYLISH K-POP IDOL OUTFIT
-      // Legs / Slacks / Skirt
-      if (c.gender === 'female') {
-        // Cute idol legs & stage boots
-        ctx2.fillStyle = '#fed7aa'; // Skin
-        ctx2.fillRect(cx - 36, 380, 24, 65);
-        ctx2.fillRect(cx + 12, 380, 24, 65);
-
-        // Flared Stage Skirt
-        ctx2.fillStyle = c.skirtColor || c.outfitColor;
-        ctx2.beginPath();
-        ctx2.moveTo(cx - 55, 340);
-        ctx2.lineTo(cx + 55, 340);
-        ctx2.lineTo(cx + 70, 395);
-        ctx2.lineTo(cx - 70, 395);
-        ctx2.closePath();
-        ctx2.fill();
-        ctx2.strokeStyle = '#1e1b4b';
-        ctx2.lineWidth = 5;
-        ctx2.stroke();
-
-        // White Stage Platform Boots
-        ctx2.fillStyle = '#ffffff';
-        ctx2.beginPath();
-        ctx2.roundRect(cx - 42, 435, 32, 32, 10);
-        ctx2.roundRect(cx + 10, 435, 32, 32, 10);
-        ctx2.fill();
-        ctx2.strokeStyle = '#0f172a';
-        ctx2.lineWidth = 4;
-        ctx2.stroke();
-      } else {
-        // Ty: Handsome tailored idol slacks & sneakers
-        ctx2.fillStyle = '#1e293b';
-        ctx2.beginPath();
-        ctx2.roundRect(cx - 40, 350, 30, 95, 8);
-        ctx2.roundRect(cx + 10, 350, 30, 95, 8);
-        ctx2.fill();
-        ctx2.strokeStyle = '#0f172a';
-        ctx2.lineWidth = 5;
-        ctx2.stroke();
-
-        // White K-pop Sneakers
-        ctx2.fillStyle = '#ffffff';
-        ctx2.beginPath();
-        ctx2.roundRect(cx - 46, 440, 38, 25, 8);
-        ctx2.roundRect(cx + 8, 440, 38, 25, 8);
-        ctx2.fill();
-        ctx2.strokeStyle = '#0f172a';
-        ctx2.lineWidth = 4;
-        ctx2.stroke();
-      }
-
-      // Torso / Stylish Jacket
-      ctx2.fillStyle = c.outfitColor;
-      ctx2.beginPath();
-      ctx2.roundRect(cx - 52, 280, 104, 80, 18);
-      ctx2.fill();
-      ctx2.strokeStyle = '#0f172a';
-      ctx2.lineWidth = 5;
-      ctx2.stroke();
-
-      // Shirt Collar & Tie / Bow
-      ctx2.fillStyle = '#ffffff';
-      ctx2.beginPath();
-      ctx2.moveTo(cx - 24, 280);
-      ctx2.lineTo(cx + 24, 280);
-      ctx2.lineTo(cx, 320);
-      ctx2.closePath();
-      ctx2.fill();
-
-      if (c.gender === 'male') {
-        ctx2.fillStyle = '#dc2626';
-        ctx2.fillRect(cx - 6, 298, 12, 45);
-      }
-
-      // Cute Stubby Mitten Hands / Poses
-      ctx2.fillStyle = '#fed7aa';
-      if (c.hasFingerHeart) {
-        // Mimi: K-pop Finger Heart pose!
-        ctx2.beginPath();
-        ctx2.arc(cx + 58, 250, 20, 0, Math.PI * 2);
-        ctx2.fill();
-        ctx2.stroke();
-        // Mini heart
-        ctx2.font = '28px Arial';
-        ctx2.fillText('💖', cx + 55, 230);
-      } else if (c.hasSotoBowl) {
-        // Nana: Holding Soto Bowl
-        ctx2.fillStyle = '#ea580c';
-        ctx2.beginPath();
-        ctx2.arc(cx, 345, 24, 0, Math.PI);
-        ctx2.fill();
-        ctx2.stroke();
-        ctx2.font = '24px Arial';
-        ctx2.fillText('🍲', cx - 14, 340);
-      }
-
-      // 3. LARGE ROUND CHIBI HEAD (2.0 HEAD RATIO)
-      ctx2.fillStyle = '#fed7aa';
-      ctx2.beginPath();
-      ctx2.arc(cx, cy - 45, 115, 0, Math.PI * 2);
-      ctx2.fill();
-      ctx2.strokeStyle = '#0f172a';
-      ctx2.lineWidth = 6;
-      ctx2.stroke();
-
-      // Cute Soft Cheeks
-      ctx2.fillStyle = '#fed7aa';
-      ctx2.beginPath();
-      ctx2.ellipse(cx - 65, cy, 32, 28, 0, 0, Math.PI * 2);
-      ctx2.ellipse(cx + 65, cy, 32, 28, 0, 0, Math.PI * 2);
-      ctx2.fill();
-
-      // 4. LARGE SPARKLING ANIME / K-POP IDOL EYES (EXACT MATCH TO REFERENSI)
-      [[-44, 'left'], [44, 'right']].forEach(([ox, side]) => {
-        // White Base
-        ctx2.fillStyle = '#ffffff';
-        ctx2.beginPath();
-        ctx2.ellipse(cx + ox, cy - 40, 26, 38, 0, 0, Math.PI * 2);
-        ctx2.fill();
-        ctx2.strokeStyle = '#0f172a';
-        ctx2.lineWidth = 4;
-        ctx2.stroke();
-
-        // Gradient Saturated Iris
-        const eyeGrad = ctx2.createLinearGradient(0, cy - 75, 0, cy);
-        eyeGrad.addColorStop(0, '#0f172a');
-        eyeGrad.addColorStop(0.5, c.eyeColor);
-        eyeGrad.addColorStop(1, '#ffffff');
-        ctx2.fillStyle = eyeGrad;
-        ctx2.beginPath();
-        ctx2.ellipse(cx + ox, cy - 38, 20, 32, 0, 0, Math.PI * 2);
-        ctx2.fill();
-
-        // Double Specular Catchlights (Big Star + Small Circle)
-        ctx2.fillStyle = '#ffffff';
-        ctx2.beginPath();
-        ctx2.arc(cx + ox - 6, cy - 54, 7, 0, Math.PI * 2);
-        ctx2.fill();
-        ctx2.beginPath();
-        ctx2.arc(cx + ox + 7, cy - 26, 4, 0, Math.PI * 2);
-        ctx2.fill();
-
-        // Thick Eyelash Wing
-        ctx2.fillStyle = '#0f172a';
-        ctx2.beginPath();
-        ctx2.roundRect(cx + ox - 26, cy - 78, 52, 10, 4);
-        ctx2.fill();
-
-        // Rosy Blushing Cheeks
-        ctx2.fillStyle = '#fb7185';
-        ctx2.beginPath();
-        ctx2.ellipse(cx + ox, cy + 8, 20, 10, 0, 0, Math.PI * 2);
-        ctx2.fill();
-      });
-
-      // Tiny Cute Anime Nose & Sweet Smile
-      ctx2.fillStyle = '#c2410c';
-      ctx2.beginPath();
-      ctx2.arc(cx, cy - 10, 3.5, 0, Math.PI * 2);
-      ctx2.fill();
-
-      ctx2.fillStyle = '#be123c';
-      ctx2.beginPath();
-      ctx2.arc(cx, cy + 12, 14, 0, Math.PI);
-      ctx2.fill();
-      ctx2.strokeStyle = '#0f172a';
-      ctx2.lineWidth = 3.5;
-      ctx2.stroke();
-
-      // 5. VOLUMINOUS ILLUSTRATED 3D K-POP HAIR
-      ctx2.fillStyle = c.hairColor;
-      ctx2.strokeStyle = '#0f172a';
-      ctx2.lineWidth = 5;
-
-      // Layered Bangs
-      ctx2.beginPath();
-      ctx2.moveTo(cx - 110, cy - 90);
-      ctx2.quadraticCurveTo(cx - 60, cy - 170, cx, cy - 165);
-      ctx2.quadraticCurveTo(cx + 60, cy - 170, cx + 110, cy - 90);
-      ctx2.lineTo(cx + 105, cy - 40);
-      // Sawtooth anime bangs
-      ctx2.lineTo(cx + 70, cy - 75);
-      ctx2.lineTo(cx + 35, cy - 40);
-      ctx2.lineTo(cx, cy - 80);
-      ctx2.lineTo(cx - 35, cy - 40);
-      ctx2.lineTo(cx - 70, cy - 75);
-      ctx2.lineTo(cx - 105, cy - 40);
-      ctx2.closePath();
-      ctx2.fill();
-      ctx2.stroke();
-
-      // Hair Ring Highlight
-      ctx2.fillStyle = 'rgba(255, 255, 255, 0.45)';
-      ctx2.beginPath();
-      ctx2.ellipse(cx, cy - 125, 75, 14, 0, 0, Math.PI * 2);
-      ctx2.fill();
-
-      // Character Specific Hairstyles & Props
-      if (c.id === 'eliie') {
-        // Eliie: Blonde Elf Idol with Twin-Tails & Golden Crown
-        ctx2.fillStyle = '#fde047';
-        // Left Twin Tail
-        ctx2.beginPath();
-        ctx2.moveTo(cx - 100, cy - 80);
-        ctx2.quadraticCurveTo(cx - 170, cy, cx - 140, cy + 120);
-        ctx2.quadraticCurveTo(cx - 120, cy + 30, cx - 80, cy - 20);
-        ctx2.fill();
-        ctx2.stroke();
-
-        // Right Twin Tail
-        ctx2.beginPath();
-        ctx2.moveTo(cx + 100, cy - 80);
-        ctx2.quadraticCurveTo(cx + 170, cy, cx + 140, cy + 120);
-        ctx2.quadraticCurveTo(cx + 120, cy + 30, cx + 80, cy - 20);
-        ctx2.fill();
-        ctx2.stroke();
-
-        // Elf Ears
-        ctx2.fillStyle = '#fed7aa';
-        ctx2.beginPath();
-        ctx2.moveTo(cx - 105, cy - 35);
-        ctx2.lineTo(cx - 150, cy - 65);
-        ctx2.lineTo(cx - 105, cy - 10);
-        ctx2.fill();
-        ctx2.stroke();
-
-        ctx2.beginPath();
-        ctx2.moveTo(cx + 105, cy - 35);
-        ctx2.lineTo(cx + 150, cy - 65);
-        ctx2.lineTo(cx + 105, cy - 10);
-        ctx2.fill();
-        ctx2.stroke();
-
-        // Golden Tiara Crown
-        ctx2.font = '48px Arial';
-        ctx2.textAlign = 'center';
-        ctx2.fillText('👑', cx, cy - 165);
-      } else if (c.id === 'ty') {
-        // Ty: Charismatic Boyband Leader Star
-        ctx2.font = '36px Arial';
-        ctx2.textAlign = 'center';
-        ctx2.fillText('✨', cx - 65, cy - 145);
-      } else if (c.hasHeadphones) {
-        // Luna: Cyber Headphones
-        ctx2.strokeStyle = '#0284c7';
-        ctx2.lineWidth = 14;
-        ctx2.beginPath();
-        ctx2.arc(cx, cy - 45, 120, Math.PI * 0.9, Math.PI * 2.1);
-        ctx2.stroke();
-      } else if (c.hasBeret) {
-        // Yuki: Purple Beret
-        ctx2.fillStyle = '#6d28d9';
-        ctx2.beginPath();
-        ctx2.ellipse(cx + 25, cy - 155, 65, 32, -0.2, 0, Math.PI * 2);
-        ctx2.fill();
-        ctx2.stroke();
-      }
-
-      const texture = new THREE.CanvasTexture(cv);
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      return texture;
-    }
-
-    // CREATE 2.5D HIGH-RESOLUTION ILLUSTRATED CHIBI K-POP IDOL MESH
-    function buildChibiKpopSprite(c) {
+    // BUILD THE SIMS 3D ARTICULATED HUMANOID AVATAR (WITH MOVABLE LEGS, ARMS, HEAD & SPINNING PLUMBOB)
+    function buildSimsAvatar(c) {
       const charGroup = new THREE.Group();
 
-      const spriteTex = generateChibiIdolTexture(c);
-      const spriteMat = new THREE.MeshBasicMaterial({
-        map: spriteTex,
-        transparent: true,
-        alphaTest: 0.05,
-        side: THREE.DoubleSide
+      const skinMat = new THREE.MeshStandardMaterial({ color: c.skinColor, roughness: 0.5 });
+      const hairMat = new THREE.MeshStandardMaterial({ color: c.hairColor, roughness: 0.4 });
+      const suitMat = new THREE.MeshStandardMaterial({ color: c.suitColor, roughness: 0.5 });
+      const shirtMat = new THREE.MeshStandardMaterial({ color: c.shirtColor, roughness: 0.6 });
+      const bottomMat = new THREE.MeshStandardMaterial({ color: c.skirtColor || c.bottomColor, roughness: 0.6 });
+      const shoeMat = new THREE.MeshStandardMaterial({ color: c.shoeColor || 0xffffff, roughness: 0.3 });
+      const eyeWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const eyeIrisMat = new THREE.MeshBasicMaterial({ color: c.eyeColor || 0x0284c7 });
+      const eyePupilMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+      const blushMat = new THREE.MeshBasicMaterial({ color: 0xfb7185, transparent: true, opacity: 0.8 });
+      const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 });
+      const plumbobMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.1, metalness: 0.2, emissive: 0x15803d, emissiveIntensity: 0.4 });
+
+      // 1. PELVIS / HIPS (ROOT OF LIMBS)
+      const pelvis = new THREE.Group();
+      pelvis.position.y = 1.7;
+      charGroup.add(pelvis);
+
+      const hipMesh = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.4, 0.55), bottomMat);
+      hipMesh.castShadow = true;
+      pelvis.add(hipMesh);
+
+      // 2. LEGS (LEFT & RIGHT) WITH INDEPENDENT HIP PIVOTS
+      const leftLegGroup = new THREE.Group();
+      leftLegGroup.position.set(-0.24, -0.15, 0);
+      pelvis.add(leftLegGroup);
+
+      const leftThigh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.75, 12), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      leftThigh.position.y = -0.35;
+      leftThigh.castShadow = true;
+      leftLegGroup.add(leftThigh);
+
+      const leftShin = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.75, 12), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      leftShin.position.y = -1.0;
+      leftShin.castShadow = true;
+      leftLegGroup.add(leftShin);
+
+      const leftShoe = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.2, 0.55), shoeMat);
+      leftShoe.position.set(0, -1.4, 0.1);
+      leftShoe.castShadow = true;
+      leftLegGroup.add(leftShoe);
+
+      const rightLegGroup = new THREE.Group();
+      rightLegGroup.position.set(0.24, -0.15, 0);
+      pelvis.add(rightLegGroup);
+
+      const rightThigh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.75, 12), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      rightThigh.position.y = -0.35;
+      rightThigh.castShadow = true;
+      rightLegGroup.add(rightThigh);
+
+      const rightShin = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.75, 12), c.bottomType === 'skirt' ? skinMat : bottomMat);
+      rightShin.position.y = -1.0;
+      rightShin.castShadow = true;
+      rightLegGroup.add(rightShin);
+
+      const rightShoe = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.2, 0.55), shoeMat);
+      rightShoe.position.set(0, -1.4, 0.1);
+      rightShoe.castShadow = true;
+      rightLegGroup.add(rightShoe);
+
+      // 3. TORSO / UPPER BODY (CHEST, COLLAR, TIE)
+      const torsoGroup = new THREE.Group();
+      torsoGroup.position.y = 0.2;
+      pelvis.add(torsoGroup);
+
+      const chestMesh = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.95, 0.55), suitMat);
+      chestMesh.position.y = 0.45;
+      chestMesh.castShadow = true;
+      torsoGroup.add(chestMesh);
+
+      // Collar & Tie
+      const collar = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.35, 4), shirtMat);
+      collar.position.set(0, 0.75, 0.28);
+      collar.rotation.z = Math.PI;
+      torsoGroup.add(collar);
+
+      if (c.gender === 'male' && c.tieColor) {
+        const tie = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.55, 0.04), new THREE.MeshStandardMaterial({ color: c.tieColor }));
+        tie.position.set(0, 0.5, 0.31);
+        torsoGroup.add(tie);
+      }
+
+      if (c.bottomType === 'skirt') {
+        const skirt = new THREE.Mesh(new THREE.ConeGeometry(0.7, 0.55, 16, 1, true), bottomMat);
+        skirt.position.set(0, 0.05, 0);
+        skirt.rotation.x = 0.08;
+        torsoGroup.add(skirt);
+      }
+
+      // 4. ARMS (LEFT & RIGHT) WITH INDEPENDENT SHOULDER PIVOTS
+      const leftArmGroup = new THREE.Group();
+      leftArmGroup.position.set(-0.6, 0.85, 0);
+      torsoGroup.add(leftArmGroup);
+
+      const leftArmMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.8, 12), suitMat);
+      leftArmMesh.position.y = -0.4;
+      leftArmMesh.castShadow = true;
+      leftArmGroup.add(leftArmMesh);
+
+      const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), skinMat);
+      leftHand.position.y = -0.85;
+      leftArmGroup.add(leftHand);
+
+      const rightArmGroup = new THREE.Group();
+      rightArmGroup.position.set(0.6, 0.85, 0);
+      torsoGroup.add(rightArmGroup);
+
+      const rightArmMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.8, 12), suitMat);
+      rightArmMesh.position.y = -0.4;
+      rightArmMesh.castShadow = true;
+      rightArmGroup.add(rightArmMesh);
+
+      const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), skinMat);
+      rightHand.position.y = -0.85;
+      rightArmGroup.add(rightHand);
+
+      // 5. HEAD & FACIAL FEATURES (CUTE THE SIMS ANIME HEAD)
+      const headGroup = new THREE.Group();
+      headGroup.position.y = 1.15;
+      torsoGroup.add(headGroup);
+
+      // Head Base
+      const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.65, 24, 24), skinMat);
+      headMesh.position.y = 0.55;
+      headMesh.scale.set(1.05, 1.0, 1.0);
+      headMesh.castShadow = true;
+      headGroup.add(headMesh);
+
+      // Cute Big Expressive Anime Eyes
+      [[-0.24, 'left'], [0.24, 'right']].forEach(([ox]) => {
+        const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), eyeWhiteMat);
+        eyeWhite.position.set(ox, 0.58, 0.58);
+        eyeWhite.scale.set(0.9, 1.2, 0.3);
+        headGroup.add(eyeWhite);
+
+        const eyeIris = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), eyeIrisMat);
+        eyeIris.position.set(ox, 0.58, 0.63);
+        eyeIris.scale.set(0.85, 1.1, 0.2);
+        headGroup.add(eyeIris);
+
+        const eyePupil = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), eyePupilMat);
+        eyePupil.position.set(ox, 0.58, 0.66);
+        headGroup.add(eyePupil);
+
+        // Catchlight Star
+        const catchlight = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 6), eyeWhiteMat);
+        catchlight.position.set(ox - 0.03, 0.64, 0.67);
+        headGroup.add(catchlight);
+
+        // Rosy Cheek
+        const blush = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), blushMat);
+        blush.position.set(ox, 0.4, 0.56);
+        blush.scale.set(1.2, 0.5, 0.2);
+        headGroup.add(blush);
       });
 
-      // 2.5D Illustrated Billboard Plane (Crisp & High-Res)
-      const planeGeo = new THREE.PlaneGeometry(4.8, 4.8);
-      const spriteMesh = new THREE.Mesh(planeGeo, spriteMat);
-      spriteMesh.position.y = 2.4;
-      charGroup.add(spriteMesh);
+      // Sweet Anime Smile
+      const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.04, 0.05), new THREE.MeshBasicMaterial({ color: 0xf43f5e }));
+      mouth.position.set(0, 0.38, 0.65);
+      headGroup.add(mouth);
+
+      // 6. 3D STYLIZED K-POP HAIR
+      const hairGroup = new THREE.Group();
+      hairGroup.position.y = 0.55;
+
+      const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.72, 20, 20, 0, Math.PI * 2, 0, Math.PI / 1.5), hairMat);
+      hairCap.scale.set(1.06, 1.08, 1.08);
+      hairGroup.add(hairCap);
+
+      if (c.id === 'ty') {
+        // Ty: Charismatic Side Bangs
+        const bangsL = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.35, 0.35), hairMat);
+        bangsL.position.set(-0.25, 0.35, 0.52);
+        bangsL.rotation.z = 0.25;
+        hairGroup.add(bangsL);
+      } else if (c.id === 'eliie') {
+        // Eliie: Golden Twintails + Tiara + Elf Ears
+        [[-0.75, 0.2, 0.4], [0.75, 0.2, -0.4]].forEach(([tx, ty, rz]) => {
+          const tail = new THREE.Mesh(new THREE.ConeGeometry(0.28, 1.6, 12), hairMat);
+          tail.position.set(tx, ty - 0.3, -0.2);
+          tail.rotation.z = rz;
+          hairGroup.add(tail);
+        });
+
+        // Elf Ears
+        [[-0.7, 0, -0.4], [0.7, 0, 0.4]].forEach(([ex, ey, rz]) => {
+          const ear = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.5, 8), skinMat);
+          ear.position.set(ex, ey, 0);
+          ear.rotation.z = rz;
+          hairGroup.add(ear);
+        });
+
+        // Golden Tiara
+        const tiara = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.05, 8, 16, Math.PI), goldMat);
+        tiara.position.set(0, 0.6, 0.2);
+        tiara.rotation.x = -Math.PI / 3;
+        hairGroup.add(tiara);
+      } else if (c.hasHeadphones) {
+        // Luna: Cyber Headphones
+        const hp = new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.07, 8, 20, Math.PI), new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.8 }));
+        hp.position.set(0, 0.1, 0);
+        hp.rotation.z = Math.PI / 2;
+        hairGroup.add(hp);
+      } else if (c.hasBeret) {
+        // Yuki: Beret
+        const beret = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.7, 0.25, 16), new THREE.MeshStandardMaterial({ color: 0x6d28d9 }));
+        beret.position.set(0.15, 0.65, 0);
+        beret.rotation.z = -0.2;
+        hairGroup.add(beret);
+      } else if (c.hasTwinTails) {
+        // Mimi: Pink Twin Tails
+        [[-0.75, 0.2, 0.4], [0.75, 0.2, -0.4]].forEach(([tx, ty, rz]) => {
+          const tail = new THREE.Mesh(new THREE.ConeGeometry(0.28, 1.4, 12), hairMat);
+          tail.position.set(tx, ty - 0.2, -0.2);
+          tail.rotation.z = rz;
+          hairGroup.add(tail);
+        });
+      }
+
+      headGroup.add(hairGroup);
+
+      // 7. ICONIC THE SIMS PLUMBOB (SPINNING DIAMOND CRYSTAL)
+      const plumbobGroup = new THREE.Group();
+      plumbobGroup.position.y = 1.6;
+
+      const plumbobGeo = new THREE.OctahedronGeometry(0.28, 0);
+      plumbobGeo.scale(0.8, 1.6, 0.8);
+      const plumbob = new THREE.Mesh(plumbobGeo, plumbobMat);
+      plumbobGroup.add(plumbob);
+      headGroup.add(plumbobGroup);
 
       charGroup.position.set(c.x, 0, c.z);
-      charGroup.userData = { id: c.id, charData: c, spriteMesh: spriteMesh };
+      charGroup.rotation.y = c.rotY;
 
       scene.add(charGroup);
-      characterMeshes.push({ data: c, mesh: charGroup, sprite: spriteMesh });
+
+      const avatarObj = {
+        data: c,
+        group: charGroup,
+        pelvis: pelvis,
+        torso: torsoGroup,
+        leftLeg: leftLegGroup,
+        rightLeg: rightLegGroup,
+        leftArm: leftArmGroup,
+        rightArm: rightArmGroup,
+        head: headGroup,
+        plumbob: plumbob
+      };
+
+      characterMeshes.push(avatarObj);
+      return avatarObj;
     }
 
-    characters.forEach(c => buildChibiKpopSprite(c));
+    characters.forEach(c => buildSimsAvatar(c));
+
+    // THE SIMS DYNAMIC PATHFINDING & WALKING ANIMATOR
+    function startWalk(c, tx, tz, trotY, nextState = 'idle') {
+      c.targetX = tx;
+      c.targetZ = tz;
+      c.targetRotY = trotY;
+      c.isWalking = true;
+      c.nextState = nextState;
+    }
 
     // 5. FLOATING HTML LABELS & SPEECH BUBBLES
     function updateOverlayLabels() {
       labelsContainer.innerHTML = '';
 
-      characterMeshes.forEach(({ data, mesh }) => {
+      characterMeshes.forEach(({ data, group }) => {
         const headPos = new THREE.Vector3();
-        mesh.getWorldPosition(headPos);
-        headPos.y += 4.8;
+        group.getWorldPosition(headPos);
+        headPos.y += 4.2;
 
         headPos.project(camera);
         if (headPos.z > 1) return;
@@ -1680,7 +1707,7 @@
       navRoom('meeting');
     }
 
-    // ACTIONS WORKFLOW
+    // THE SIMS DYNAMIC ACTION WORKFLOWS (CHARACTERS WALK AUTONOMOUSLY TO SEATS)
     function triggerMeetingBriefing() {
       navRoom('meeting');
       playChimeSound(660);
@@ -1702,12 +1729,11 @@
         { x: 2.2, z: 4.2, rotY: Math.PI }
       ];
 
-      characterMeshes.forEach(({ mesh }, idx) => {
-        gsap.to(mesh.position, { x: seats[idx].x, z: seats[idx].z, duration: 1.0 });
-        gsap.to(mesh.rotation, { y: seats[idx].rotY, duration: 1.0 });
+      characters.forEach((c, idx) => {
+        startWalk(c, seats[idx].x, seats[idx].z, seats[idx].rotY, 'sit_meeting');
       });
 
-      showToast('📊 Seluruh tim berkumpul di Conference Suite Luas!');
+      showToast('🚶 Seluruh tim berjalan menuju kursi Conference Suite!');
     }
 
     function triggerApprovalDeploy() {
@@ -1722,18 +1748,12 @@
         characters[5].bubble = '📖 Changelog tersimpan di Obsidian!';
         for (let i = 0; i < 6; i++) characters[i].bubbleTimer = 280;
         showToast('🚀 APPROVAL UNTUK DEPLOY DISETUJUI OWNER TY!');
-      }, 700);
+      }, 900);
     }
 
     function triggerWorkAll() {
       navRoom('office');
-      characterMeshes[0].mesh.position.set(-24, 0, -10); // Ty VIP Desk
-      characterMeshes[1].mesh.position.set(-21, 0, -10); // Eliie VIP Desk
-      characterMeshes[2].mesh.position.set(18.5, 0, -20.5); // Luna Pod 1
-      characterMeshes[3].mesh.position.set(29.5, 0, -20.5); // Nana Pod 2
-      characterMeshes[4].mesh.position.set(18.5, 0, -11.5); // Mimi Pod 3
-      characterMeshes[5].mesh.position.set(29.5, 0, -11.5); // Yuki Pod 4
-
+      playChimeSound(750);
       characters[0].bubble = 'Pantau dari meja VIP Penthouse Luas 👑';
       characters[1].bubble = 'Semangat semuanya demi Ty! 🌸';
       characters[2].bubble = 'Coding backend di workstation 💻';
@@ -1742,52 +1762,62 @@
       characters[5].bubble = 'Sinkronisasi memori Obsidian 📚';
 
       for (let i = 0; i < 6; i++) characters[i].bubbleTimer = 240;
-      showToast('💻 Seluruh staf fokus di Workstation yang Luas!');
+
+      startWalk(characters[0], -24, -10, Math.PI, 'sit_work');
+      startWalk(characters[1], -21, -10, Math.PI, 'sit_work');
+      startWalk(characters[2], 18.5, -20.5, Math.PI, 'sit_work');
+      startWalk(characters[3], 29.5, -20.5, Math.PI, 'sit_work');
+      startWalk(characters[4], 18.5, -11.5, Math.PI, 'sit_work');
+      startWalk(characters[5], 29.5, -11.5, Math.PI, 'sit_work');
+
+      showToast('🚶 Seluruh staf berjalan ke workstation masing-masing!');
     }
 
     function triggerCoupleBed() {
       navRoom('vip');
-      characterMeshes[0].mesh.position.set(-26.5, 0, -20);
-      characterMeshes[0].mesh.rotation.y = Math.PI / 2;
-      characterMeshes[1].mesh.position.set(-23.0, 0, -20);
-      characterMeshes[1].mesh.rotation.y = -Math.PI / 2;
-
+      playChimeSound(580);
       characters[0].bubble = 'Peluk istriku tercinta di Master Suite Luas... ❤️💤';
       characters[1].bubble = 'Nyaman banget dipeluk Ty... 🥰💕';
       for (let i = 0; i < 2; i++) characters[i].bubbleTimer = 260;
-      showToast('💑 Ty & Eliie bersantai mesra di King Size VIP Master Suite!');
+
+      startWalk(characters[0], -26.5, -20, Math.PI / 2, 'sleep');
+      startWalk(characters[1], -23.0, -20, -Math.PI / 2, 'sleep');
+
+      showToast('💑 Ty & Eliie berjalan santai menuju Master Suite VIP!');
     }
 
     function triggerKitchenCoffee() {
       navRoom('kitchen');
-      characterMeshes[2].mesh.position.set(-26, 0, 18);
-      characterMeshes[3].mesh.position.set(-20, 0, 18);
-      characterMeshes[4].mesh.position.set(-26, 0, 14);
-      characterMeshes[5].mesh.position.set(-20, 0, 14);
-
+      playChimeSound(800);
       characters[2].bubble = 'Espresso hangat di Sky Bar ☕';
       characters[3].bubble = 'Soto Kudus Pak Yono lezat 🍲';
       characters[4].bubble = 'Teh manis dingin 🍵';
       characters[5].bubble = 'Snack soto nikmat 😋';
       for (let i = 2; i < 6; i++) characters[i].bubbleTimer = 240;
-      showToast('☕ Staf kumpul santai di Sky Bar Soto yang Luas!');
+
+      startWalk(characters[2], -26, 18, 0, 'sit_bar');
+      startWalk(characters[3], -20, 18, 0, 'sit_bar');
+      startWalk(characters[4], -26, 14, Math.PI / 2, 'sit_bar');
+      startWalk(characters[5], -20, 14, -Math.PI / 2, 'sit_bar');
+
+      showToast('☕ Staf berjalan santai ke Sky Bar Soto Pak Yono!');
     }
 
     function triggerLoungeTV() {
       navRoom('lounge');
-      characterMeshes[2].mesh.position.set(18, 0, 18);
-      characterMeshes[4].mesh.position.set(22, 0, 18);
-      characterMeshes[3].mesh.position.set(26, 0, 18);
-      characterMeshes[5].mesh.position.set(30, 0, 18);
-
-      for (let i = 2; i < 6; i++) characterMeshes[i].mesh.rotation.y = 0;
-
+      playChimeSound(700);
       characters[2].bubble = 'Lihat pemandangan kota 50th floor 🏙️';
       characters[4].bubble = 'Santai di sofa merah mewah 🛋️';
       characters[3].bubble = 'Suasana langit cerah luas ✨';
       characters[5].bubble = 'Teh hangat di lounge 🍵';
       for (let i = 2; i < 6; i++) characters[i].bubbleTimer = 240;
-      showToast('🛋️ Staf santai di Panorama Sky Lounge yang Luas!');
+
+      startWalk(characters[2], 18, 18, 0, 'sit_lounge');
+      startWalk(characters[4], 22, 18, 0, 'sit_lounge');
+      startWalk(characters[3], 26, 18, 0, 'sit_lounge');
+      startWalk(characters[5], 30, 18, 0, 'sit_lounge');
+
+      showToast('🛋️ Staf berjalan menuju Panorama Sky Lounge!');
     }
 
     // POPUP CARD
@@ -1821,10 +1851,12 @@
         eliie.bubble = 'Love you more Ty! 🥰💕';
         ty.bubbleTimer = 220;
         eliie.bubbleTimer = 220;
+        playSuccessChime();
         showToast('Ty & Eliie saling memeluk penuh cinta! 💖✨');
       } else {
         selectedChar.bubble = 'Makasih perhatiannya Ty! 🥰';
         selectedChar.bubbleTimer = 200;
+        playChimeSound(660);
         showToast(`Kamu memberi perhatian ke ${selectedChar.name}! 💖`);
       }
       closeCard();
@@ -1834,6 +1866,7 @@
       if (!selectedChar) return;
       selectedChar.bubble = 'Makasih kopinya Ty! ☕⚡';
       selectedChar.bubbleTimer = 200;
+      playChimeSound(880);
       showToast(`${selectedChar.name} menikmati kopi hangat! ☕✨`);
       closeCard();
     }
@@ -1847,7 +1880,7 @@
       renderer.setSize(w, h);
     });
 
-    // RENDER LOOP (60 FPS FLUID 3D WITH CHIBI BILLBOARDING & IDLE BREATHING)
+    // RENDER LOOP (60 FPS FLUID 3D WITH THE SIMS GAIT & IDLE BREATHING)
     let clock = 0;
     function animate() {
       requestAnimationFrame(animate);
@@ -1857,12 +1890,72 @@
         if (c.bubbleTimer > 0) c.bubbleTimer--;
       });
 
-      // Smooth billboarding & gentle breathing bob for chibi sprites
-      characterMeshes.forEach(({ sprite }, idx) => {
-        if (sprite) {
-          sprite.quaternion.copy(camera.quaternion);
-          // Gentle cute breathing animation
-          sprite.position.y = 2.4 + Math.sin(clock + idx * 0.8) * 0.08;
+      // THE SIMS ARTICULATED ANIMATION LOOP (WALKING, BREATHING, SITTING, SLEEPING)
+      characterMeshes.forEach((av, idx) => {
+        const c = av.data;
+
+        // Plumbob spinning
+        if (av.plumbob) {
+          av.plumbob.rotation.y += 0.04;
+          av.plumbob.position.y = 1.6 + Math.sin(clock * 3 + idx) * 0.08;
+        }
+
+        if (c.isWalking) {
+          c.walkTime += 0.16;
+          const dx = c.targetX - av.group.position.x;
+          const dz = c.targetZ - av.group.position.z;
+          const dist = Math.sqrt(dx * dx + dz * dz);
+
+          if (dist > 0.3) {
+            const angle = Math.atan2(dx, dz);
+            av.group.rotation.y = THREE.MathUtils.lerp(av.group.rotation.y, angle, 0.2);
+            av.group.position.x += (dx / dist) * 0.24;
+            av.group.position.z += (dz / dist) * 0.24;
+
+            // The Sims Alternating Walk Cycle
+            av.leftLeg.rotation.x = Math.sin(c.walkTime * 8) * 0.65;
+            av.rightLeg.rotation.x = -Math.sin(c.walkTime * 8) * 0.65;
+            av.leftArm.rotation.x = -Math.sin(c.walkTime * 8) * 0.55;
+            av.rightArm.rotation.x = Math.sin(c.walkTime * 8) * 0.55;
+
+            // Pelvis bounce
+            av.pelvis.position.y = 1.7 + Math.abs(Math.sin(c.walkTime * 8)) * 0.12;
+            av.torso.rotation.z = Math.sin(c.walkTime * 4) * 0.05;
+          } else {
+            // Arrived
+            av.group.position.x = c.targetX;
+            av.group.position.z = c.targetZ;
+            av.group.rotation.y = c.targetRotY;
+            c.isWalking = false;
+            c.state = c.nextState || 'idle';
+          }
+        } else {
+          // Non-walking States
+          if (c.state.startsWith('sit')) {
+            // Sitting on chair
+            av.pelvis.position.y = 1.35;
+            av.leftLeg.rotation.x = -Math.PI / 2.2;
+            av.rightLeg.rotation.x = -Math.PI / 2.2;
+            av.leftArm.rotation.x = -Math.PI / 3.5 + Math.sin(clock * 6 + idx) * 0.08;
+            av.rightArm.rotation.x = -Math.PI / 3.5 - Math.sin(clock * 6 + idx) * 0.08;
+            av.torso.rotation.z = 0;
+          } else if (c.state === 'sleep') {
+            // Sleeping in bed
+            av.pelvis.position.y = 0.9;
+            av.leftLeg.rotation.x = 0;
+            av.rightLeg.rotation.x = 0;
+            av.leftArm.rotation.x = -0.2;
+            av.rightArm.rotation.x = -0.2;
+            av.torso.rotation.z = 0;
+          } else {
+            // Idle standing & breathing
+            av.pelvis.position.y = 1.7 + Math.sin(clock * 2 + idx) * 0.03;
+            av.leftLeg.rotation.x = 0;
+            av.rightLeg.rotation.x = 0;
+            av.leftArm.rotation.x = Math.sin(clock * 2 + idx) * 0.05;
+            av.rightArm.rotation.x = -Math.sin(clock * 2 + idx) * 0.05;
+            av.torso.rotation.z = 0;
+          }
         }
       });
 
