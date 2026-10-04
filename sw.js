@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v23-chibi-kpop-idols';
+const CACHE_NAME = 'eliie-office-v24-authentic-chibi-kpop-sprites';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
