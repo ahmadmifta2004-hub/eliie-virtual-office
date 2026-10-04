@@ -101,36 +101,71 @@
 
     <!-- Room Tabs (Open-Plan Penthouse Zones) -->
     <div class="px-2 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar bg-[#181818]">
-      <button onclick="navRoom('meeting')" id="tab-meeting" class="nav-tab-btn active px-3 py-1 rounded-md text-[11px] font-medium bg-blue-600 text-white flex items-center gap-1.5">
+      <button onclick="navRoom('meeting')" id="tab-meeting" class="nav-tab-btn active px-3 py-1 rounded-md text-[11px] font-medium bg-blue-600 text-white flex items-center gap-1.5 whitespace-nowrap">
         <i class="fa-solid fa-users text-[10px]"></i>
         <span>Conference Suite</span>
       </button>
-      <button onclick="navRoom('vip')" id="tab-vip" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
+      <button onclick="navRoom('vip')" id="tab-vip" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap">
         <i class="fa-solid fa-crown text-[10px] text-amber-400"></i>
         <span>VIP Executive Area</span>
       </button>
-      <button onclick="navRoom('office')" id="tab-office" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
+      <button onclick="navRoom('office')" id="tab-office" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap">
         <i class="fa-solid fa-laptop-code text-[10px] text-cyan-400"></i>
         <span>Open Workstation</span>
       </button>
-      <button onclick="navRoom('kitchen')" id="tab-kitchen" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
+      <button onclick="navRoom('kitchen')" id="tab-kitchen" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap">
         <i class="fa-solid fa-mug-hot text-[10px] text-orange-400"></i>
         <span>Sky Bar / Soto</span>
       </button>
-      <button onclick="navRoom('lounge')" id="tab-lounge" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
+      <button onclick="navRoom('lounge')" id="tab-lounge" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap">
         <i class="fa-solid fa-couch text-[10px] text-purple-400"></i>
         <span>Panorama Lounge</span>
       </button>
-      <button onclick="navRoom('overview')" id="tab-overview" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5">
+      <button onclick="navRoom('overview')" id="tab-overview" class="nav-tab-btn px-3 py-1 rounded-md text-[11px] font-medium bg-[#2a2a2a] text-slate-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap">
         <i class="fa-solid fa-city text-[10px] text-slate-400"></i>
         <span>Skyline Overview</span>
       </button>
     </div>
   </header>
 
+  <!-- LIVE STATUS TICKER BAR (MISSION CONTROL TIKTOK STYLE) -->
+  <div class="w-full bg-[#111827] border-b border-slate-800 px-3 py-1 flex items-center justify-between text-[10px] text-slate-400 z-20 overflow-x-auto no-scrollbar gap-3">
+    <div class="flex items-center gap-2 whitespace-nowrap">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span class="font-bold text-slate-200">LIVE AGENT TELEMETRY:</span>
+      <span class="text-cyan-400 font-mono">⚡ VPS CPU 4%</span>
+      <span class="text-slate-600">|</span>
+      <span class="text-amber-400 font-mono">🍲 Soto Pak Yono: Buka 06:00-21:00</span>
+      <span class="text-slate-600">|</span>
+      <span class="text-pink-400 font-mono">🎨 TikTok @aldialdiansyah070 HQ Mode</span>
+      <span class="text-slate-600">|</span>
+      <span class="text-purple-400 font-mono">📖 Obsidian Synced</span>
+    </div>
+    <div class="flex items-center gap-1.5 whitespace-nowrap font-mono text-[9px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+      <span>● APPROVAL SYSTEM: READY</span>
+    </div>
+  </div>
+
   <!-- 3D WEBGL CONTAINER & OVERLAY HUD -->
   <main id="main-container" class="relative w-full flex-1 bg-[#0b0f19] overflow-hidden">
     <div id="webgl-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+
+    <!-- MISSION CONTROL BANNER (SIAP DEPLOY KD-23 STYLE) -->
+    <div id="deployBanner" class="absolute top-3 left-3 bg-[#0f172a]/90 backdrop-blur-md border border-cyan-500/30 rounded-lg px-3 py-2 shadow-2xl flex items-center gap-3 z-30 pointer-events-auto">
+      <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-base shadow">
+        🚀
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-extrabold text-white tracking-wide">STATUS DEPLOY: KD-23</span>
+          <span id="deployTag" class="text-[9px] font-bold px-1.5 py-0.2 bg-amber-500/20 text-amber-400 rounded border border-amber-500/30">Nunggu Izin Ty</span>
+        </div>
+        <p id="deploySubtext" class="text-[10px] text-slate-300 font-medium">4 divisi sub-agen siap eksekusi fitur baru</p>
+      </div>
+      <button onclick="triggerApprovalDeploy()" class="ml-2 px-2.5 py-1 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-[10px] rounded-md shadow-lg shadow-emerald-500/20 active:scale-95 transition-all">
+        APPROVE
+      </button>
+    </div>
 
     <!-- 2D FLOATING HTML OVERLAYS (NAME TAGS & SPEECH BUBBLES) -->
     <div id="labels-container" class="absolute inset-0 pointer-events-none overflow-hidden z-20"></div>
@@ -1766,6 +1801,17 @@
 
     function triggerApprovalDeploy() {
       triggerMeetingBriefing();
+      const banner = document.getElementById('deployBanner');
+      const tag = document.getElementById('deployTag');
+      const sub = document.getElementById('deploySubtext');
+      if (tag) {
+        tag.className = "text-[9px] font-bold px-1.5 py-0.2 bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30 animate-pulse";
+        tag.innerText = "APPROVED BY OWNER TY";
+      }
+      if (sub) {
+        sub.innerText = "🚀 Deploy KD-23 live dieksekusi ke production!";
+      }
+
       setTimeout(() => {
         playSuccessChime();
         characters[0].bubble = '🚀 APPROVAL UNTUK DEPLOY DITERBITKAN!';

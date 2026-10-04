@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v27-the-sims-perfection';
+const CACHE_NAME = 'eliie-office-v28-tiktok-aldialdiansyah-hq';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
