@@ -1,31 +1,31 @@
 {
-  "last_update": "2026-10-05 16:16:40",
+  "last_update": "2026-10-05 17:55:39",
   "initial_capital": 100.0,
   "cash": 55.0,
-  "coins_value": 45.001455040250256,
-  "total_equity": 100.00145504025025,
-  "pnl_usd": 0.0014550402502493398,
-  "pnl_pct": 0.0014550402502493398,
+  "coins_value": 45.11175027046048,
+  "total_equity": 100.11175027046048,
+  "pnl_usd": 0.11175027046047603,
+  "pnl_pct": 0.11175027046047602,
   "positions": [
     {
       "coin": "BITCOIN",
       "entry_price": 85272,
-      "current_price": 85242,
-      "value": 14.99472276949057,
+      "current_price": 85336,
+      "value": 15.011258091753447,
       "cost": 15.0
     },
     {
       "coin": "ETHEREUM",
       "entry_price": 2695.97,
-      "current_price": 2697.18,
-      "value": 15.00673227075969,
+      "current_price": 2702.52,
+      "value": 15.036443283864436,
       "cost": 15.0
     },
     {
       "coin": "SOLANA",
       "entry_price": 119.44,
-      "current_price": 119.44,
-      "value": 14.999999999999998,
+      "current_price": 119.95,
+      "value": 15.064048894842598,
       "cost": 15.0
     }
   ],
