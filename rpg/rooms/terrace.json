@@ -1,0 +1,27 @@
+{
+  "id": "terrace",
+  "name": "Teras",
+  "bg": "../assets/rooms/terrace-night.png",
+  "characters": [
+    {"id": "ty", "name": "Ty", "spawn": [500, 900]},
+    {"id": "eliie", "name": "Eliie", "spawn": [650, 930]},
+    {"id": "luna", "name": "Luna", "spawn": [900, 900]},
+    {"id": "mimi", "name": "Mimi", "spawn": [300, 950]}
+  ],
+  "hotspots": [
+    {"id": "hs-heater", "name": "Pemanas", "rect": [1290, 480, 120, 380], "text": "🔥 Pemanas teras — anget!"},
+    {"id": "hs-view", "name": "City Lights", "rect": [900, 180, 600, 200], "text": "🌃 City lights Jepara — indah!"},
+    {"id": "hs-door", "name": "Pintu Kaca", "rect": [280, 400, 220, 300], "text": "🚪 Pintu ke dalam kantor"}
+  ],
+  "occluders": [
+    {"id": "sofa1", "name": "Sofa Teras", "src": [1000, 500, 480, 400], "bottomY": 900, "solid": [1020, 580, 440, 260]},
+    {"id": "coftable1", "name": "Meja Teras", "src": [820, 700, 380, 220], "bottomY": 920, "solid": [840, 730, 340, 150]},
+    {"id": "heater1", "name": "Pemanas", "src": [1290, 480, 130, 390], "bottomY": 870, "solid": [1310, 750, 90, 90]}
+  ],
+  "sitSpots": [
+    {"id": "sit_sofa_l", "chair": "sofa1", "x": 1120, "y": 680, "approach": [1120, 950], "face": "front"},
+    {"id": "sit_sofa_m", "chair": "sofa1", "x": 1230, "y": 670, "approach": [1230, 950], "face": "front"},
+    {"id": "sit_sofa_r", "chair": "sofa1", "x": 1330, "y": 660, "approach": [1330, 950], "face": "front"}
+  ],
+  "walk": {"x": 150, "y": 700, "w": 1200, "h": 350}
+}
