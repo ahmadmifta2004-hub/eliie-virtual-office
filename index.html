@@ -1129,7 +1129,7 @@ canvas.addEventListener('pointermove', e=>{
     dragObj.y = Math.max(300, Math.min(H-60, p.y));
     if(dragObj.occupant){
       const cc = charById(dragObj.occupant);
-      if(cc){ cc.x = dragObj.x; cc.y = dragObj.y + sitOff(dragObj); }
+      if(cc){ cc.x = dragObj.x + (dragObj.seatDX||0); cc.y = seatYFor(dragObj, cc); }
     }
   }
 });
@@ -1224,60 +1224,73 @@ boot();
 <script>
 "use strict";
 /* ============================================================
-   PART 4 — INTERAKSI KARAKTER × OBJEK
-   - Kursi/stool/bangku/sofa bisa DISERET (drag & drop)
-   - Karakter bisa DUDUK / TIDUR di furniture
-   - Hotspot objek: lampu, TV/layar, mesin kopi, panci soto,
-     air mancur, papan menu, ranjang
+   PART 4 — INTERAKSI KARAKTER × OBJEK (ala RPG)
+   - Karakter DUDUK di kursi/sofa/bangku YANG ADA di background
+     (tidak menggambar kursi baru; titik dudukan dikalibrasi per kursi)
+   - Klik kursi -> karakter jalan ke depan kursi -> duduk dengan animasi
+   - Penanda kursi bisa DISERET (memindah titik duduk)
+   - Karakter bisa TIDUR di ranjang; hotspot: lampu, TV, mesin kopi,
+     panci soto, air mancur, papan menu
    - Klik karakter lalu klik objek = perintahkan karakter
    - Karakter bereaksi saat disentuh
-   Plug-in: tidak mengubah PART 1-3, hanya menambah.
    ============================================================ */
 
 /* ---------- definisi objek per ruangan (koordinat fraksi) ---------- */
 const OBJECT_DEFS = [
-  // office
-  {id:'ch_of1', room:'office', name:'Kursi Kantor 1', icon:'🪑', type:'chair', x:.2941, y:.7248, movable:true, desc:'Kursi kerja — bisa digeser, bisa diduduki.'},
-  {id:'ch_of2', room:'office', name:'Kursi Kantor 2', icon:'🪑', type:'chair', x:.5430, y:.6400, movable:true, desc:'Kursi kerja — bisa digeser, bisa diduduki.'},
-  {id:'ch_of3', room:'office', name:'Kursi Kantor 3', icon:'🪑', type:'chair', x:.4922, y:.5955, movable:true, desc:'Kursi kerja — bisa digeser, bisa diduduki.'},
-  {id:'ch_of4', room:'office', name:'Kursi Kantor 4', icon:'🪑', type:'chair', x:.7140, y:.7249, movable:true, desc:'Kursi kerja — bisa digeser, bisa diduduki.'},
+  /* Kursi = titik DUDUKAN kursi yang ADA di background (x,y = tempat pantat).
+     Dikalibrasi dari gambar background tiap ruangan — bukan kursi buatan. */
+  // office — kursi kantor hitam
+  {id:'ch_of1', room:'office', name:'Kursi Kantor 1', icon:'🪑', type:'chair', x:.290, y:.700, movable:true, desc:'Kursi meja depan.'},
+  {id:'ch_of2', room:'office', name:'Kursi Kantor 2', icon:'🪑', type:'chair', x:.510, y:.575, movable:true, desc:'Kursi meja tengah.'},
+  {id:'ch_of3', room:'office', name:'Kursi Kantor 3', icon:'🪑', type:'chair', x:.700, y:.690, movable:true, desc:'Kursi meja kanan.'},
   {id:'lamp_of', room:'office', name:'Lampu Kantor', icon:'💡', type:'light', x:.885, y:.230, desc:'Saklar lampu kantor. Ketuk untuk nyala/mati.'},
   {id:'tv_of', room:'office', name:'Layar Monitor', icon:'🖥️', type:'tv', x:.435, y:.480, desc:'Layar presentasi kantor.'},
-  // lounge
-  {id:'sofa_lo', room:'lounge', name:'Sofa Lounge', icon:'🛋️', type:'sofa', x:.40, y:.60, desc:'Sofa empuk buat santai bareng.'},
+  // lounge — sofa hijau (2 dudukan)
+  {id:'sofa_lo1', room:'lounge', name:'Sofa Lounge Kiri', icon:'🛋️', type:'sofa', x:.240, y:.520, desc:'Sofa empuk buat santai bareng.'},
+  {id:'sofa_lo2', room:'lounge', name:'Sofa Lounge Kanan', icon:'🛋️', type:'sofa', x:.365, y:.500, desc:'Sofa empuk buat santai bareng.'},
   {id:'tv_lo', room:'lounge', name:'TV Lounge', icon:'📺', type:'tv', x:.62, y:.40, desc:'TV buat nonton bareng.'},
   {id:'lamp_lo', room:'lounge', name:'Lampu Lounge', icon:'💡', type:'light', x:.845, y:.640, desc:'Lampu hangat lounge.'},
   // vip
   {id:'bed_vip', room:'vip', name:'Ranjang Master', icon:'🛏️', type:'bed', x:.56, y:.62, desc:'Ranjang empuk VIP suite.'},
   {id:'lamp_vip', room:'vip', name:'Lampu VIP', icon:'💡', type:'light', x:.475, y:.500, desc:'Lampu suite.'},
-  // skybar
-  {id:'st_sb1', room:'skybar', name:'Kursi Bar 1', icon:'🪑', type:'stool', x:.25, y:.68, movable:true, desc:'Kursi bar — geser & duduki.'},
-  {id:'st_sb2', room:'skybar', name:'Kursi Bar 2', icon:'🪑', type:'stool', x:.33, y:.66, movable:true, desc:'Kursi bar — geser & duduki.'},
-  {id:'st_sb3', room:'skybar', name:'Kursi Bar 3', icon:'🪑', type:'stool', x:.40, y:.62, movable:true, desc:'Kursi bar — geser & duduki.'},
+  // skybar — dingklik bar (4)
+  {id:'st_sb1', room:'skybar', name:'Kursi Bar 1', icon:'🪑', type:'stool', x:.250, y:.585, movable:true, desc:'Dingklik bar.'},
+  {id:'st_sb2', room:'skybar', name:'Kursi Bar 2', icon:'🪑', type:'stool', x:.325, y:.570, movable:true, desc:'Dingklik bar.'},
+  {id:'st_sb3', room:'skybar', name:'Kursi Bar 3', icon:'🪑', type:'stool', x:.400, y:.550, movable:true, desc:'Dingklik bar.'},
+  {id:'st_sb4', room:'skybar', name:'Kursi Bar 4', icon:'🪑', type:'stool', x:.475, y:.530, movable:true, desc:'Dingklik bar.'},
   {id:'lamp_sb', room:'skybar', name:'Lampu Sky Bar', icon:'💡', type:'light', x:.615, y:.470, desc:'Lampu bar.'},
-  // terrace
-  {id:'sofa_te', room:'terrace', name:'Sofa Teras', icon:'🛋️', type:'sofa', x:.40, y:.62, desc:'Sofa outdoor buat nikmatin malam.'},
+  // terrace — sofa teras (2 dudukan)
+  {id:'sofa_te1', room:'terrace', name:'Sofa Teras Kiri', icon:'🛋️', type:'sofa', x:.580, y:.625, desc:'Sofa outdoor buat nikmatin malam.'},
+  {id:'sofa_te2', room:'terrace', name:'Sofa Teras Kanan', icon:'🛋️', type:'sofa', x:.660, y:.615, desc:'Sofa outdoor buat nikmatin malam.'},
   {id:'heat_te', room:'terrace', name:'Pemanas Teras', icon:'🔥', type:'light', x:.800, y:.545, color:'#ff9a3c', desc:'Pemanas outdoor. Ketuk untuk nyala/mati.'},
-  // yard
-  {id:'bench_ya1', room:'yard', name:'Bangku Taman 1', icon:'🪑', type:'bench', x:.28, y:.57, desc:'Bangku taman buat duduk santai.'},
-  {id:'bench_ya2', room:'yard', name:'Bangku Taman 2', icon:'🪑', type:'bench', x:.72, y:.64, desc:'Bangku taman buat duduk santai.'},
+  // yard — bangku taman (2)
+  {id:'bench_ya1', room:'yard', name:'Bangku Taman Kiri', icon:'🪑', type:'bench', x:.155, y:.520, desc:'Bangku taman buat duduk santai.'},
+  {id:'bench_ya2', room:'yard', name:'Bangku Taman Kanan', icon:'🪑', type:'bench', x:.830, y:.790, desc:'Bangku taman buat duduk santai.'},
   {id:'fount_ya', room:'yard', name:'Air Mancur', icon:'⛲', type:'fountain', x:.573, y:.615, desc:'Air mancur halaman.'},
   {id:'lamp_ya', room:'yard', name:'Lampu Taman', icon:'💡', type:'light', x:.235, y:.735, desc:'Lampu jalan taman.'},
-  // meeting
-  {id:'ch_me1', room:'meeting', name:'Kursi Rapat 1', icon:'🪑', type:'chair', x:.30, y:.72, movable:true, desc:'Kursi rapat — geser & duduki.'},
-  {id:'ch_me2', room:'meeting', name:'Kursi Rapat 2', icon:'🪑', type:'chair', x:.50, y:.69, movable:true, desc:'Kursi rapat — geser & duduki.'},
-  {id:'ch_me3', room:'meeting', name:'Kursi Rapat 3', icon:'🪑', type:'chair', x:.70, y:.72, movable:true, desc:'Kursi rapat — geser & duduki.'},
-  {id:'ch_me4', room:'meeting', name:'Kursi Rapat 4', icon:'🪑', type:'chair', x:.55, y:.84, movable:true, desc:'Kursi rapat — geser & duduki.'},
+  // meeting — kursi rapat (6)
+  {id:'ch_me1', room:'meeting', name:'Kursi Rapat 1', icon:'🪑', type:'chair', x:.520, y:.585, movable:true, desc:'Kursi rapat.'},
+  {id:'ch_me2', room:'meeting', name:'Kursi Rapat 2', icon:'🪑', type:'chair', x:.600, y:.585, movable:true, desc:'Kursi rapat.'},
+  {id:'ch_me3', room:'meeting', name:'Kursi Rapat 3', icon:'🪑', type:'chair', x:.680, y:.585, movable:true, desc:'Kursi rapat.'},
+  {id:'ch_me4', room:'meeting', name:'Kursi Rapat 4', icon:'🪑', type:'chair', x:.760, y:.590, movable:true, desc:'Kursi rapat.'},
+  {id:'ch_me5', room:'meeting', name:'Kursi Rapat 5', icon:'🪑', type:'chair', x:.405, y:.735, movable:true, desc:'Kursi rapat.'},
+  {id:'ch_me6', room:'meeting', name:'Kursi Rapat 6', icon:'🪑', type:'chair', x:.575, y:.745, movable:true, desc:'Kursi rapat.'},
   {id:'scr_me', room:'meeting', name:'Layar Presentasi', icon:'📺', type:'tv', x:.245, y:.415, desc:'Layar presentasi ruang meeting.'},
-  // pantry
+  // pantry — kursi kayu (4)
   {id:'cof_pa', room:'pantry', name:'Mesin Kopi', icon:'☕', type:'machine', x:.305, y:.585, desc:'Mesin kopi pantry. Bisa dipakai bikin kopi!'},
-  {id:'ch_pa1', room:'pantry', name:'Kursi Pantry 1', icon:'🪑', type:'chair', x:.68, y:.72, movable:true, desc:'Kursi pantry.'},
-  {id:'ch_pa2', room:'pantry', name:'Kursi Pantry 2', icon:'🪑', type:'chair', x:.78, y:.70, movable:true, desc:'Kursi pantry.'},
+  {id:'ch_pa1', room:'pantry', name:'Kursi Pantry 1', icon:'🪑', type:'chair', x:.635, y:.800, movable:true, desc:'Kursi meja pantry.'},
+  {id:'ch_pa2', room:'pantry', name:'Kursi Pantry 2', icon:'🪑', type:'chair', x:.800, y:.780, movable:true, desc:'Kursi meja pantry.'},
+  {id:'ch_pa3', room:'pantry', name:'Kursi Pantry 3', icon:'🪑', type:'chair', x:.690, y:.630, movable:true, desc:'Kursi meja pantry.'},
+  {id:'ch_pa4', room:'pantry', name:'Kursi Pantry 4', icon:'🪑', type:'chair', x:.800, y:.610, movable:true, desc:'Kursi meja pantry.'},
   {id:'lamp_pa', room:'pantry', name:'Lampu Pantry', icon:'💡', type:'light', x:.42, y:.37, desc:'Lampu pantry.'},
-  // soto
+  // soto — dingklik warung (6)
   {id:'pot_so', room:'soto', name:'Panci Soto', icon:'🍲', type:'pot', x:.700, y:.395, desc:'Panci soto yang mengepul. Bisa dipakai masak!'},
-  {id:'st_so1', room:'soto', name:'Dingklik 1', icon:'🪑', type:'stool', x:.22, y:.68, movable:true, desc:'Dingklik warung — geser & duduki.'},
-  {id:'st_so2', room:'soto', name:'Dingklik 2', icon:'🪑', type:'stool', x:.32, y:.78, movable:true, desc:'Dingklik warung — geser & duduki.'},
+  {id:'st_so1', room:'soto', name:'Dingklik 1', icon:'🪑', type:'stool', x:.105, y:.695, movable:true, desc:'Dingklik warung.'},
+  {id:'st_so2', room:'soto', name:'Dingklik 2', icon:'🪑', type:'stool', x:.165, y:.725, movable:true, desc:'Dingklik warung.'},
+  {id:'st_so3', room:'soto', name:'Dingklik 3', icon:'🪑', type:'stool', x:.225, y:.815, movable:true, desc:'Dingklik warung.'},
+  {id:'st_so4', room:'soto', name:'Dingklik 4', icon:'🪑', type:'stool', x:.305, y:.785, movable:true, desc:'Dingklik warung.'},
+  {id:'st_so5', room:'soto', name:'Dingklik 5', icon:'🪑', type:'stool', x:.335, y:.895, movable:true, desc:'Dingklik warung.'},
+  {id:'st_so6', room:'soto', name:'Dingklik 6', icon:'🪑', type:'stool', x:.415, y:.855, movable:true, desc:'Dingklik warung.'},
   {id:'menu_so', room:'soto', name:'Papan Menu', icon:'📜', type:'menu', x:.50, y:.28, desc:'Papan menu warung soto.'},
 ];
 state.objects = OBJECT_DEFS.map(function(d){
@@ -1292,69 +1305,17 @@ function objById(id){
 }
 
 /* ---------- gambar furniture pixel-art ---------- */
-function drawChairShape(x,y){
-  ctx.save(); ctx.translate(x,y);
-  ctx.fillStyle='rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(0,2,36,10,0,0,Math.PI*2); ctx.fill();
-  const wood='#8a5a2e', dark='#5e3a1c', light='#c08b4d';
-  ctx.fillStyle=dark;
-  ctx.fillRect(-28,-56,9,56); ctx.fillRect(19,-56,9,56);
-  ctx.fillRect(-28,-66,56,6);
-  ctx.fillStyle=wood; ctx.fillRect(-34,-70,68,16);
-  ctx.fillStyle=light; ctx.fillRect(-34,-70,68,5);
-  ctx.fillStyle=dark; ctx.fillRect(-30,-116,9,48); ctx.fillRect(21,-116,9,48);
-  ctx.fillStyle=wood; ctx.fillRect(-32,-122,64,12);
-  ctx.fillStyle=light; ctx.fillRect(-32,-122,64,4);
-  ctx.fillStyle=wood; ctx.fillRect(-32,-100,64,8);
-  ctx.restore();
-}
-function drawStoolShape(x,y){
-  ctx.save(); ctx.translate(x,y);
-  ctx.fillStyle='rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(0,2,30,9,0,0,Math.PI*2); ctx.fill();
-  const wood='#8a5a2e', dark='#5e3a1c', light='#c08b4d';
-  ctx.fillStyle=dark;
-  ctx.fillRect(-20,-52,8,52); ctx.fillRect(12,-52,8,52);
-  ctx.fillRect(-24,-30,48,5);
-  ctx.fillStyle=wood; ctx.beginPath(); ctx.ellipse(0,-56,34,12,0,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle=light; ctx.beginPath(); ctx.ellipse(0,-58,30,9,0,0,Math.PI*2); ctx.fill();
-  ctx.restore();
-}
-function drawSofaShape(x,y){
-  ctx.save(); ctx.translate(x,y);
-  ctx.fillStyle='rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(0,2,95,14,0,0,Math.PI*2); ctx.fill();
-  const base='#3b4a6b', dark='#26314d', light='#5a6d99', cush='#46587f';
-  ctx.fillStyle=dark; ctx.fillRect(-95,-70,14,70); ctx.fillRect(81,-70,14,70);
-  ctx.fillStyle=base; ctx.fillRect(-95,-84,14,20); ctx.fillRect(81,-84,14,20);
-  ctx.fillStyle=base; ctx.fillRect(-81,-52,162,52);
-  ctx.fillStyle=cush; ctx.fillRect(-81,-66,78,16); ctx.fillRect(3,-66,78,16);
-  ctx.fillStyle=light; ctx.fillRect(-81,-66,78,5); ctx.fillRect(3,-66,78,5);
-  ctx.fillStyle=base; ctx.fillRect(-81,-108,162,44);
-  ctx.fillStyle=dark; ctx.fillRect(-81,-108,162,6);
-  ctx.fillStyle=cush; ctx.fillRect(-75,-100,68,30); ctx.fillRect(7,-100,68,30);
-  ctx.restore();
-}
-function drawBenchShape(x,y){
-  ctx.save(); ctx.translate(x,y);
-  ctx.fillStyle='rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(0,2,80,12,0,0,Math.PI*2); ctx.fill();
-  const wood='#7d5a33', dark='#54401f', light='#a07c46';
-  ctx.fillStyle=dark; ctx.fillRect(-70,-46,10,46); ctx.fillRect(60,-46,10,46);
-  ctx.fillStyle=wood; ctx.fillRect(-80,-58,160,14);
-  ctx.fillStyle=light; ctx.fillRect(-80,-58,160,4);
-  ctx.fillStyle=dark; ctx.fillRect(-76,-104,8,48); ctx.fillRect(68,-104,8,48);
-  ctx.fillStyle=wood; ctx.fillRect(-78,-110,156,10);
-  ctx.restore();
-}
 function drawObj(o){
+  /* Furniture TIDAK digambar ulang — karakter duduk LANGSUNG di kursi/sofa/bangku
+     yang sudah ada di background (ala RPG). Objek hanya hotspot + penanda. */
   const x=o.x, y=o.y;
-  if(o.type==='chair') drawChairShape(x,y);
-  else if(o.type==='stool') drawStoolShape(x,y);
-  else if(o.type==='sofa') drawSofaShape(x,y);
-  else if(o.type==='bench') drawBenchShape(x,y);
   if(o.type==='light' && o.on) drawGlow(x, y-60, 55, o.color, 0.5);
   if(o.type==='tv' && o.on) drawGlow(x, y-40, 60, '#9fd8ff', 0.35);
   if(o.type==='pot' && o.on) drawGlow(x, y-30, 42, '#ff9a3c', 0.5);
 }
+function isSittable(o){ return o.type==='chair'||o.type==='stool'||o.type==='sofa'||o.type==='bench'; }
 function objTop(o){
-  return o.type==='sofa' ? 122 : o.type==='bench' ? 120 : 132;
+  return isSittable(o) ? 46 : 110;
 }
 function drawObjMarkers(){
   if(!state.showMarkers || !state.objects) return;
@@ -1383,14 +1344,22 @@ function hitObj(p){
     const o = state.objects[i];
     if(o.room!==state.room) continue;
     const r = (o.type==='sofa'||o.type==='bench') ? 115 : 75;
-    if(Math.abs(p.x-o.x)<r && p.y>o.y-175 && p.y<o.y+30) return o;
+    if(isSittable(o)){
+      if(Math.abs(p.x-o.x)<r && p.y>o.y-70 && p.y<o.y+95) return o;
+    } else if(Math.abs(p.x-o.x)<r && p.y>o.y-175 && p.y<o.y+30) return o;
   }
   return null;
 }
 
-/* ---------- logika duduk / bangun ---------- */
-function sitOff(o){
-  return o.type==='chair' ? -55 : o.type==='stool' ? -50 : o.type==='sofa' ? -48 : -50;
+/* ---------- logika duduk / bangun : kalibrasi presisi ala RPG ----------
+   o.x,o.y = TITIK DUDUKAN kursi background (tempat pantat).
+   SIT_PAD  : padding transparan bawah tiap sprite 'sit' (diukur per karakter, dh=118)
+   SIT_SINK : pantat sedikit "tenggelam" ke dudukan biar natural
+   Hasil: pantat visual karakter PAS di atas dudukan background, tidak melayang. */
+const SIT_PAD = {ty:6.5, eliie:5, luna:5.5, nana:1, mimi:7.5, yuki:10.5};
+const SIT_SINK = 5;
+function seatYFor(o, c){
+  return o.y + SIT_SINK + (SIT_PAD[c.def.id]||5);
 }
 function releaseSeat(c){
   if(!state.objects) return;
@@ -1404,25 +1373,59 @@ function orderSelected(o, dx, dy, done){
   return true;
 }
 function sitOn(o){
+  /* ala RPG: karakter JALAN ke depan kursi dulu, lalu duduk dengan animasi.
+     Pakai sprite 'sit' (tanpa kursi) sehingga duduk di kursi YANG ADA di scene,
+     bukan membawa kursi sendiri. Posisi pantat dikalibrasi presisi per kursi. */
   if(o.occupant){ const c=charById(o.occupant); toast('🪑 Sudah diduduki '+(c?c.def.name:'')+'!'); return; }
-  const off = sitOff(o);
-  const pose = o.type==='chair' ? 'sitchair' : 'sit';
-  orderSelected(o, 0, off, function(){
-    const c = charById(state.selected); if(!c) return;
-    c.pose = pose; c.sit = true; o.occupant = c.def.id;
-    bubble(c.def.id, ['Nyaman~ 😌','Enak duduknya~ 🪑','Santai dulu… ☕'][(Math.random()*3)|0], 3);
-    addLog('🪑 <b>'+c.def.name+'</b> duduk di <b>'+o.name+'</b>.');
-    chime(523.25);
+  const c0 = charById(state.selected);
+  if(!c0){ toast('👆 Pilih karakter dulu, baru ketuk objek'); return; }
+  c0.room = state.room;
+  const sx = o.x + (o.seatDX||0);
+  const sy = seatYFor(o, c0);
+  const preY = Math.min(H-40, o.y + 64); // titik berdiri di depan kursi
+  startWalk(c0, sx, preY, function(){
+    const c = c0; if(!charById(c.def.id)) return;
+    c.dir='front'; c.flip=false; c.pose='sit'; c.sit=true; // kunci: auto-jalan santai tidak mengganggu
+    c.sitAnim = { t:0, dur:0.5, fromY:c.y, toY:sy, done:function(){
+      o.occupant = c.def.id;
+      bubble(c.def.id, ['Nyaman~ 😌','Enak duduknya~ 🪑','Santai dulu… ☕'][(Math.random()*3)|0], 3);
+      addLog('🪑 <b>'+c.def.name+'</b> duduk di <b>'+o.name+'</b>.');
+      chime(523.25);
+    }};
   });
 }
 function standUp(o){
   const c = charById(o.occupant); o.occupant=null;
   if(!c) return;
+  const upY = Math.min(H-40, o.y + 64);
   c.pose='idle'; c.sit=false;
-  startWalk(c, Math.min(W-60,o.x+90), Math.min(H-60,o.y+50));
+  c.sitAnim = { t:0, dur:0.35, fromY:c.y, toY:upY, done:function(){
+    startWalk(c, Math.min(W-60,o.x+90), Math.min(H-60,o.y+50));
+  }};
   bubble(c.def.id,'Berdiri~ 🚶',2.5);
   addLog('🚶 <b>'+c.def.name+'</b> berdiri dari <b>'+o.name+'</b>.');
 }
+/* ---------- animasi settle (duduk/berdiri): hop kecil + ease ---------- */
+(function(){
+  const _updateChar = updateChar;
+  updateChar = function(c, dt){
+    _updateChar(c, dt);
+    if(c.sitAnim && !c.moving){
+      const a = c.sitAnim;
+      a.t += dt;
+      const p = Math.min(1, a.t / a.dur);
+      const e = 1 - Math.pow(1-p, 3); // easeOutCubic
+      c.y = a.fromY + (a.toY - a.fromY) * e;
+      c.hopY = -Math.sin(p * Math.PI) * 14; // lompatan kecil lalu mendarat
+      if(p >= 1){ c.sitAnim = null; c.hopY = 0; const f = a.done; if(f) f(); }
+    } else if(!c.sitAnim){ c.hopY = 0; }
+  };
+  const _drawSprite = drawSprite;
+  drawSprite = function(c){
+    if(c.hopY){ const y0=c.y; c.y=y0+c.hopY; _drawSprite(c); c.y=y0; }
+    else _drawSprite(c);
+  };
+})();
 function sleepBed(o){
   if(o.occupant){ const c=charById(o.occupant); toast('🛏️ Sudah dipakai '+(c?c.def.name:'')+'!'); return; }
   orderSelected(o, 0, -10, function(){
@@ -1563,5 +1566,6 @@ selectChar = function(id){
   addLog('🎯 <b>Mode interaksi aktif!</b> Ketuk objek berpenanda, seret kursi untuk pindah.');
 })();
 </script>
+
 </body>
 </html>
