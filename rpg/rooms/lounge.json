@@ -1,0 +1,32 @@
+{
+  "id": "lounge",
+  "name": "Lounge",
+  "bg": "../assets/rooms/lounge-night.png",
+  "characters": [
+    {"id": "ty", "name": "Ty", "spawn": [400, 950]},
+    {"id": "eliie", "name": "Eliie", "spawn": [550, 980]},
+    {"id": "luna", "name": "Luna", "spawn": [1000, 950]},
+    {"id": "nana", "name": "Nana", "spawn": [1150, 980]},
+    {"id": "mimi", "name": "Mimi", "spawn": [850, 1000]}
+  ],
+  "hotspots": [
+    {"id": "hs-tv", "name": "TV", "rect": [1050, 60, 260, 180], "text": "📺 TV — lagi nayangin film seru!"},
+    {"id": "hs-books", "name": "Rak Buku", "rect": [1180, 380, 220, 420], "text": "📚 Rak buku — banyak komik dan novel!"},
+    {"id": "hs-coffee", "name": "Meja Kopi", "rect": [600, 680, 480, 300], "text": "☕ Meja kopi — ada camilan!"}
+  ],
+  "occluders": [
+    {"id": "sofa1", "name": "Sofa", "src": [180, 380, 580, 380], "bottomY": 760, "solid": [200, 450, 540, 250]},
+    {"id": "armchair1", "name": "Kursi Santai", "chair": true, "src": [1100, 700, 460, 380], "bottomY": 1080, "solid": [1180, 800, 300, 200]},
+    {"id": "coftable1", "name": "Meja Kopi", "src": [600, 680, 480, 300], "bottomY": 980, "solid": [620, 700, 440, 220]},
+    {"id": "bookshelf1", "name": "Rak Buku", "src": [1180, 380, 220, 420], "bottomY": 800, "solid": [1190, 420, 200, 340]},
+    {"id": "sidetable1", "name": "Meja Samping", "src": [40, 620, 180, 280], "bottomY": 900, "solid": [50, 650, 160, 220]},
+    {"id": "lamp1", "name": "Lampu Lantai", "src": [1540, 620, 180, 400], "bottomY": 1020, "solid": [1600, 900, 80, 80]}
+  ],
+  "sitSpots": [
+    {"id": "sit_sofa_l", "chair": "sofa1", "x": 380, "y": 600, "approach": [380, 850], "face": "front"},
+    {"id": "sit_sofa_m", "chair": "sofa1", "x": 510, "y": 585, "approach": [510, 850], "face": "front"},
+    {"id": "sit_sofa_r", "chair": "sofa1", "x": 640, "y": 570, "approach": [640, 850], "face": "front"},
+    {"id": "sit_arm", "chair": "armchair1", "x": 1330, "y": 900, "approach": [1100, 950], "face": "left"}
+  ],
+  "walk": {"x": 200, "y": 750, "w": 1300, "h": 300}
+}
