@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v33-sitbody5';
+const CACHE_NAME = 'eliie-office-v34-roomassign1';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
