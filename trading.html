@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Divisi AI Trading Terminal — Eliie & Ty</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b0f17;
+      color: #f1f5f9;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glow-green {
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+    }
+    .glow-blue {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white pb-12">
+
+  <!-- Top Navbar -->
+  <header class="sticky top-0 z-50 glass-card border-b border-slate-800/80 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center text-white text-sm shadow-md font-bold">
+            ⚡
+          </div>
+          <div>
+            <h1 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              Sniper Terminal AI
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono font-medium animate-pulse">● LIVE PAPER TRADING</span>
+            </h1>
+            <p class="text-[11px] text-slate-400">Owner: Alberto Timoty (Ty) • Operator: Luna & Nana</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="fetchTradingData()" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 text-xs font-semibold flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-rotate text-[11px]"></i>
+          <span class="hidden sm:inline">Refresh Data</span>
+        </button>
+        <a href="index.html" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-building text-slate-400"></i>
+          <span>Kantor 3D</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto w-full px-4 pt-6 space-y-6">
+
+    <!-- KPI Summary Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <!-- Total Equity -->
+      <div class="glass-card p-4 rounded-2xl glow-blue">
+        <div class="flex items-center justify-between text-slate-400 mb-1">
+          <span class="text-xs font-medium">Total Nilai Aset</span>
+          <i class="fa-solid fa-vault text-indigo-400"></i>
+        </div>
+        <div id="statTotalEquity" class="text-xl sm:text-2xl font-extrabold text-white font-mono">$100.00</div>
+        <div class="flex items-center gap-1 text-[11px] mt-1 font-mono">
+          <span class="text-slate-400">Modal: $100.00</span>
+          <span id="statPnlPct" class="text-emerald-400 font-bold ml-auto">+0.00%</span>
+        </div>
+      </div>
+
+      <!-- Free Cash -->
+      <div class="glass-card p-4 rounded-2xl">
+        <div class="flex items-center justify-between text-slate-400 mb-1">
+          <span class="text-xs font-medium">Kas Siap Belanja</span>
+          <i class="fa-solid fa-wallet text-amber-400"></i>
+        </div>
+        <div id="statCash" class="text-xl sm:text-2xl font-extrabold text-amber-400 font-mono">$55.00</div>
+        <p class="text-[11px] text-slate-400 mt-1">Bisa entry 3–4 posisi lagi</p>
+      </div>
+
+      <!-- In Coins Value -->
+      <div class="glass-card p-4 rounded-2xl">
+        <div class="flex items-center justify-between text-slate-400 mb-1">
+          <span class="text-xs font-medium">Nilai Terpasang (Koin)</span>
+          <i class="fa-solid fa-coins text-cyan-400"></i>
+        </div>
+        <div id="statCoinsVal" class="text-xl sm:text-2xl font-extrabold text-cyan-400 font-mono">$45.00</div>
+        <div class="text-[11px] text-slate-400 mt-1 flex items-center justify-between">
+          <span>3 Posisi (BTC, ETH, SOL)</span>
+        </div>
+      </div>
+
+      <!-- P&L Total -->
+      <div class="glass-card p-4 rounded-2xl glow-green">
+        <div class="flex items-center justify-between text-slate-400 mb-1">
+          <span class="text-xs font-medium">Realisasi Cuan / Rugi</span>
+          <i class="fa-solid fa-chart-line text-emerald-400"></i>
+        </div>
+        <div id="statPnlUsd" class="text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono">+$0.00</div>
+        <p id="statSyncTime" class="text-[10px] text-slate-400 mt-1 truncate">Sync: Baru saja</p>
+      </div>
+    </div>
+
+    <!-- Live TradingView Chart Container -->
+    <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+      <div class="p-3 sm:p-4 border-b border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-chart-candlestick text-indigo-400"></i> Grafik Pasar Real-Time
+          </span>
+        </div>
+        <!-- Coin Switcher Tabs -->
+        <div class="flex items-center gap-1.5 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+          <button onclick="switchChart('BINANCE:BTCUSDT', 'bitcoin')" id="tabBTC" class="px-3 py-1 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm">
+            BTC/USDT
+          </button>
+          <button onclick="switchChart('BINANCE:ETHUSDT', 'ethereum')" id="tabETH" class="px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            ETH/USDT
+          </button>
+          <button onclick="switchChart('BINANCE:SOLUSDT', 'solana')" id="tabSOL" class="px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+            SOL/USDT
+          </button>
+        </div>
+      </div>
+
+      <!-- TradingView Widget Frame -->
+      <div class="h-[420px] sm:h-[500px] w-full bg-slate-950 relative" id="tradingview_widget_container">
+        <!-- Injected by TradingView JS -->
+      </div>
+    </div>
+
+    <!-- Active Positions & History Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Active Open Positions (2 Cols) -->
+      <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-5 border border-slate-800">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-sm font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-cyan-400"></i>
+            Posisi Koin Berjalan (DCA Spot)
+          </h2>
+          <span class="text-[11px] font-mono text-slate-400">Target TP: +5.0%</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead>
+              <tr class="text-slate-400 border-b border-slate-800/80 pb-2">
+                <th class="py-2.5 font-semibold">ASSET</th>
+                <th class="py-2.5 font-semibold">ENTRY PRICE</th>
+                <th class="py-2.5 font-semibold">CURRENT</th>
+                <th class="py-2.5 font-semibold">NILAI POSISI</th>
+                <th class="py-2.5 font-semibold text-right">P&L (%)</th>
+              </tr>
+            </thead>
+            <tbody id="positionsTableBody" class="divide-y divide-slate-800/50 text-slate-200">
+              <tr>
+                <td colspan="5" class="py-6 text-center text-slate-500 font-sans">Memuat data posisi aktif...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Live Execution Log / Yuki Jurnal (1 Col) -->
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-800 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-amber-400"></i>
+              Log Bot (Yuki Journal)
+            </h2>
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30">Auto-DCA</span>
+          </div>
+          <div id="historyLogList" class="space-y-2.5 text-xs font-sans">
+            <!-- Populated via JS -->
+            <div class="text-slate-500 text-center py-6">Memuat riwayat transaksi...</div>
+          </div>
+        </div>
+
+        <!-- Strategy Note Card -->
+        <div class="mt-4 p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-[11px] text-slate-400 space-y-1">
+          <div class="font-bold text-slate-200 flex items-center gap-1.5">
+            <i class="fa-solid fa-shield-halved text-emerald-400"></i> Proteksi Modal Nana
+          </div>
+          <p>Alokasi maksimal $15 per koin top fundamental. Exit otomatis dieksekusi saat profit +5% tercapai.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    let currentSymbol = 'BINANCE:BTCUSDT';
+
+    function initTradingView(symbol) {
+      document.getElementById('tradingview_widget_container').innerHTML = '';
+      new TradingView.widget({
+        "autosize": true,
+        "symbol": symbol,
+        "interval": "15",
+        "timezone": "Asia/Jakarta",
+        "theme": "dark",
+        "style": "1",
+        "locale": "id",
+        "enable_publishing": false,
+        "hide_top_toolbar": false,
+        "hide_legend": false,
+        "save_image": false,
+        "container_id": "tradingview_widget_container",
+        "backgroundColor": "#0b0f17",
+        "gridColor": "rgba(255, 255, 255, 0.04)"
+      });
+    }
+
+    function switchChart(symbol, coinKey) {
+      currentSymbol = symbol;
+      ['tabBTC', 'tabETH', 'tabSOL'].forEach(id => {
+        const el = document.getElementById(id);
+        el.className = "px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+      });
+
+      if (coinKey === 'bitcoin') {
+        document.getElementById('tabBTC').className = "px-3 py-1 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm";
+      } else if (coinKey === 'ethereum') {
+        document.getElementById('tabETH').className = "px-3 py-1 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm";
+      } else if (coinKey === 'solana') {
+        document.getElementById('tabSOL').className = "px-3 py-1 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm";
+      }
+
+      initTradingView(symbol);
+    }
+
+    async function fetchTradingData() {
+      try {
+        const res = await fetch('trading_data.json?t=' + Date.now());
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // Update KPIs
+        document.getElementById('statTotalEquity').innerText = '$' + data.total_equity.toFixed(2);
+        document.getElementById('statCash').innerText = '$' + data.cash.toFixed(2);
+        document.getElementById('statCoinsVal').innerText = '$' + data.coins_value.toFixed(2);
+
+        const pnlEl = document.getElementById('statPnlUsd');
+        const pnlPctEl = document.getElementById('statPnlPct');
+        const sign = data.pnl_usd >= 0 ? '+' : '-';
+        pnlEl.innerText = (data.pnl_usd >= 0 ? '+$' : '-$') + Math.abs(data.pnl_usd).toFixed(2);
+        pnlEl.className = data.pnl_usd >= 0 ? "text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono" : "text-xl sm:text-2xl font-extrabold text-rose-400 font-mono";
+
+        pnlPctEl.innerText = (data.pnl_pct >= 0 ? '+' : '') + data.pnl_pct.toFixed(2) + '%';
+        pnlPctEl.className = data.pnl_pct >= 0 ? "text-emerald-400 font-bold ml-auto" : "text-rose-400 font-bold ml-auto";
+
+        document.getElementById('statSyncTime').innerText = 'Terakhir update: ' + data.last_update;
+
+        // Render Positions Table
+        const tbody = document.getElementById('positionsTableBody');
+        if (data.positions && data.positions.length > 0) {
+          tbody.innerHTML = data.positions.map(p => {
+            const pnl = p.value - p.cost;
+            const pnlPct = (pnl / p.cost) * 100;
+            const pnlClass = pnl >= 0 ? 'text-emerald-400' : 'text-rose-400';
+            return `
+              <tr class="hover:bg-slate-800/30 transition">
+                <td class="py-3 font-bold flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full ${p.coin === 'BITCOIN' ? 'bg-amber-400' : p.coin === 'ETHEREUM' ? 'bg-cyan-400' : 'bg-purple-400'}"></span>
+                  ${p.coin}
+                </td>
+                <td class="py-3 text-slate-300">$${p.entry_price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                <td class="py-3 text-white font-bold">$${p.current_price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                <td class="py-3 text-slate-200">$${p.value.toFixed(2)}</td>
+                <td class="py-3 text-right font-bold ${pnlClass}">${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%</td>
+              </tr>
+            `;
+          }).join('');
+        } else {
+          tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-500 font-sans">Semua posisi ditutup (Kas 100%).</td></tr>`;
+        }
+
+        // Render History List
+        const hList = document.getElementById('historyLogList');
+        if (data.history && data.history.length > 0) {
+          hList.innerHTML = data.history.map(h => `
+            <div class="p-2.5 rounded-xl bg-slate-900/70 border border-slate-800/80">
+              <div class="flex items-center justify-between font-mono text-[11px] mb-1">
+                <span class="font-bold ${h.action.includes('BELI') ? 'text-cyan-400' : 'text-emerald-400'}">${h.action}</span>
+                <span class="text-slate-500 text-[10px]">${h.time.split(' ')[1]}</span>
+              </div>
+              <p class="text-slate-300 font-semibold text-[11px]">${h.coin.toUpperCase()} @ $${h.price.toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">${h.note}</p>
+            </div>
+          `).join('');
+        }
+
+      } catch (err) {
+        console.error('Failed to load trading data:', err);
+      }
+    }
+
+    // Auto-init on load
+    window.addEventListener('DOMContentLoaded', () => {
+      initTradingView(currentSymbol);
+      fetchTradingData();
+      setInterval(fetchTradingData, 15000); // Polling every 15s
+    });
+  </script>
+</body>
+</html>
