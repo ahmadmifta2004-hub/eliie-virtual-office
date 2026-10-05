@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v31-muse-diagnosis-fix';
+const CACHE_NAME = 'eliie-office-v32-sitbody4';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
