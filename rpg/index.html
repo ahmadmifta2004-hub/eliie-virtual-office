@@ -79,6 +79,7 @@
   });
   navBtn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('show'); });
   document.addEventListener('click', function(){ menu.classList.remove('show'); });
+  document.getElementById('restartBtn').addEventListener('click', function(e){ e.stopPropagation(); location.reload(); });
 })();
 </script>
 <script src="engine.js"></script>
