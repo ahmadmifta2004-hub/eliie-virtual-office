@@ -4,9 +4,9 @@
 (function(){
 'use strict';
 const W = 1920, H = 1080;
-const CHAR_H = 168;
-const SITBODY_DH = {ty:237, mimi:131.7, eliie:234.7, luna:184.8, yuki:159.1, nana:170.5};
-const SITBODY_BUTT = {ty:0.494, eliie:0.537, luna:0.484, nana:0.494, mimi:0.582, yuki:0.548};
+const CHAR_H = {eliie:153.2, ty:153.3, luna:137.9, nana:158.9, mimi:162.9, yuki:126.7};
+const SITBODY_DH = {eliie:196.9, ty:177.4, luna:135.5, nana:126.6, mimi:115.2, yuki:128.2};
+const SITBODY_BUTT = {eliie:0.64, ty:0.66, luna:0.66, nana:0.665, mimi:0.665, yuki:0.68};
 const SITBODY_FACE = {ty:'left', eliie:'left', mimi:'left', nana:'right', yuki:'right', luna:'back'};
 const SPEED = 230;
 
@@ -97,7 +97,7 @@ function onTap(e){
   // 1. karakter? (kepala/badan)
   let hit = null, best = 1e9;
   for(const c of G.chars){
-    const dh = c.pose==='sitbody' ? (SITBODY_DH[c.id]||170) : CHAR_H;
+    const dh = c.pose==='sitbody' ? (SITBODY_DH[c.id]||170) : (CHAR_H[c.id]||168);
     const cx = c.x, cyTop = (c.pose==='sitbody'? c.sitY : c.y) - dh;
     const cyBot = (c.pose==='sitbody'? c.sitY : c.y);
     if(p.x>cx-70 && p.x<cx+70 && p.y>cyTop-20 && p.y<cyBot+20){
@@ -247,9 +247,9 @@ function drawChar(c){
     if(c.dir==='side') img = alt?set.ws1:set.ws2;
     else if(c.dir==='back') img = alt?set.wb1:set.wb2;
     else img = alt?set.wf1:set.wf2;
-    dh = CHAR_H;
+    dh = CHAR_H[c.id]||168;
   } else {
-    img = set.idle; dh = CHAR_H;
+    img = set.idle; dh = CHAR_H[c.id]||168;
     bobY = Math.sin(c.bob)*2.5;
   }
   if(!img) return;
