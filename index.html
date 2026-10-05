@@ -86,6 +86,7 @@
     <h1>Ty &amp; Eliie — Pixel Office HQ <small>🌙 night</small></h1>
     <span id="clock">--:--</span>
     <button class="tbtn" id="btnSound">🔊</button>
+    <button class="tbtn" id="btnWeather" title="Cuaca">🌧️</button>
   </div>
   <div id="tabs">
     <div class="tab active" data-room="office">💼 Office</div>
@@ -291,7 +292,11 @@ function drawSprite(c){
   else { dh = 168; }
   const dw = dh*img.naturalWidth/img.naturalHeight;
   ctx.save();
-  ctx.translate(ax, ay+bobY);
+  var outK = (typeof ATM!=='undefined' && ATM[state.room] && ATM[state.room].outdoor) ? 1 : 0.22;
+  var sitK = (c.pose==='idle') ? 1 : 0.2;
+  var swayX = (c.moving || typeof wind==='undefined') ? 0
+    : Math.sin(state.time*2.2 + c.bob*1.7) * wind.s * 3.4 * (0.3+outK) * sitK;
+  ctx.translate(ax+swayX, ay+bobY);
   if(c.flip) ctx.scale(-1,1);
   ctx.drawImage(img, -dw/2, -dh, dw, dh);
   ctx.restore();
@@ -343,9 +348,11 @@ function render(){
   const bg = IMG.rooms[state.room];
   ctx.fillStyle = '#05070f'; ctx.fillRect(0,0,W,H);
   if(bg && bg.complete && bg.naturalWidth) ctx.drawImage(bg, 0, 0, W, H);
+  if(typeof drawBackFX==='function') drawBackFX();
   const sorted = state.chars.slice().sort(function(a,b){ return a.y-b.y; });
   const vis = sorted.filter(function(c){ return !c.room || c.room===state.room; });
   for(const c of vis) drawSprite(c);
+  if(typeof drawFrontFX==='function') drawFrontFX();
   for(const c of vis) drawLabel(c);
   state.bubbles = state.bubbles.filter(function(b){
     const bc = charById(b.char);
@@ -389,9 +396,478 @@ function loop(t){
   lastT = t; state.time += dt;
   for(const c of state.chars) updateChar(c, dt);
   ambientFX(dt);
+  if(typeof lifeTick==='function') lifeTick(dt);
   render();
   requestAnimationFrame(loop);
 }
+
+</script>
+<script>
+"use strict";
+/* ============================================================
+   ATMOSPHERE v2 — cuaca, angin, lampu hidup, karakter lebih hidup
+   Plug-in murni: tidak mengubah engine/PART lain, hanya menambah
+   lapisan FX di render() + lifeTick() di loop().
+   ============================================================ */
+state.weather = 'rain'; // 'clear' | 'rain'
+
+/* ---------- angin global (semilir + hembusan) ---------- */
+const wind = { s: 0.35, gust: 0, t: 0 };
+function updateWind(dt){
+  wind.t += dt;
+  const base = 0.30 + 0.16*Math.sin(wind.t*0.13) + 0.10*Math.sin(wind.t*0.047+1.7);
+  const g = Math.pow(Math.max(0, Math.sin(wind.t*0.21+0.8)), 3);
+  const want = g > 0.5 ? 1 : 0;
+  wind.gust += (want - wind.gust) * Math.min(1, dt*0.7);
+  wind.s = Math.max(0.06, Math.min(1.25, base + wind.gust*0.85));
+}
+
+/* ---------- pool partikel FX ---------- */
+const FX = { rain:[], leaves:[], flies:[], motes:[], steam:[], spark:[] };
+let steamAcc = 0, sparkAcc = 0, strollT = 7, lastFXRoom = '';
+
+/* ---------- konfigurasi atmosfer per ruangan ----------
+   koordinat dalam fraksi (x*W, y*H)                              */
+const ATM = {
+  office: { outdoor:false, rain:true, windK:0.15,
+    rainRects:[[0.0,0.03,0.97,0.55]],
+    glows:[[0.220,0.215,60],[0.545,0.125,60],[0.610,0.155,60],[0.885,0.230,60]],
+    screens:[[0.245,0.580,70],[0.435,0.480,70],[0.600,0.560,70],[0.435,0.705,70]],
+    city:{r:[0.0,0.15,0.97,0.55]}, motes:true },
+  lounge: { outdoor:false, rain:true, windK:0.15,
+    rainRects:[[0.0,0.0,0.52,0.40],[0.79,0.0,1.0,0.60]],
+    glows:[[0.845,0.640,95]],
+    steam:[[0.360,0.650],[0.420,0.620]], motes:true },
+  vip: { outdoor:false, rain:true, windK:0.15,
+    rainRects:[[0.47,0.05,0.99,0.50]],
+    skyRects:[[0.47,0.05,0.99,0.32,40]],
+    glows:[[0.475,0.500,65],[0.775,0.620,65],[0.055,0.310,42],[0.135,0.360,42],[0.012,0.495,42]],
+    motes:true },
+  skybar: { outdoor:true, rain:true, windK:0.8,
+    skyRects:[[0.55,0.0,1.0,0.28,50]], cloudRect:[0.55,0.02,1.0,0.22],
+    city:{r:[0.60,0.25,1.0,0.62]},
+    glows:[[0.063,0.360,65],[0.615,0.470,55],[0.550,0.750,55]],
+    strings:[
+      {a:[0.040,0.150],b:[0.545,0.030],sag:0.060,n:20},
+      {a:[0.040,0.150],b:[0.400,0.010],sag:0.045,n:14},
+      {a:[0.360,0.005],b:[0.545,0.030],sag:0.030,n:8}],
+    leaves:12 },
+  terrace: { outdoor:true, rain:true, windK:1.0,
+    skyRects:[[0.0,0.0,1.0,0.38,70]], cloudRect:[0.0,0.0,1.0,0.25],
+    city:{r:[0.40,0.28,1.0,0.60]},
+    glows:[[0.800,0.545,75,'#ffb35c','flame'],[0.375,0.700,55],[0.645,0.810,50],[0.677,0.810,50]],
+    strings:[
+      {a:[0.355,0.085],b:[0.755,0.235],sag:0.050,n:16},
+      {a:[0.355,0.085],b:[0.855,0.190],sag:0.065,n:18},
+      {a:[0.755,0.235],b:[0.855,0.190],sag:0.035,n:9},
+      {a:[0.300,0.345],b:[0.520,0.355],sag:0.018,n:11}],
+    steam:[[0.520,0.715]], leaves:18 },
+  yard: { outdoor:true, rain:true, windK:0.7,
+    skyRects:[[0.0,0.0,0.10,0.50,18],[0.90,0.0,1.0,0.45,18]],
+    glows:[[0.235,0.735,55],[0.318,0.765,55],[0.333,0.585,50],[0.490,0.510,50],
+            [0.401,0.590,50],[0.235,0.350,50],[0.083,0.810,55],[0.235,0.905,55],[0.682,0.605,50]],
+    treeBulbs:[[0.085,0.28,0.075,0.16,14],[0.205,0.28,0.075,0.17,14],[0.875,0.60,0.085,0.15,14]],
+    fountain:[0.573,0.615], flies:true, leaves:22 },
+  meeting: { outdoor:false, rain:true, windK:0.15,
+    rainRects:[[0.13,0.12,0.90,0.60]],
+    glows:[[0.420,0.235,60],[0.530,0.230,60],[0.655,0.220,60],[0.945,0.310,42]],
+    screens:[[0.245,0.415,95]], motes:true },
+  pantry: { outdoor:false, rain:true, windK:0.15,
+    rainRects:[[0.63,0.10,0.99,0.60]],
+    glows:[[0.42,0.37,130,'#ffcf8a']],
+    steam:[[0.555,0.515],[0.305,0.585]], motes:true },
+  soto: { outdoor:true, rain:true, windK:0.35,
+    glows:[[0.115,0.305,58],[0.220,0.235,58],[0.310,0.235,58],[0.400,0.205,58],
+            [0.500,0.165,58],[0.585,0.145,58],
+            [0.690,0.455,48,'#ff9a3c','flame'],[0.780,0.470,48,'#ff9a3c','flame']],
+    steam:[[0.700,0.395],[0.800,0.425],[0.880,0.470],[0.620,0.600],[0.720,0.630]],
+    leaves:10 },
+};
+
+/* ---------- sprite glow (cache) ---------- */
+const _glowCache = {};
+function glowSprite(color){
+  let s = _glowCache[color];
+  if(s) return s;
+  s = document.createElement('canvas'); s.width = s.height = 128;
+  const g = s.getContext('2d');
+  const gr = g.createRadialGradient(64,64,2,64,64,64);
+  gr.addColorStop(0, color);
+  gr.addColorStop(1, color.length===7 ? color+'00' : 'rgba(0,0,0,0)');
+  g.fillStyle = gr; g.fillRect(0,0,128,128);
+  _glowCache[color] = s; return s;
+}
+function drawGlow(x, y, r, color, alpha){
+  const s = glowSprite(color||'#ffbf66');
+  ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+  ctx.drawImage(s, x-r, y-r, r*2, r*2);
+  ctx.globalAlpha = 1;
+}
+
+/* ---------- build sekali: string bulbs, tree bulbs, city pts ---------- */
+function buildStaticFX(){
+  for(const k in ATM){
+    const A = ATM[k];
+    if(A.strings) for(const st of A.strings){
+      st.bulbs = [];
+      for(let i=0;i<=st.n;i++){
+        const u = i/st.n;
+        st.bulbs.push({
+          x:(st.a[0]+(st.b[0]-st.a[0])*u)*W,
+          y:(st.a[1]+(st.b[1]-st.a[1])*u + st.sag*4*u*(1-u))*H,
+          sp:1.2+Math.random()*2.4, ph:Math.random()*6.28 });
+      }
+    }
+    if(A.treeBulbs){
+      A._tb = [];
+      for(const tb of A.treeBulbs) for(let i=0;i<tb[4];i++){
+        const a = Math.random()*6.28, rr = Math.sqrt(Math.random());
+        A._tb.push({ x:(tb[0]+Math.cos(a)*rr*tb[2])*W, y:(tb[1]+Math.sin(a)*rr*tb[3])*H,
+          sp:1+Math.random()*2.5, ph:Math.random()*6.28 });
+      }
+    }
+  }
+}
+function initRoomFX(room){
+  const A = ATM[room]; if(!A) return;
+  A.stars = [];
+  if(A.skyRects) for(const r of A.skyRects)
+    for(let i=0;i<(r[4]||50);i++)
+      A.stars.push({ x:(r[0]+Math.random()*(r[2]-r[0]))*W, y:(r[1]+Math.random()*(r[3]-r[1]))*H,
+        sp:0.8+Math.random()*2.2, ph:Math.random()*6.28, sz:1.5+Math.random()*2 });
+  A.clouds = [];
+  if(A.cloudRect) for(let i=0;i<4;i++)
+    A.clouds.push({ x:Math.random()*1.3-0.15, y:A.cloudRect[1]+Math.random()*(A.cloudRect[3]-A.cloudRect[1]),
+      r:0.06+Math.random()*0.09, v:0.004+Math.random()*0.006 });
+  if(A.city && !A.city.pts){
+    A.city.pts = [];
+    for(let i=0;i<50;i++) A.city.pts.push({ x:Math.random(), y:Math.random(), sp:0.6+Math.random()*2, ph:Math.random()*6.28 });
+  }
+}
+
+/* ---------- hujan ---------- */
+function newDrop(A){
+  const rs = A && A.rainRects;
+  if(rs && rs.length){
+    const r = rs[(Math.random()*rs.length)|0];
+    const rr = [r[0]*W, r[1]*H, r[2]*W, r[3]*H];
+    return { x:rr[0]+Math.random()*(rr[2]-rr[0]), y:rr[1]+Math.random()*(rr[3]-rr[1]),
+      v:1150+Math.random()*350, rect:rr };
+  }
+  return { x:Math.random()*(W+200)-100, y:Math.random()*(H+40)-20, v:1150+Math.random()*350, rect:null };
+}
+function updateRain(dt, A){
+  const want = (state.weather==='rain' && A && A.rain) ? 200 : 0;
+  while(FX.rain.length < want) FX.rain.push(newDrop(A));
+  if(FX.rain.length > want) FX.rain.length = want;
+  const wvx = wind.s * 340 * ((A && A.windK) || 1);
+  for(const d of FX.rain){
+    d.y += d.v*dt; d.x += wvx*dt;
+    if(d.rect){
+      const r = d.rect;
+      if(d.y > r[3]){ d.y = r[1]-10; d.x = r[0]+Math.random()*(r[2]-r[0]); }
+      if(d.x > r[2]+30) d.x = r[0]-20; if(d.x < r[0]-30) d.x = r[2]+20;
+    } else {
+      if(d.y > H+20){ d.y = -20; d.x = Math.random()*(W+200)-100; }
+      if(d.x > W+60) d.x -= W+120; if(d.x < -60) d.x += W+120;
+    }
+  }
+}
+
+/* ---------- daun berguguran tertiup angin ---------- */
+const LEAF_COLS = ['#c98f3d','#b5762f','#d9a441','#8a5a24','#c46a3a'];
+function newLeaf(anyY){
+  return { x:Math.random()*(W+100)-50, y:anyY ? Math.random()*(H+40)-20 : -20-Math.random()*60,
+    v:Math.random()*30, rot:Math.random()*6.28, rv:(Math.random()-0.5)*4,
+    sz:5+Math.random()*5, ph:Math.random()*6.28, col:LEAF_COLS[(Math.random()*LEAF_COLS.length)|0] };
+}
+function updateLeaves(dt, A){
+  const want = (A && A.leaves) ? A.leaves : 0;
+  while(FX.leaves.length < want) FX.leaves.push(newLeaf(true));
+  if(FX.leaves.length > want) FX.leaves.length = want;
+  const wvx = wind.s * 300 * ((A && A.windK) || 0.6);
+  for(const l of FX.leaves){
+    l.ph += dt*2;
+    l.y += (55 + l.v)*dt;
+    l.x += (wvx + Math.sin(l.ph)*45)*dt;
+    l.rot += l.rv*dt;
+    if(l.y > H+20 || l.x > W+30 || l.x < -30){
+      const nl = newLeaf(false); l.x=nl.x; l.y=nl.y; l.v=nl.v; l.rot=nl.rot; l.rv=nl.rv; l.col=nl.col;
+    }
+  }
+}
+function drawLeaves(){
+  for(const l of FX.leaves){
+    ctx.save(); ctx.translate(l.x, l.y); ctx.rotate(l.rot);
+    ctx.globalAlpha = 0.9; ctx.fillStyle = l.col;
+    ctx.beginPath(); ctx.ellipse(0,0,l.sz,l.sz*0.55,0,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* ---------- kunang-kunang ---------- */
+function updateFlies(dt, A){
+  const want = (A && A.flies) ? 22 : 0;
+  while(FX.flies.length < want) FX.flies.push({ x:Math.random()*W, y:H*(0.5+Math.random()*0.45), ph:Math.random()*6.28, sp:0.6+Math.random()*1.2 });
+  if(FX.flies.length > want) FX.flies.length = want;
+  const wvx = wind.s * 22 * ((A && A.windK) || 0.6);
+  for(const f of FX.flies){
+    f.ph += dt*f.sp;
+    f.x += (Math.sin(f.ph*0.7)*14 + wvx)*dt;
+    f.y += Math.cos(f.ph*0.9)*10*dt;
+    if(f.x < 0) f.x = W; if(f.x > W) f.x = 0;
+    f.y = Math.max(H*0.35, Math.min(H*0.98, f.y));
+  }
+}
+function drawFlies(){
+  if(!FX.flies.length) return;
+  const t = state.time;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for(const f of FX.flies){
+    const a = 0.25 + 0.65*Math.abs(Math.sin(t*1.4 + f.ph*3));
+    drawGlow(f.x, f.y, 14, '#ffe27a', a*0.5);
+    ctx.globalAlpha = a; ctx.fillStyle = '#fff3b0';
+    ctx.beginPath(); ctx.arc(f.x, f.y, 2.5, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+
+/* ---------- uap/asap mengepul (miring tertiup angin) ---------- */
+function updateSteam(dt, A){
+  steamAcc += dt;
+  if(A && A.steam && steamAcc > 0.35){
+    steamAcc = 0;
+    for(const e of A.steam){
+      if(FX.steam.length < 40)
+        FX.steam.push({ x:e[0]*W+(Math.random()*14-7), y:e[1]*H, r:5+Math.random()*4, age:0, life:1.8+Math.random()*1.2 });
+    }
+  }
+  const wvx = wind.s * 70 * ((A && A.windK) || 0.4);
+  for(const s of FX.steam){
+    s.age += dt; s.y -= 30*dt;
+    s.x += (wvx + Math.sin(s.age*3.2)*7)*dt;
+    s.r += 9*dt;
+  }
+  for(let i=FX.steam.length-1;i>=0;i--) if(FX.steam[i].age > FX.steam[i].life) FX.steam.splice(i,1);
+}
+function drawSteam(){
+  for(const s of FX.steam) drawGlow(s.x, s.y, s.r*2.2, '#ffffff', 0.20*(1 - s.age/s.life));
+}
+
+/* ---------- debu melayang (indoor) ---------- */
+function updateMotes(dt, A){
+  const want = (A && A.motes) ? 16 : 0;
+  while(FX.motes.length < want) FX.motes.push({ x:Math.random()*W, y:Math.random()*H, ph:Math.random()*6.28 });
+  if(FX.motes.length > want) FX.motes.length = want;
+  for(const m of FX.motes){
+    m.ph += dt*0.5;
+    m.x += Math.sin(m.ph)*6*dt; m.y += (Math.cos(m.ph*0.8)*5 - 3)*dt;
+    if(m.y < -10){ m.y = H+10; m.x = Math.random()*W; }
+    if(m.y > H+10){ m.y = -10; m.x = Math.random()*W; }
+  }
+}
+function drawMotes(){
+  if(!FX.motes.length) return;
+  ctx.save(); ctx.fillStyle = '#fff8e0';
+  for(const m of FX.motes){ ctx.globalAlpha = 0.10+0.08*Math.sin(state.time+m.ph*2); ctx.fillRect(m.x, m.y, 2.5, 2.5); }
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+
+/* ---------- percikan air mancur ---------- */
+function updateSparks(dt, A){
+  sparkAcc += dt;
+  if(A && A.fountain && sparkAcc > 0.1){
+    sparkAcc = 0;
+    for(let k=0;k<3 && FX.spark.length<70;k++)
+      FX.spark.push({ x:A.fountain[0]*W+(Math.random()*36-18), y:A.fountain[1]*H,
+        vx:(Math.random()-0.5)*70, vy:-50-Math.random()*70, age:0, life:0.8+Math.random()*0.6 });
+  }
+  const wvx = wind.s * 40 * ((A && A.windK) || 0.5);
+  for(const s of FX.spark){ s.vy += 340*dt; s.x += (s.vx + wvx)*dt; s.y += s.vy*dt; s.age += dt; }
+  for(let i=FX.spark.length-1;i>=0;i--) if(FX.spark[i].age > FX.spark[i].life) FX.spark.splice(i,1);
+}
+function drawSparks(){
+  if(!FX.spark.length) return;
+  ctx.save();
+  for(const s of FX.spark){
+    ctx.globalAlpha = 0.8*(1 - s.age/s.life); ctx.fillStyle = '#cfeaff';
+    ctx.fillRect(s.x, s.y, 3, 3);
+  }
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+
+/* ---------- lapisan BELAKANG (di belakang karakter) ---------- */
+function drawBackFX(){
+  const A = ATM[state.room]; if(!A) return;
+  const t = state.time;
+  ctx.save();
+  if(A.stars && A.stars.length){
+    for(const s of A.stars){
+      ctx.globalAlpha = 0.15 + 0.75*Math.abs(Math.sin(t*s.sp + s.ph));
+      ctx.fillStyle = '#dfe8ff';
+      ctx.fillRect(s.x-s.sz/2, s.y-s.sz/2, s.sz, s.sz);
+    }
+    ctx.globalAlpha = 1;
+  }
+  if(A.clouds && A.clouds.length){
+    ctx.fillStyle = 'rgba(16,22,48,0.5)';
+    for(const c of A.clouds){
+      const cx = (((c.x + t*c.v) % 1.3) - 0.15) * W;
+      ctx.beginPath(); ctx.ellipse(cx, c.y*H, c.r*W, c.r*H*0.35, 0, 0, Math.PI*2); ctx.fill();
+    }
+  }
+  if(A.city && A.city.pts){
+    const r = A.city.r;
+    for(const p of A.city.pts){
+      ctx.globalAlpha = 0.08 + 0.30*Math.abs(Math.sin(t*p.sp + p.ph));
+      ctx.fillStyle = '#ffd98a';
+      ctx.fillRect(r[0]*W + p.x*(r[2]-r[0])*W, r[1]*H + p.y*(r[3]-r[1])*H, 3, 3);
+    }
+    ctx.globalAlpha = 1;
+  }
+  if(state.weather==='rain' && A.rain && FX.rain.length){
+    ctx.strokeStyle = 'rgba(157,184,232,0.42)'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    const slant = wind.s * 90 * (A.windK || 1);
+    for(const d of FX.rain){ ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - slant*0.35, d.y - 26); }
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(40,60,110,0.10)';
+    ctx.fillRect(0, 0, W, H);
+  }
+  ctx.restore();
+}
+
+/* ---------- lapisan DEPAN (di atas karakter) ---------- */
+function drawFrontFX(){
+  const A = ATM[state.room]; if(!A) return;
+  const t = state.time;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  if(A.glows) for(const g of A.glows){
+    const flame = g[4]==='flame';
+    const flick = flame ? (0.72 + 0.28*Math.sin(t*13 + g[0]*40)*Math.sin(t*7.3 + g[1]*20))
+                        : (0.82 + 0.18*Math.sin(t*2.1 + g[0]*30 + g[1]*17));
+    drawGlow(g[0]*W, g[1]*H, g[2], g[3]||'#ffbf66', 0.34*flick);
+  }
+  if(A.strings) for(const st of A.strings){
+    if(!st.bulbs) continue;
+    for(const b of st.bulbs){
+      const tw = 0.55 + 0.45*Math.sin(t*b.sp + b.ph);
+      drawGlow(b.x, b.y, 9, '#ffd27a', 0.75*tw);
+      ctx.globalAlpha = 0.95*tw; ctx.fillStyle = '#ffe9b8';
+      ctx.beginPath(); ctx.arc(b.x, b.y, 2.6, 0, Math.PI*2); ctx.fill();
+    }
+  }
+  if(A._tb) for(const b of A._tb){
+    const tw = 0.5 + 0.5*Math.sin(t*b.sp + b.ph);
+    drawGlow(b.x, b.y, 8, '#ffd27a', 0.7*tw);
+  }
+  if(A.fountain) drawGlow(A.fountain[0]*W, A.fountain[1]*H+30, 70, '#7cc4ff', 0.25 + 0.12*Math.sin(t*3));
+  if(A.screens) for(const r of A.screens)
+    drawGlow(r[0]*W, r[1]*H, r[2], '#9fd8ff', 0.10 + 0.05*Math.abs(Math.sin(t*5 + r[0]*50)));
+  ctx.restore(); ctx.globalAlpha = 1;
+  drawFlies(); drawSteam(); drawLeaves(); drawMotes(); drawSparks();
+}
+
+/* ---------- detak hidup: update semua + karakter jalan santai ---------- */
+function fxRoomChanged(){
+  FX.rain.length = 0; FX.leaves.length = 0; FX.spark.length = 0; FX.steam.length = 0;
+  initRoomFX(state.room);
+  updateAmbientAudio();
+}
+function lifeTick(dt){
+  if(lastFXRoom !== state.room){ lastFXRoom = state.room; fxRoomChanged(); }
+  updateWind(dt);
+  const A = ATM[state.room];
+  updateRain(dt, A); updateLeaves(dt, A); updateFlies(dt, A);
+  updateSteam(dt, A); updateMotes(dt, A); updateSparks(dt, A);
+  updateAmbientAudio();
+  strollT -= dt;
+  if(strollT <= 0){
+    strollT = 9 + Math.random()*11;
+    const cand = state.chars.filter(function(c){
+      return (!c.room || c.room===state.room) && !c.moving && c.pose==='idle' && !c.sit;
+    });
+    if(cand.length && Math.random() < 0.75){
+      const c = cand[(Math.random()*cand.length)|0];
+      startWalk(c, W*(0.12+Math.random()*0.76), H*(0.60+Math.random()*0.30), function(){
+        if(Math.random() < 0.45)
+          bubble(c.def.id, ['👋','🎵','💭','✨','😌','🌙'][(Math.random()*6)|0], 3);
+      });
+    }
+  }
+}
+
+/* ---------- audio ambient: hujan + angin + jangkrik ---------- */
+let AC2 = null, rainGain = null, windGain = null, noiseBuf = null;
+function ensureAudio(){
+  if(AC2) return true;
+  try{
+    AC2 = new (window.AudioContext||window.webkitAudioContext)();
+    noiseBuf = AC2.createBuffer(1, AC2.sampleRate*2, AC2.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i] = Math.random()*2-1;
+    const mk = function(freq){
+      const src = AC2.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+      const f = AC2.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = freq; f.Q.value = 0.8;
+      const g = AC2.createGain(); g.gain.value = 0;
+      src.connect(f); f.connect(g); g.connect(AC2.destination); src.start();
+      return g;
+    };
+    rainGain = mk(1400); windGain = mk(380);
+    return true;
+  }catch(e){ return false; }
+}
+function chirp(){
+  if(!soundOn || !AC2) return;
+  const r = state.room;
+  if(r!=='yard' && r!=='terrace' && r!=='skybar') return;
+  try{
+    const t0 = AC2.currentTime + 0.05;
+    for(let i=0;i<3;i++){
+      const o = AC2.createOscillator(), g = AC2.createGain();
+      o.type = 'sine'; o.frequency.value = 4200 + Math.random()*300;
+      const st = t0 + i*0.09;
+      g.gain.setValueAtTime(0.0001, st);
+      g.gain.exponentialRampToValueAtTime(0.035, st+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, st+0.07);
+      o.connect(g); g.connect(AC2.destination);
+      o.start(st); o.stop(st+0.09);
+    }
+  }catch(e){}
+}
+setInterval(chirp, 1400);
+function updateAmbientAudio(){
+  if(!ensureAudio()) return;
+  try{
+    if(AC2.state==='suspended') AC2.resume();
+    const t = AC2.currentTime;
+    const A = ATM[state.room];
+    const raining = state.weather==='rain' && A && A.rain;
+    const outdoor = !!(A && A.outdoor);
+    rainGain.gain.setTargetAtTime((soundOn && raining) ? 0.06 : 0, t, 0.8);
+    windGain.gain.setTargetAtTime((soundOn && outdoor) ? (0.015 + wind.s*0.045) : 0, t, 0.8);
+  }catch(e){}
+}
+
+/* ---------- tombol cuaca ---------- */
+document.getElementById('btnWeather').onclick = function(){
+  state.weather = state.weather==='rain' ? 'clear' : 'rain';
+  this.textContent = state.weather==='rain' ? '🌧️' : '🌙';
+  const lbl = document.querySelector('#topbar h1 small');
+  if(lbl) lbl.textContent = state.weather==='rain' ? '🌙 night • 🌧️ hujan' : '🌙 night';
+  toast(state.weather==='rain' ? '🌧️ Hujan turun…' : '🌙 Langit cerah');
+  chime(state.weather==='rain' ? 392 : 660);
+  updateAmbientAudio();
+};
+
+/* ---------- init ---------- */
+buildStaticFX();
+(function(){
+  const lbl = document.querySelector('#topbar h1 small');
+  if(lbl) lbl.textContent = '🌙 night • 🌧️ hujan';
+})();
 
 </script>
 <script>
