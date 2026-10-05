@@ -4,8 +4,8 @@
 (function(){
 'use strict';
 const W = 1920, H = 1080;
-const CHAR_H = {eliie:153.2, ty:153.3, luna:137.9, nana:158.9, mimi:162.9, yuki:126.7};
-const SITBODY_DH = {eliie:196.9, ty:177.4, luna:135.5, nana:126.6, mimi:115.2, yuki:128.2};
+const CHAR_H = {eliie:150, ty:150, luna:150, nana:150, mimi:150, yuki:150};
+const SITBODY_DH = {eliie:143.5, ty:143.6, luna:142.1, nana:141.8, mimi:144.5, yuki:148.1};
 const SITBODY_BUTT = {eliie:0.64, ty:0.66, luna:0.66, nana:0.665, mimi:0.665, yuki:0.68};
 const SITBODY_FACE = {ty:'left', eliie:'left', mimi:'left', nana:'right', yuki:'right', luna:'back'};
 const SPEED = 230;
