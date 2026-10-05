@@ -2284,7 +2284,7 @@
           else if (c.state === 'sleep') pose = 'sleep';
           const key = (pose === 'sleep') ? 'sleep' : (pose + (blinking ? '_b' : ''));
           if (av.curKey !== key) { av.sprite.material.map = av.tex[key]; av.sprite.material.needsUpdate = true; av.curKey = key; }
-          const baseY = 1.55;
+          const baseY = (pose === 'sleep') ? 2.3 : 1.55; // FIX sleep-clip: sprite center-anchored; badan tiduran (sprite-center +/-0.31) harus di atas duvet top y=1.95
           av.sprite.position.y = baseY + Math.sin(clock * 2 + idx) * 0.045;
           if (pose === 'sleep') {
             const br = 1 + Math.sin(clock * 1.5 + idx) * 0.02;
