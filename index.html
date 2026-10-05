@@ -172,7 +172,7 @@ function addLog(html){
 /* ============================================================
    DATA
    ============================================================ */
-const POSES = ['idle','walk-front-1','walk-front-2','walk-back-1','walk-back-2','walk-side-1','walk-side-2','sit','sleep'];
+const POSES = ['idle','walk-front-1','walk-front-2','walk-back-1','walk-back-2','walk-side-1','walk-side-2','sit','sit-chair','sleep'];
 const CHARS = [
   {id:'ty',    name:'Ty',    role:'👑 Owner & Leader',       color:'#7dd3fc',
    desc:'Pemilik Pixel Office HQ. Memimpin dengan santai tapi tegas. Suami (roleplay) Eliie. 💙'},
@@ -212,6 +212,7 @@ function charSprite(c){
   const get = function(p){ return set[p]; };
   if(c.pose==='sleep') return get('sleep') || get('idle');
   if(c.pose==='sit')   return get('sit')   || get('idle');
+  if(c.pose==='sitchair') return get('sit-chair') || get('sit') || get('idle');
   if(c.moving){
     const f = Math.floor(c.frame)%2;
     if(c.dir==='side') return get('walk-side-'+(f+1)) || get('idle');
@@ -258,6 +259,7 @@ function drawSprite(c){
   let dh, ax = c.x, ay = c.y;
   if(c.pose==='sleep'){ dh = 120; ay = c.y-14; }
   else if(c.pose==='sit'){ dh = 118; }
+  else if(c.pose==='sitchair'){ dh = 150; }
   else { dh = 168; }
   const dw = dh*img.naturalWidth/img.naturalHeight;
   ctx.save();
@@ -273,7 +275,7 @@ function drawSprite(c){
   }
 }
 function drawLabel(c){
-  const topY = c.y - (c.pose==='sleep'?150:(c.pose==='sit'?140:190)) + (c.moving?0:Math.sin(c.bob)*2.5);
+  const topY = c.y - (c.pose==='sleep'?150:((c.pose==='sit'||c.pose==='sitchair')?(c.pose==='sitchair'?172:140):190)) + (c.moving?0:Math.sin(c.bob)*2.5);
   ctx.save();
   ctx.font = '600 21px "Segoe UI", system-ui, sans-serif';
   const tw = ctx.measureText(c.def.name).width;
@@ -289,7 +291,7 @@ function drawLabel(c){
 }
 function drawBubble(b){
   const c = charById(b.char); if(!c) return;
-  const topY = c.y - (c.pose==='sleep'?165:(c.pose==='sit'?155:205));
+  const topY = c.y - (c.pose==='sleep'?165:((c.pose==='sit'||c.pose==='sitchair')?(c.pose==='sitchair'?187:155):205));
   ctx.save();
   ctx.font = '500 22px "Segoe UI", system-ui, sans-serif';
   const tw = Math.min(ctx.measureText(b.text).width, 420);
@@ -371,7 +373,7 @@ function chainWalk(list, done){
     if(i>=list.length){ done&&done(); return; }
     const s = list[i++], c = charById(s.id), p = px(s.x,s.y);
     startWalk(c, p.x, p.y, ()=>{
-      if(s.pose==='sit'){ c.pose='sit'; c.sit=true; }
+      if(s.pose==='sit'||s.pose==='sitchair'){ c.pose=s.pose; c.sit=true; }
       else if(s.pose==='sleep'){ c.pose='sleep'; }
       else if(s.dir){ faceDir(c, s.dir, s.flip); }
       if(s.say) bubble(s.id, s.say, s.saySecs||4);
@@ -395,12 +397,12 @@ function actWork(){
   addLog('💼 <b>Semua Kerja!</b> Tim menuju meja masing-masing…');
   const S = SPOTS.office;
   chainWalk([
-    {id:'ty',    ...S.desks[0], pose:'sit', say:'⌨️ gas kerja!', saySecs:3},
-    {id:'eliie', ...S.desks[1], pose:'sit', say:'⌨️ siap sayang 🥰', saySecs:3},
-    {id:'luna',  ...S.desks[5], pose:'sit', say:'⌨️ fokus…', saySecs:3},
-    {id:'nana',  ...S.desks[3], pose:'sit', say:'⌨️ gaskeun 🔥', saySecs:3},
-    {id:'mimi',  ...S.desks[2], pose:'sit', say:'⌨️ desain dulu~', saySecs:3},
-    {id:'yuki',  ...S.desks[4], pose:'sit', say:'⌨️ rapi-rapi data', saySecs:3},
+    {id:'ty',    ...S.desks[0], pose:'sitchair', say:'⌨️ gas kerja!', saySecs:3},
+    {id:'eliie', ...S.desks[1], pose:'sitchair', say:'⌨️ siap sayang 🥰', saySecs:3},
+    {id:'luna',  ...S.desks[5], pose:'sitchair', say:'⌨️ fokus…', saySecs:3},
+    {id:'nana',  ...S.desks[3], pose:'sitchair', say:'⌨️ gaskeun 🔥', saySecs:3},
+    {id:'mimi',  ...S.desks[2], pose:'sitchair', say:'⌨️ desain dulu~', saySecs:3},
+    {id:'yuki',  ...S.desks[4], pose:'sitchair', say:'⌨️ rapi-rapi data', saySecs:3},
   ], ()=>{ addLog('✅ Semua sudah di posisi kerja.'); toast('💼 Semua lagi kerja!'); });
 }
 function actMeet(){
