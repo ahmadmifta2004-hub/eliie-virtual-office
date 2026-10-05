@@ -1,0 +1,58 @@
+{
+  "last_update": "2026-10-05 16:16:40",
+  "initial_capital": 100.0,
+  "cash": 55.0,
+  "coins_value": 45.001455040250256,
+  "total_equity": 100.00145504025025,
+  "pnl_usd": 0.0014550402502493398,
+  "pnl_pct": 0.0014550402502493398,
+  "positions": [
+    {
+      "coin": "BITCOIN",
+      "entry_price": 85272,
+      "current_price": 85242,
+      "value": 14.99472276949057,
+      "cost": 15.0
+    },
+    {
+      "coin": "ETHEREUM",
+      "entry_price": 2695.97,
+      "current_price": 2697.18,
+      "value": 15.00673227075969,
+      "cost": 15.0
+    },
+    {
+      "coin": "SOLANA",
+      "entry_price": 119.44,
+      "current_price": 119.44,
+      "value": 14.999999999999998,
+      "cost": 15.0
+    }
+  ],
+  "history": [
+    {
+      "time": "2026-10-05 16:12:14",
+      "action": "BELI (ENTRY SPOT)",
+      "coin": "bitcoin",
+      "price": 85272,
+      "amount_usd": 15.0,
+      "note": "DCA Spot Top Asset - 24h tren +0.03%"
+    },
+    {
+      "time": "2026-10-05 16:12:14",
+      "action": "BELI (ENTRY SPOT)",
+      "coin": "ethereum",
+      "price": 2695.97,
+      "amount_usd": 15.0,
+      "note": "DCA Spot Top Asset - 24h tren -0.09%"
+    },
+    {
+      "time": "2026-10-05 16:12:14",
+      "action": "BELI (ENTRY SPOT)",
+      "coin": "solana",
+      "price": 119.44,
+      "amount_usd": 15.0,
+      "note": "DCA Spot Top Asset - 24h tren -1.73%"
+    }
+  ]
+}
