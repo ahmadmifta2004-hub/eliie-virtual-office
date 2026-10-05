@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Eliie Virtual Office — RPG v2 (Beta)</title>
+<title>Eliie Virtual Office — RPG v2</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{width:100%;height:100%;background:#0b1020;overflow:hidden;
@@ -17,11 +17,19 @@
   #roomName{background:rgba(10,14,30,.72);color:#ffe9b8;font-weight:700;
     padding:8px 14px;border-radius:12px;font-size:15px;backdrop-filter:blur(4px);
     border:1px solid rgba(255,220,150,.25);}
-  #beta{background:rgba(20,120,80,.8);color:#fff;font-size:12px;font-weight:700;
-    padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);}
+  #navBtn{pointer-events:auto;background:rgba(10,14,30,.85);color:#ffe9b8;
+    padding:8px 14px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;
+    border:1px solid rgba(255,220,150,.35);}
   #backBtn{pointer-events:auto;background:rgba(10,14,30,.72);color:#9adcff;
     padding:8px 12px;border-radius:12px;font-size:13px;text-decoration:none;
     border:1px solid rgba(140,200,255,.3);}
+  #roomMenu{position:absolute;top:56px;left:12px;background:rgba(10,14,30,.95);
+    border-radius:14px;padding:8px;display:none;flex-direction:column;gap:4px;
+    border:1px solid rgba(255,220,150,.25);z-index:10;max-height:70%;overflow-y:auto;}
+  #roomMenu.show{display:flex;}
+  #roomMenu a{color:#ffe9b8;text-decoration:none;padding:10px 16px;border-radius:10px;
+    font-size:14px;white-space:nowrap;}
+  #roomMenu a:hover,#roomMenu a.active{background:rgba(255,220,150,.15);}
   #hint{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
     background:rgba(10,14,30,.72);color:#cfe3ff;font-size:13px;
     padding:8px 16px;border-radius:20px;white-space:nowrap;pointer-events:none;
@@ -38,16 +46,41 @@
 <div id="wrap">
   <canvas id="game" width="1920" height="1080"></canvas>
   <div id="hud">
-    <div id="roomName">🏢 Kantor Utama</div>
+    <div style="display:flex;gap:8px;align-items:center;pointer-events:auto;">
+      <button id="navBtn">🗺️ <span id="roomName">Kantor</span> ▾</button>
+    </div>
     <div style="display:flex;gap:8px;align-items:center;">
-      <span id="beta">✨ RPG v2 beta</span>
       <a id="backBtn" href="../index.html">← versi klasik</a>
     </div>
   </div>
+  <div id="roomMenu"></div>
   <div id="toast"></div>
   <div id="hint">👆 ketuk karakter → ketuk lantai untuk jalan → ketuk 🪑 untuk duduk</div>
 </div>
-<script>window.RPG_ROOM = 'office';</script>
+<script>
+(function(){
+  const ROOMS = [
+    ['office','💼 Kantor'], ['meeting','📊 Meeting'], ['lounge','🛋️ Lounge'],
+    ['vip','💎 VIP Suite'], ['skybar','🍹 Sky Bar'], ['terrace','🌃 Teras'],
+    ['yard','🌳 Halaman'], ['pantry','☕ Pantry'], ['soto','🍜 Soto Pak Yono']
+  ];
+  const params = new URLSearchParams(location.search);
+  const cur = params.get('room') || 'office';
+  window.RPG_ROOM = cur;
+  const menu = document.getElementById('roomMenu');
+  const navBtn = document.getElementById('navBtn');
+  const nameEl = document.getElementById('roomName');
+  ROOMS.forEach(function(r){
+    const a = document.createElement('a');
+    a.href = '?room=' + r[0];
+    a.textContent = r[1];
+    if(r[0] === cur){ a.classList.add('active'); nameEl.textContent = r[1]; }
+    menu.appendChild(a);
+  });
+  navBtn.addEventListener('click', function(e){ e.stopPropagation(); menu.classList.toggle('show'); });
+  document.addEventListener('click', function(){ menu.classList.remove('show'); });
+})();
+</script>
 <script src="engine.js"></script>
 </body>
 </html>
