@@ -345,7 +345,7 @@ function loop(t){
    ============================================================ */
 const SPOTS = {
   office:{
-    desks:[ {x:.30,y:.76},{x:.53,y:.62},{x:.44,y:.92},{x:.74,y:.74} ], // sit
+    desks:[ {x:.271,y:.709},{x:.529,y:.603},{x:.443,y:.926},{x:.711,y:.751} ], // sit (butt on chair seats)
     extra:[ {x:.38,y:.84},{x:.63,y:.82} ],                              // idle+typing
     meet:[ {x:.50,y:.70} ],
   },
@@ -520,26 +520,34 @@ function loadImage(src){
   });
 }
 async function preload(){
-  const jobs=[];
-  for(const [room,R] of Object.entries(ROOMS)) jobs.push(['room',room,R.bg]);
-  for(const c of CHARS) for(const p of POSES) jobs.push(['char',c.id+'/'+p,'assets/chars/'+c.id+'-'+p+'.png']);
+  // Phase 1 (blocking): office bg + all char sprites, loaded in PARALLEL.
+  // Other rooms lazy-load in background; render() tolerates missing bg.
+  const charJobs=[];
+  for(const c of CHARS) for(const p of POSES) charJobs.push([c.id+'/'+p,'assets/chars/'+c.id+'-'+p+'.png']);
+  const total = 1 + charJobs.length;
   let done=0;
   const fill=document.getElementById('loadFill'), pct=document.getElementById('loadPct');
-  for(const [kind,key,src] of jobs){
-    const im = await loadImage(src);
-    if(kind==='room'){ IMG.rooms[key]=im; }
-    else { const [id,pose]=key.split('/'); (IMG.chars[id]=IMG.chars[id]||{})[pose]=im; }
-    done++;
-    const pc = Math.round(done/jobs.length*100);
-    fill.style.width=pc+'%'; pct.textContent=pc+'%';
-  }
+  const tick=()=>{ done++; const pc=Math.round(done/total*100);
+    fill.style.width=pc+'%'; pct.textContent='Memuat '+done+'/'+total; };
+  const roomP = loadImage(ROOMS.office.bg).then(im=>{ IMG.rooms.office=im; tick(); });
+  const charPs = charJobs.map(([key,src])=>loadImage(src).then(im=>{
+    const parts=key.split('/'); const id=parts[0], pose=parts[1];
+    (IMG.chars[id]=IMG.chars[id]||{})[pose]=im; tick();
+  }));
+  await Promise.all([roomP].concat(charPs));
   document.getElementById('loader').style.display='none';
-  const missing = jobs.filter(([k2,key])=>{
-    if(key.includes('/')){ const [id,pose]=key.split('/'); const im=(IMG.chars[id]||{})[pose]; return !im||!im.naturalWidth; }
-    const im=IMG.rooms[key]; return !im||!im.naturalWidth;
+  const missing = charJobs.filter(([key])=>{
+    const parts=key.split('/'); const im=(IMG.chars[parts[0]]||{})[parts[1]];
+    return !im||!im.naturalWidth;
   });
-  if(missing.length) addLog('⚠️ '+missing.length+' aset gagal dimuat: '+missing.slice(0,3).map(m=>m[2]).join(', '));
+  if(!IMG.rooms.office||!IMG.rooms.office.naturalWidth) missing.push(['room/office']);
+  if(missing.length) addLog('⚠️ '+missing.length+' aset gagal dimuat.');
   else addLog('✅ Semua aset termuat.');
+  // Phase 2: lazy-load remaining rooms in background
+  for(const room of Object.keys(ROOMS)){
+    if(room==='office'||IMG.rooms[room]) continue;
+    loadImage(ROOMS[room].bg).then(im=>{ IMG.rooms[room]=im; });
+  }
 }
 
 /* ---------- boot ---------- */
