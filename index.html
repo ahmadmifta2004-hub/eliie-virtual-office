@@ -345,7 +345,7 @@ function loop(t){
    ============================================================ */
 const SPOTS = {
   office:{
-    desks:[ {x:.271,y:.709},{x:.529,y:.603},{x:.443,y:.926},{x:.711,y:.751} ], // sit (butt on chair seats)
+    desks:[ {x:.299,y:.708},{x:.536,y:.560},{x:.469,y:.560},{x:.674,y:.685},{x:.630,y:.681},{x:.458,y:.833} ], // sit: butt ON chair seats (6 chairs, verified via composite)
     extra:[ {x:.38,y:.84},{x:.63,y:.82} ],                              // idle+typing
     meet:[ {x:.50,y:.70} ],
   },
@@ -397,10 +397,10 @@ function actWork(){
   chainWalk([
     {id:'ty',    ...S.desks[0], pose:'sit', say:'⌨️ gas kerja!', saySecs:3},
     {id:'eliie', ...S.desks[1], pose:'sit', say:'⌨️ siap sayang 🥰', saySecs:3},
-    {id:'luna',  ...S.desks[2], pose:'sit', say:'⌨️ fokus…', saySecs:3},
+    {id:'luna',  ...S.desks[5], pose:'sit', say:'⌨️ fokus…', saySecs:3},
     {id:'nana',  ...S.desks[3], pose:'sit', say:'⌨️ gaskeun 🔥', saySecs:3},
-    {id:'mimi',  ...S.extra[0], dir:'back', say:'⌨️ desain dulu~', saySecs:3},
-    {id:'yuki',  ...S.extra[1], dir:'back', say:'⌨️ rapi-rapi data', saySecs:3},
+    {id:'mimi',  ...S.desks[2], pose:'sit', say:'⌨️ desain dulu~', saySecs:3},
+    {id:'yuki',  ...S.desks[4], pose:'sit', say:'⌨️ rapi-rapi data', saySecs:3},
   ], ()=>{ addLog('✅ Semua sudah di posisi kerja.'); toast('💼 Semua lagi kerja!'); });
 }
 function actMeet(){
