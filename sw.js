@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v32-sitbody4';
+const CACHE_NAME = 'eliie-office-v33-sitbody5';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
