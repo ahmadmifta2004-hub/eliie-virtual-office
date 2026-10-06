@@ -40,6 +40,21 @@
     pointer-events:none;text-align:center;border:1px solid rgba(255,255,255,.15);}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   @media (max-width:700px){ #hint{font-size:11px;} #roomName{font-size:13px;} }
+
+  /* Portrait hint: suruh putar HP ke landscape */
+  #rotateHint{display:none;position:fixed;inset:0;z-index:999;background:rgba(5,8,20,.92);
+    color:#ffe9b8;font-size:22px;text-align:center;padding-top:38vh;font-family:sans-serif;}
+  @media (orientation:portrait){
+    #rotateHint{display:block;}
+  }
+
+  /* HP: canvas penuhi layar */
+  #wrap{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;background:#050814;}
+  canvas{max-width:100vw;max-height:100vh;width:100%;height:100%;object-fit:contain;}
+  @media (orientation:landscape){
+    canvas{width:100vw;height:100vh;}
+  }
 </style>
 </head>
 <body>
@@ -84,6 +99,16 @@
   document.getElementById('restartBtn').addEventListener('click', function(e){ e.stopPropagation(); location.reload(); });
 })();
 </script>
-<script src="engine.js"></script>
+<script src="engine.js">
+  // Coba kunci landscape saat user pertama kali sentuh layar
+  document.addEventListener('touchstart', function(){
+    try{
+      if(screen.orientation && screen.orientation.lock){
+        screen.orientation.lock('landscape').catch(function(){});
+      }
+    }catch(e){}
+  }, {once:true});
+</script>
+<div id="rotateHint">🔄 Putar HP ke landscape<br>biar enak liatnya sayang</div>
 </body>
 </html>
