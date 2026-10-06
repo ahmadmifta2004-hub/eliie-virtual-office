@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eliie-office-v35-persp1';
+const CACHE_NAME = 'eliie-office-v36-trading-fix';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

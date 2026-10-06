@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Divisi AI Trading Terminal — Eliie & Ty</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
@@ -28,6 +26,13 @@
     }
     .glow-blue {
       box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+    }
+    @keyframes spin-custom {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spin-anim {
+      animation: spin-custom 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
   </style>
 </head>
@@ -55,9 +60,9 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="fetchTradingData()" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 text-xs font-semibold flex items-center gap-1.5 transition">
-          <i class="fa-solid fa-rotate text-[11px]"></i>
-          <span class="hidden sm:inline">Refresh Data</span>
+        <button id="btnRefresh" onclick="manualRefresh()" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95">
+          <i id="refreshIcon" class="fa-solid fa-rotate text-[11px]"></i>
+          <span id="refreshText">Refresh Data</span>
         </button>
         <a href="index.html" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5">
           <i class="fa-solid fa-building text-slate-400"></i>
@@ -140,9 +145,9 @@
         </div>
       </div>
 
-      <!-- TradingView Widget Frame -->
-      <div class="h-[420px] sm:h-[500px] w-full bg-slate-950 relative" id="tradingview_widget_container">
-        <!-- Injected by TradingView JS -->
+      <!-- TradingView Iframe Container (Guaranteed Cross-Device Compatibility) -->
+      <div class="h-[420px] sm:h-[500px] w-full bg-slate-950 relative" id="chart_frame_container">
+        <iframe id="tv_iframe" class="w-full h-full border-0" allowtransparency="true" scrolling="no" allowfullscreen="true"></iframe>
       </div>
     </div>
 
@@ -211,31 +216,52 @@
   <script>
     let currentSymbol = 'BINANCE:BTCUSDT';
 
+    function buildChartUrl(symbol) {
+      const config = {
+        symbol: symbol,
+        interval: "15",
+        timezone: "Asia/Jakarta",
+        theme: "dark",
+        style: "1",
+        locale: "id",
+        toolbar_bg: "#0b0f17",
+        enable_publishing: false,
+        hide_top_toolbar: false,
+        hide_legend: false,
+        save_image: false,
+        backgroundColor: "#0b0f17",
+        gridColor: "rgba(255, 255, 255, 0.04)"
+      };
+      return "https://s.tradingview.com/widgetembed/?" + new URLSearchParams({
+        frameElementId: "tv_iframe",
+        symbol: config.symbol,
+        interval: config.interval,
+        hidetoptoolbar: "0",
+        hidesidetoolbar: "1",
+        symboledit: "1",
+        saveimage: "0",
+        toolbarbg: "0b0f17",
+        studies: "[]",
+        theme: "dark",
+        style: "1",
+        timezone: "Asia/Jakarta",
+        locale: "id",
+        utm_source: window.location.hostname || "localhost"
+      }).toString();
+    }
+
     function initTradingView(symbol) {
-      document.getElementById('tradingview_widget_container').innerHTML = '';
-      new TradingView.widget({
-        "autosize": true,
-        "symbol": symbol,
-        "interval": "15",
-        "timezone": "Asia/Jakarta",
-        "theme": "dark",
-        "style": "1",
-        "locale": "id",
-        "enable_publishing": false,
-        "hide_top_toolbar": false,
-        "hide_legend": false,
-        "save_image": false,
-        "container_id": "tradingview_widget_container",
-        "backgroundColor": "#0b0f17",
-        "gridColor": "rgba(255, 255, 255, 0.04)"
-      });
+      const iframe = document.getElementById('tv_iframe');
+      if (iframe) {
+        iframe.src = buildChartUrl(symbol);
+      }
     }
 
     function switchChart(symbol, coinKey) {
       currentSymbol = symbol;
       ['tabBTC', 'tabETH', 'tabSOL'].forEach(id => {
         const el = document.getElementById(id);
-        el.className = "px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+        if (el) el.className = "px-3 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
       });
 
       if (coinKey === 'bitcoin') {
@@ -251,43 +277,50 @@
 
     async function fetchTradingData() {
       try {
-        const res = await fetch('trading_data.json?t=' + Date.now());
-        if (!res.ok) return;
+        const res = await fetch('trading_data.json?nocache=' + Date.now());
+        if (!res.ok) return false;
         const data = await res.json();
 
         // Update KPIs
-        document.getElementById('statTotalEquity').innerText = '$' + data.total_equity.toFixed(2);
-        document.getElementById('statCash').innerText = '$' + data.cash.toFixed(2);
-        document.getElementById('statCoinsVal').innerText = '$' + data.coins_value.toFixed(2);
+        const totalEq = typeof data.total_equity === 'number' ? data.total_equity : 100;
+        const cashVal = typeof data.cash === 'number' ? data.cash : 55;
+        const coinsVal = typeof data.coins_value === 'number' ? data.coins_value : 45;
+        const pnlUsd = typeof data.pnl_usd === 'number' ? data.pnl_usd : 0;
+        const pnlPct = typeof data.pnl_pct === 'number' ? data.pnl_pct : 0;
+
+        document.getElementById('statTotalEquity').innerText = '$' + totalEq.toFixed(2);
+        document.getElementById('statCash').innerText = '$' + cashVal.toFixed(2);
+        document.getElementById('statCoinsVal').innerText = '$' + coinsVal.toFixed(2);
 
         const pnlEl = document.getElementById('statPnlUsd');
         const pnlPctEl = document.getElementById('statPnlPct');
-        const sign = data.pnl_usd >= 0 ? '+' : '-';
-        pnlEl.innerText = (data.pnl_usd >= 0 ? '+$' : '-$') + Math.abs(data.pnl_usd).toFixed(2);
-        pnlEl.className = data.pnl_usd >= 0 ? "text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono" : "text-xl sm:text-2xl font-extrabold text-rose-400 font-mono";
+        
+        pnlEl.innerText = (pnlUsd >= 0 ? '+$' : '-$') + Math.abs(pnlUsd).toFixed(2);
+        pnlEl.className = pnlUsd >= 0 ? "text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono" : "text-xl sm:text-2xl font-extrabold text-rose-400 font-mono";
 
-        pnlPctEl.innerText = (data.pnl_pct >= 0 ? '+' : '') + data.pnl_pct.toFixed(2) + '%';
-        pnlPctEl.className = data.pnl_pct >= 0 ? "text-emerald-400 font-bold ml-auto" : "text-rose-400 font-bold ml-auto";
+        pnlPctEl.innerText = (pnlPct >= 0 ? '+' : '') + pnlPct.toFixed(2) + '%';
+        pnlPctEl.className = pnlPct >= 0 ? "text-emerald-400 font-bold ml-auto" : "text-rose-400 font-bold ml-auto";
 
-        document.getElementById('statSyncTime').innerText = 'Terakhir update: ' + data.last_update;
+        document.getElementById('statSyncTime').innerText = 'Terakhir update: ' + (data.last_update || 'Baru saja');
 
         // Render Positions Table
         const tbody = document.getElementById('positionsTableBody');
         if (data.positions && data.positions.length > 0) {
           tbody.innerHTML = data.positions.map(p => {
-            const pnl = p.value - p.cost;
-            const pnlPct = (pnl / p.cost) * 100;
+            const pnl = (p.value || 0) - (p.cost || 0);
+            const pnlPercentage = p.cost ? (pnl / p.cost) * 100 : 0;
             const pnlClass = pnl >= 0 ? 'text-emerald-400' : 'text-rose-400';
+            const coinColor = p.coin === 'BITCOIN' ? 'bg-amber-400' : p.coin === 'ETHEREUM' ? 'bg-cyan-400' : 'bg-purple-400';
             return `
               <tr class="hover:bg-slate-800/30 transition">
                 <td class="py-3 font-bold flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full ${p.coin === 'BITCOIN' ? 'bg-amber-400' : p.coin === 'ETHEREUM' ? 'bg-cyan-400' : 'bg-purple-400'}"></span>
+                  <span class="w-2 h-2 rounded-full ${coinColor}"></span>
                   ${p.coin}
                 </td>
-                <td class="py-3 text-slate-300">$${p.entry_price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                <td class="py-3 text-white font-bold">$${p.current_price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                <td class="py-3 text-slate-200">$${p.value.toFixed(2)}</td>
-                <td class="py-3 text-right font-bold ${pnlClass}">${pnlPct >= 0 ? '+' : ''}${pnlPct.toFixed(2)}%</td>
+                <td class="py-3 text-slate-300">$${(p.entry_price || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                <td class="py-3 text-white font-bold">$${(p.current_price || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                <td class="py-3 text-slate-200">$${(p.value || 0).toFixed(2)}</td>
+                <td class="py-3 text-right font-bold ${pnlClass}">${pnlPercentage >= 0 ? '+' : ''}${pnlPercentage.toFixed(2)}%</td>
               </tr>
             `;
           }).join('');
@@ -298,21 +331,44 @@
         // Render History List
         const hList = document.getElementById('historyLogList');
         if (data.history && data.history.length > 0) {
-          hList.innerHTML = data.history.map(h => `
-            <div class="p-2.5 rounded-xl bg-slate-900/70 border border-slate-800/80">
-              <div class="flex items-center justify-between font-mono text-[11px] mb-1">
-                <span class="font-bold ${h.action.includes('BELI') ? 'text-cyan-400' : 'text-emerald-400'}">${h.action}</span>
-                <span class="text-slate-500 text-[10px]">${h.time.split(' ')[1]}</span>
+          hList.innerHTML = data.history.map(h => {
+            const timeStr = h.time && h.time.includes(' ') ? h.time.split(' ')[1] : h.time || '';
+            const actionColor = (h.action || '').includes('BELI') ? 'text-cyan-400' : 'text-emerald-400';
+            const priceVal = (h.price || 0).toLocaleString('en-US', {minimumFractionDigits: 2});
+            return `
+              <div class="p-2.5 rounded-xl bg-slate-900/70 border border-slate-800/80">
+                <div class="flex items-center justify-between font-mono text-[11px] mb-1">
+                  <span class="font-bold ${actionColor}">${h.action}</span>
+                  <span class="text-slate-500 text-[10px]">${timeStr}</span>
+                </div>
+                <p class="text-slate-300 font-semibold text-[11px]">${(h.coin || '').toUpperCase()} @ $${priceVal}</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">${h.note || ''}</p>
               </div>
-              <p class="text-slate-300 font-semibold text-[11px]">${h.coin.toUpperCase()} @ $${h.price.toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
-              <p class="text-[10px] text-slate-400 mt-0.5">${h.note}</p>
-            </div>
-          `).join('');
+            `;
+          }).join('');
         }
-
+        return true;
       } catch (err) {
         console.error('Failed to load trading data:', err);
+        return false;
       }
+    }
+
+    async function manualRefresh() {
+      const icon = document.getElementById('refreshIcon');
+      const text = document.getElementById('refreshText');
+      if (icon) icon.classList.add('spin-anim');
+      if (text) text.innerText = 'Updating...';
+
+      // Re-fetch data and reload iframe chart
+      const ok = await fetchTradingData();
+      initTradingView(currentSymbol);
+
+      setTimeout(() => {
+        if (icon) icon.classList.remove('spin-anim');
+        if (text) text.innerText = ok ? 'Updated!' : 'Refresh Data';
+        setTimeout(() => { if (text) text.innerText = 'Refresh Data'; }, 1500);
+      }, 600);
     }
 
     // Auto-init on load
