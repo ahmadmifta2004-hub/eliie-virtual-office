@@ -7,7 +7,7 @@ const W = 1920, H = 1080;
 const CHAR_H = {eliie:150, ty:150, luna:150, nana:150, mimi:150, yuki:150};
 const SITBODY_DH = {eliie:168.8, ty:171.4, luna:158.8, nana:171.4, mimi:166.2, yuki:154.3};
 const SITBODY_BUTT = {eliie:0.85, ty:0.85, luna:0.85, nana:0.85, mimi:0.85, yuki:0.85};
-const SITBODY_FACE = {ty:'left', eliie:'left', mimi:'left', nana:'right', yuki:'right', luna:'back'};
+const SITBODY_FACE = {ty:'left', eliie:'left', mimi:'left', nana:'left', yuki:'left', luna:'back'};
 const SPEED = 230;
 
 const canvas = document.getElementById('game');
